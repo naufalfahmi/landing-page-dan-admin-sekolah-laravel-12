@@ -5,6 +5,7 @@ use App\Http\Controllers\{
     DashboardController,
     PermissionController,
     PermissionGroupController,
+    PostController,
     RoleController,
     SettingController,
     UserController
@@ -82,5 +83,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['middleware' => ['permission:Kategori Index']], function () {
         Route::get('category/data', [CategoryController::class, 'data'])->name('category.data');
         Route::resource('category', CategoryController::class);
+    });
+
+    // ARTIKEL
+    Route::group(['middleware' => ['permission:Artikel Index']], function () {
+        Route::get('articles/data', [PostController::class, 'data'])->name('articles.data');
+        Route::get('articles/categories_search', [PostController::class, 'categorySearch'])->name('articles.categories_search');
+        Route::resource('articles', PostController::class);
     });
 });

@@ -52,6 +52,16 @@
                         </a>
                     </li>
                 @endcan
+                @can('Artikel Index')
+                    <li class="nav-item">
+                        <a href="{{ route('articles.index') }}" class="nav-link">
+                            <i class="nav-icon fas fa-newspaper"></i>
+                            <p>
+                                Artikel
+                            </p>
+                        </a>
+                    </li>
+                @endcan
 
                 @can('Konfigurasi Index')
                     <li class="nav-item">
