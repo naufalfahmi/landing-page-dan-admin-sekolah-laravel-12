@@ -10,13 +10,15 @@ class Modal extends Component
 {
     public $size;
     public $method;
+    public $centered;
     /**
      * Create a new component instance.
      */
-    public function __construct($size = 'modal-md', $method = 'post')
+    public function __construct($size = 'modal-md', $method = 'post', $centered = '')
     {
         $this->size = $size;
         $this->method = $method;
+        $this->centered = $centered;
     }
 
     /**
