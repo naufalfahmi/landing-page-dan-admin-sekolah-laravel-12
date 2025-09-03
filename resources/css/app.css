@@ -1,7 +1,403 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Import Bootstrap 5 CSS */
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
-[x-cloak] {
-    display: none;
+/* Custom styles */
+:root {
+    --global-body-font-family: Lato, sans-serif;
+    --global-heading-font-family: inherit;
+    --global-primary-nav-font-family: inherit;
+    --global-fallback-font: sans-serif;
+    --global-display-fallback-font: sans-serif;
+}
+
+body {
+    font-family: var(--global-body-font-family);
+}
+
+/* Heading styles */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--global-heading-font-family);
+}
+
+/* Navbar styling */
+.custom-navbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #333 !important;
+}
+
+.navbar-nav .nav-link {
+    color: #333 !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #007bff !important;
+}
+
+.navbar-toggler {
+    border-color: #333;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Card styling */
+.card {
+    transition: transform 0.2s ease-in-out;
+    margin-bottom: 1.5rem;
+    border-radius: 20px !important;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-img-top {
+    height: 260px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    font-weight: 600;
+}
+
+/* Article title link styling - warna hitam tidak berubah dan tidak ada efek hover */
+.article-title-link {
+    color: #000000 !important;
+    text-decoration: none;
+}
+
+.article-title-link:hover {
+    color: #000000 !important;
+    text-decoration: none;
+}
+
+.article-title-link:focus {
+    color: #000000 !important;
+    text-decoration: none;
+}
+
+.article-title-link:visited {
+    color: #000000 !important;
+    text-decoration: none;
+}
+
+/* Article categories styling - Link format with black color */
+.entry-taxonomies {
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.category-links.term-links {
+    color: #666;
+}
+
+.category-links.term-links a {
+    color: #000000 !important;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.category-links.term-links a:hover {
+    color: #333 !important;
+    text-decoration: underline;
+}
+
+/* Article meta styling - New format */
+.entry-meta.entry-meta-divider-dot {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #f8f9fa;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.entry-meta.entry-meta-divider-dash {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f8f9fa;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.entry-meta .posted-by {
+    margin-right: 1rem;
+}
+
+.entry-meta .meta-label {
+    color: #999;
+    font-weight: 400;
+}
+
+.entry-meta .author a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.entry-meta .author a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.entry-meta .posted-on {
+    color: #666;
+}
+
+.entry-meta .entry-date {
+    color: #666;
+    font-style: italic;
+}
+
+/* Article detail page styling */
+.site-main {
+    padding: 2rem 0;
+}
+
+.post-thumbnail.article-post-thumbnail {
+    margin-bottom: 2rem;
+}
+
+.post-thumbnail-inner img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+}
+
+.entry-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.entry-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.entry-content p {
+    margin-bottom: 1.5rem;
+}
+
+.wp-block-heading {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    margin: 2rem 0 1rem 0;
+    border-left: 4px solid #007bff;
+    padding-left: 1rem;
+}
+
+.post-views {
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.post-views-icon {
+    margin-right: 0.5rem;
+}
+
+/* Navigation styling */
+.navigation.post-navigation {
+    margin: 3rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-previous a,
+.nav-next a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-previous a:hover,
+.nav-next a:hover {
+    color: #007bff;
+}
+
+.post-navigation-sub {
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 0.5rem;
+
+}
+
+/* Sidebar styling */
+.sidebar-widget {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+}
+
+.widget-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #007bff;
+}
+
+.sidebar-widget .entry {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.sidebar-widget .entry:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.sidebar-widget .post-thumbnail {
+    margin-bottom: 1rem;
+}
+
+.sidebar-widget .post-thumbnail img {
+    border-radius: 15px;
+}
+
+.sidebar-widget .entry-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-widget .entry-title a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.sidebar-widget .entry-title a:hover {
+    color: #007bff;
+}
+
+.sidebar-widget .entry-meta {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+/* Pagination styling - lebih kecil */
+.pagination {
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+.pagination .page-link {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+    margin: 0 0.125rem;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* Button styling */
+.btn-outline-primary {
+    border-radius: 20px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Badge styling */
+.badge {
+    border-radius: 15px;
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 20px;
+    border: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-nav .nav-link {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .entry-taxonomies {
+        font-size: 0.75rem;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+    }
+    
+    .entry-meta.entry-meta-divider-dot {
+        font-size: 0.8rem;
+    }
+    
+    .entry-title {
+        font-size: 2rem;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .sidebar-widget {
+        margin-top: 2rem;
+    }
 }

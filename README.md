@@ -1,75 +1,105 @@
-# Laravel 11 with Adminlte3 Template
+# Portal Islam — Laravel 12 + Bootstrap 5
 
-Welcome to the repository for Laravel 11 integrated with the Adminlte3 template!
+Portal artikel keislaman berbasis Laravel 12 yang ringan, SEO‑aware, dan mobile‑first.
 
-## Overview
+## ✨ Fitur
 
-This repository contains a Laravel 11 template that comes pre-configured with authentication from Jetstream and utilizes the adminlte3 template for the UI.
+- **Artikel**: CRUD artikel, slug, tanggal terbit, gambar, excerpt, konten HTML.
+- **Kategori**: Relasi many‑to‑many `Article ↔ Category`, halaman listing per kategori.
+- **Penulis**: Model penulis dan halaman profil penulis sederhana.
+- **Admin Area**: Dashboard, manajemen konten dasar (Laravel Breeze auth).
+- **Shortlink**: Link pendek untuk bagikan artikel.
+- **SEO**:
+  - Microdata Schema.org `Article` (homepage card & halaman detail)
+  - `<meta name="robots">` otomatis: homepage `index,follow`, halaman lain `noindex,follow`
+  - Canonical link per halaman
+  - `robots.txt` blokir `/admin/`, `/login`, `/register`, `/password/`
+- **UI/UX**:
+  - Navbar sticky (`sticky-top`), responsif, kategori dinamis
+  - Kartu artikel dengan kategori, penulis, dan tanggal
+  - Pagination kustom
+  - Footer sederhana: © YEAR APP_NAME
+- **Settings**: Metadata situs (judul, ikon, favicon, keywords, description) via `settings` table.
 
-## Installation Guide
+## 🧱 Arsitektur & Direktori Penting
 
-### Prerequisites
+```
+app/
+  Http/Controllers/
+    Admin/...
+    ShortlinkController.php
+  Models/
+    Article.php, Author.php, Category.php, Setting.php, Shortlink.php
+resources/views/
+  layouts/
+    app.blade.php         # Layout utama (+ meta robots & canonical)
+    navigation.blade.php  # Navbar sticky-top
+    footer.blade.php      # Footer © YEAR APP_NAME
+  home.blade.php          # Listing artikel (card sebagai <article>)
+  article-detail.blade.php# Detail artikel (Schema.org Article)
+  category.blade.php      # Halaman kategori
+routes/
+  web.php, auth.php
+database/
+  migrations/             # Articles, Authors, Categories, Settings, pivot
+  seeders/                # Contoh data artikel & kategori
+public/
+  robots.txt              # Disallow admin & auth
+```
 
--   PHP >= 8.1
--   Composer
--   Node.js
--   npm
+## 🚀 Menjalankan Proyek
 
-### Installation Steps
+1) Install dependencies
+```bash
+composer install
+npm install
+```
 
-1. Clone the repository:
+2) Environment
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-    ```bash
-    git clone https://github.com/vikarmaulanaarrisyad/starter-template-adminlte-v3-laravel11.git laravel11-adminlte
-    ```
+3) Database (SQLite bawaan tersedia)
+```bash
+php artisan migrate --seed
+```
 
-2. Navigate into the project directory:
+4) Asset & Server
+```bash
+npm run dev   # atau npm run build
+php artisan serve
+```
 
-    ```bash
-    cd laravel11-adminlte
-    ```
+Akses `http://localhost:8000`
 
-3. Install PHP dependencies:
+## 🔐 Autentikasi & Admin
 
-    ```bash
-    composer install
-    ```
+- Otentikasi menggunakan Laravel Breeze.
+- Admin menu muncul saat login.
+- Direkomendasikan menambah middleware/guard untuk rute admin produksi.
 
-4. Install JavaScript dependencies:
+## 🔎 SEO Checklist (sudah diterapkan)
 
-    ```bash
-    npm install && npm run dev
-    ```
+- Homepage dapat diindeks; halaman lain noindex (meta robots dinamis).
+- Schema.org `Article` di homepage dan detail.
+- Canonical tag per halaman.
+- `robots.txt` memblokir halaman sensitif.
 
-5. Copy the `.env.example` file and rename it to `.env`:
+Tambahan yang disarankan:
+- Sitemap (`/sitemap.xml`) berisi daftar artikel published dan kategori.
+- Open Graph / Twitter Card meta (title, description, image) untuk social preview.
 
-    ```bash
-    cp .env.example .env
-    ```
+## 🧪 Perintah Berguna
 
-6. Generate application key:
+```bash
+php artisan migrate:fresh --seed   # reset + seed ulang
+php artisan tinker                 # eksplorasi cepat
+```
 
-    ```bash
-    php artisan key:generate
-    ```
+## 📄 Lisensi
 
-7. Run database migrations:
+MIT. Silakan gunakan dan modifikasi sesuai kebutuhan.
 
-    ```bash
-    php artisan migrate
-    ```
-
-8. Start the development server:
-    ```bash
-    php artisan serve
-    ```
-
-## Contributors
-
--   **Vikar Maulana** - [GitHub](https://github.com/vikarmaulanaarrisyad)
-
-Feel free to explore their repositories as well.
-
----
-
-If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request. Thank you for your interest and support!
+— Dibuat dengan ❤️ menggunakan Laravel 12 & Bootstrap 5

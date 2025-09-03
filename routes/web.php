@@ -1,94 +1,63 @@
 <?php
 
-use App\Http\Controllers\{
-    CategoryController,
-    DashboardController,
-    PermissionController,
-    PermissionGroupController,
-    PostController,
-    RoleController,
-    SettingController,
-    UserController
-};
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ShortlinkController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
+use App\Http\Controllers\Admin\AuthorController as AdminAuthorController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('auth.login');
+// Public routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Dashboard route (redirect to admin dashboard)
+Route::get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+// Article detail page dengan slug
+Route::get('/article/{slug}', [ArticleController::class, 'showBySlug'])->name('article.detail');
+
+// Category page
+Route::get('/category/{slug}', [ArticleController::class, 'showByCategory'])->name('category.show');
+
+// Author page
+Route::get('/author/{slug}', [ArticleController::class, 'showByAuthor'])->name('author.show');
+
+// Shortlink routes
+Route::get('/s/{code}', [ShortlinkController::class, 'redirect'])->name('shortlink.redirect');
+
+// Admin routes
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    // Articles management
+    Route::resource('articles', AdminArticleController::class);
+    
+    // Authors management
+    Route::resource('authors', AdminAuthorController::class);
+    
+    // Categories management
+    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    
+    // Shortlinks management
+    Route::get('/shortlinks', [ShortlinkController::class, 'index'])->name('shortlinks.index');
+    Route::post('/shortlinks', [ShortlinkController::class, 'store'])->name('shortlinks.store');
+    Route::delete('/shortlinks/{id}', [ShortlinkController::class, 'destroy'])->name('shortlinks.destroy');
+
+    // Settings
+    Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'store'])->name('settings.store');
 });
 
-Route::group(['middleware' => ['auth']], function () {
-
-    Route::group(['middleware' => ['role_or_permission:Dashboard Index']], function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    });
-
-    Route::group(['middleware' => ['permission:User Index']], function () {
-        Route::controller(UserController::class)->group(function () {
-            Route::get('/ajax/users/role_search', 'roleSearch')->name('users.role_search');
-            Route::get('/users/data', 'data')->name('users.data');
-            Route::get('/users', 'index')->name('users.index');
-            Route::get('/users/{users}/detail', 'detail')->name('users.detail');
-            Route::get('/users/{users}', 'edit')->name('users.edit');
-            Route::put('/users/{users}/update', 'update')->name('users.update');
-            Route::post('/users', 'store')->name('users.store');
-            Route::delete('/users/{users}/destroy', 'destroy')->name('users.destroy');
-            Route::delete('/user/profile', 'show')->name('profile.show');;
-        });
-    });
-
-    Route::group(['middleware' => ['permission:Role Index']], function () {
-        Route::controller(RoleController::class)->group(function () {
-            Route::get('/role/data', 'data')->name('role.data');
-            Route::get('/role', 'index')->name('role.index');
-            Route::get('/role/{role}/detail', 'detail')->name('role.detail');
-            Route::get('/role/{role}', 'edit')->name('role.edit');
-            Route::put('/role/{role}/update', 'update')->name('role.update');
-            Route::post('/role', 'store')->name('role.store');
-            Route::delete('/role/{role}/destroy', 'destroy')->name('role.destroy');
-        });
-    });
-
-    Route::group(['middleware' => ['permission:Permission Index']], function () {
-        Route::controller(PermissionController::class)->group(function () {
-            Route::get('/permissions/data', 'data')->name('permission.data');
-            Route::get('/permissions', 'index')->name('permission.index');
-            Route::get('/permissions/{permission}/detail', 'detail')->name('permission.detail');
-            Route::get('/permissions/{permission}', 'edit')->name('permission.edit');
-            Route::put('/permissions/{permission}/update', 'update')->name('permission.update');
-            Route::post('/permissions', 'store')->name('permission.store');
-            Route::delete('/permissions/{permission}/destroy', 'destroy')->name('permission.destroy');
-        });
-    });
-
-    Route::group(['middleware' => ['permission:Group Permission Index']], function () {
-        Route::controller(PermissionGroupController::class)->group(function () {
-            Route::get('/permissiongroups/data', 'data')->name('permissiongroups.data');
-            Route::get('/permissiongroups', 'index')->name('permissiongroups.index');
-            Route::get('/permissiongroups/{permissionGroup}/detail', 'detail')->name('permissiongroups.detail');
-            Route::get('/permissiongroups/{permissionGroup}', 'edit')->name('permissiongroups.edit');
-            Route::put('/permissiongroups/{permissionGroup}/update', 'update')->name('permissiongroups.update');
-            Route::post('/permissiongroups', 'store')->name('permissiongroups.store');
-            Route::delete('/permissiongroups/{permissionGroup}/destroy', 'destroy')->name('permissiongroups.destroy');
-        });
-    });
-
-    Route::group(['middleware' => ['permission:Pengaturan Index']], function () {
-        Route::controller(SettingController::class)->group(function () {
-            Route::get('/setting', 'index')->name('setting.index');
-            Route::put('/setting/{setting}', 'update')->name('setting.update');
-        });
-    });
-
-    // KATEGORI
-    Route::group(['middleware' => ['permission:Kategori Index']], function () {
-        Route::get('category/data', [CategoryController::class, 'data'])->name('category.data');
-        Route::resource('category', CategoryController::class);
-    });
-
-    // ARTIKEL
-    Route::group(['middleware' => ['permission:Artikel Index']], function () {
-        Route::get('articles/data', [PostController::class, 'data'])->name('articles.data');
-        Route::get('articles/categories_search', [PostController::class, 'categorySearch'])->name('articles.categories_search');
-        Route::resource('articles', PostController::class);
-    });
+// Breeze authentication routes
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+require __DIR__.'/auth.php';

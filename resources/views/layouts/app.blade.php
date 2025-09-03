@@ -1,156 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        @php
+            $siteTitle = \App\Models\Setting::getValue('site_title', config('app.name', 'Laravel'));
+            $siteIcon = \App\Models\Setting::getValue('site_icon');
+            $favicon = \App\Models\Setting::getValue('favicon');
+            $metaKeywords = \App\Models\Setting::getValue('meta_keywords');
+            $metaDescription = \App\Models\Setting::getValue('meta_description');
+            $shouldIndex = request()->routeIs('home');
+        @endphp
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="robots" content="{{ $shouldIndex ? 'index,follow' : 'noindex,follow' }}">
+        <link rel="canonical" href="{{ url()->current() }}">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+        <title>@yield('title', $siteTitle)</title>
 
-    <title>{{ $setting->company_name }} - @yield('title')</title>
+        @if(!empty($metaDescription))
+            <meta name="description" content="{{ $metaDescription }}">
+        @endif
+        @if(!empty($metaKeywords))
+            <meta name="keywords" content="{{ $metaKeywords }}">
+        @endif
 
-    <link rel="icon" href="{{ Storage::url($setting->path_image ?? '') }}" type="image/*">
+        @if(!empty($favicon))
+            <link rel="icon" type="image/png" href="{{ $favicon }}">
+        @endif
+        @if(!empty($siteIcon))
+            <link rel="apple-touch-icon" href="{{ $siteIcon }}">
+        @endif
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('/AdminLTE/plugins/fontawesome-free/css/all.min.css') }}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- iCheck -->
-    <link rel="stylesheet" href="{{ asset('/AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <!-- JQVMap -->
-    <link rel="stylesheet" href="{{ asset('/AdminLTE/plugins/jqvmap/jqvmap.min.css') }}">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="{{ asset('/AdminLTE/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-    <!-- SweetAler2 -->
-    <link rel="stylesheet" href="{{ asset('/AdminLTE/plugins/sweetalert2/sweetalert2.min.css') }}">
-    @stack('css_vendor')
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        <!-- Additional CSS for specific pages -->
+        @stack('styles')
+    </head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100">
+            @include('layouts.navigation')
 
-    <!-- Theme style -->
-    {{--  <link rel="stylesheet" href="{{ asset('/AdminLTE/dist/css/adminlte.min.css') }}">  --}}
-    <link rel="stylesheet" href="{{ asset('AdminLTE/dist/css/adminlte.min.css?v=3.2.0') }}">
+            <!-- Page Heading -->
+            @isset($header)
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
 
-    <style>
-        .note-editor {
-            margin-bottom: 0;
-        }
-
-        .note-editor.is-invalid {
-            border-color: var(--danger);
-        }
-
-        .nav-sidebar .nav-header {
-            font-size: .6rem;
-            font-weight: bold;
-            color: #888;
-        }
-
-        .styleblock {
-            display: block !important;
-            /* Menampilkan dropdown dalam gaya blok */
-        }
-    </style>
-
-    @stack('css')
-</head>
-
-<body class="sidebar-mini layout-fixed layout-footer-fixed">
-    <div class="wrapper">
-
-        <!-- Preloader -->
-        {{--  <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{ asset('/AdminLTE/dist/img/AdminLTELogo.png') }}" alt="AdminLTELogo"
-                height="60" width="60">
-        </div>  --}}
-
-        <!-- Navbar -->
-        @includeIf('layouts.partials.header')
-        <!-- /.navbar -->
-
-        <!-- Main Sidebar Container -->
-        @includeIf('layouts.partials.sidebar')
-
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0">@yield('title')</h1>
-                        </div><!-- /.col -->
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                @section('breadcrumb')
-                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                @show
-                            </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
-            <!-- /.content-header -->
-
-            <!-- Main content -->
-            <section class="content">
-                <div class="container-fluid">
-                    @yield('content')
-                </div>
-                <!-- /.container-fluid -->
-            </section>
-            <!-- /.content -->
+            <!-- Page Content -->
+            <main>
+                @yield('content')
+            </main>
         </div>
-
-        <!-- /.content-wrapper -->
-        @includeIf('layouts.partials.footer')
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
-    </div>
-    <!-- ./wrapper -->
-
-    <!-- jQuery -->
-    <script src="{{ asset('/AdminLTE/plugins/jquery/jquery.min.js') }}"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="{{ asset('/AdminLTE/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <script>
-        $.widget.bridge('uibutton', $.ui.button)
-    </script>
-    <!-- Bootstrap 4 -->
-    <script src="{{ asset('/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- ChartJS -->
-    <script src="{{ asset('/AdminLTE/plugins/chart.js/Chart.min.js') }}"></script>
-    <!-- Sparkline -->
-    <script src="{{ asset('/AdminLTE/plugins/sparklines/sparkline.js') }}"></script>
-    <!-- JQVMap -->
-    <script src="{{ asset('/AdminLTE/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-    <script src="{{ asset('/AdminLTE/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="{{ asset('/AdminLTE/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
-    <!-- daterangepicker -->
-    <script src="{{ asset('/AdminLTE/plugins/moment/moment.min.js') }}"></script>
-
-    <!-- overlayScrollbars -->
-    <script src="{{ asset('/AdminLTE/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-    <!-- sweetalert2 -->
-    <script src="{{ asset('/AdminLTE/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-
-    @stack('scripts_vendor')
-
-    <!-- AdminLTE App -->
-    <script src="{{ asset('AdminLTE/dist/js/adminlte.js?v=3.2.0') }}"></script>
-    <script src="{{ asset('AdminLTE/dist/js/pages/dashboard.js') }}"></script>
-
-    <script src="{{ asset('/js/custom.js') }}"></script>
-
-    <x-toast />
-    @stack('scripts')
-</body>
-
+        @include('layouts.footer')
+    </body>
 </html>
