@@ -6,14 +6,25 @@
 <!-- Hero Slider Section -->
 @include('components.hero-slider')
 
+<!-- Announcements Widget -->
+@include('components.announcements-widget')
+
 <!-- Articles Section -->
-<div class="container mt-4" id="articles">
-    <!-- Section Heading -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="section-heading text-center">Berita Seputar SMP</h2>
+<div class="articles-widget">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="widget-header">
+                    <h3 class="widget-title">
+                        <i class="fas fa-newspaper"></i>
+                        Berita Seputar SMP
+                    </h3>
+                    <a href="{{ route('articles.index') }}" class="view-all-btn">
+                        Semua Berita <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
     
     <div class="row">
         @foreach($articles as $article)
@@ -55,49 +66,5 @@
         </div>
         @endforeach
     </div>
-    
-    <!-- Custom Pagination -->
-    @if($articles->hasPages())
-    <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Artikel navigation">
-            <ul class="pagination pagination-sm">
-                <!-- Previous Page -->
-                @if($articles->onFirstPage())
-                    <li class="page-item disabled">
-                        <span class="page-link">Sebelumnya</span>
-                    </li>
-                @else
-                    <li class="page-item">
-                        <a class="page-link" href="{{ $articles->previousPageUrl() }}">Sebelumnya</a>
-                    </li>
-                @endif
-                
-                <!-- Page Numbers -->
-                @foreach($articles->getUrlRange(1, $articles->lastPage()) as $page => $url)
-                    @if($page == $articles->currentPage())
-                        <li class="page-item active">
-                            <span class="page-link">{{ $page }}</span>
-                        </li>
-                    @else
-                        <li class="page-item">
-                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                        </li>
-                    @endif
-                @endforeach
-                
-                <!-- Next Page -->
-                @if($articles->hasMorePages())
-                    <li class="page-item">
-                        <a class="page-link" href="{{ $articles->nextPageUrl() }}">Selanjutnya</a>
-                    </li>
-                @else
-                    <li class="page-item disabled">
-                        <span class="page-link">Selanjutnya</span>
-                    </li>
-                @endif
-            </ul>
-        </nav>
-    </div>
-    @endif
 </div>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Article;
+use App\Models\Announcement;
 
 class HomeController extends Controller
 {
@@ -17,8 +18,14 @@ class HomeController extends Controller
         $articles = Article::with(['author', 'categories'])
             ->published()
             ->latest('published_at')
-            ->paginate(12);
+            ->take(6)
+            ->get();
 
-        return view('home', compact('articles'));
+        $announcements = Announcement::published()
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+
+        return view('home', compact('articles', 'announcements'));
     }
 }

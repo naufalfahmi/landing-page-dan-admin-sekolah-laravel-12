@@ -12,15 +12,9 @@
                     <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a>
                 </li>
                 
-                @php
-                    $categories = \App\Models\Category::active()->ordered()->get();
-                @endphp
-                
-                @foreach($categories as $category)
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('category.show') && request()->route('slug') == $category->slug ? 'active' : '' }}" href="{{ route('category.show', $category->slug) }}">{{ $category->name }}</a>
-                    </li>
-                @endforeach
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('announcements.*') ? 'active' : '' }}" href="{{ route('announcements.index') }}">Pengumuman</a>
+                </li>
                 
                 @auth
                     <li class="nav-item">

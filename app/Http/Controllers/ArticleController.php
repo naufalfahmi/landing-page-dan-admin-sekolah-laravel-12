@@ -11,6 +11,19 @@ use App\Models\Article;
 class ArticleController extends Controller
 {
     /**
+     * Display a listing of articles
+     */
+    public function index()
+    {
+        $articles = Article::with(['author', 'categories'])
+            ->published()
+            ->latest('published_at')
+            ->paginate(12);
+
+        return view('articles.index', compact('articles'));
+    }
+
+    /**
      * Get articles from database
      */
     private function getArticlesData()
