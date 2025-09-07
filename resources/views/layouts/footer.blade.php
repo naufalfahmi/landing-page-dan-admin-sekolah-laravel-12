@@ -26,17 +26,23 @@
             <div class="col-md-4 mb-3">
                 <h6 class="footer-title">Kontak</h6>
                 <div class="footer-contact">
+                    @php
+                        $contactAddress = \App\Models\Setting::getValue('contact_address', 'Jl. KH. Sholeh Iskandar Km.2 Kd. Badak Bogor');
+                        $contactEmail = \App\Models\Setting::getValue('contact_email', 'info@admin.com');
+                        $contactWhatsapp = \App\Models\Setting::getValue('contact_whatsapp', '628151888930');
+                        $siteTitle = \App\Models\Setting::getValue('site_title', config('app.name', 'SMPIT Al-Itqon'));
+                    @endphp
                     <p class="mb-1">
                         <i class="fas fa-map-marker-alt"></i>
-                        Jl. KH. Sholeh Iskandar Km.2 Kd. Badak Bogor
+                        {{ $contactAddress }}
                     </p>
                     <p class="mb-1">
                         <i class="fas fa-envelope"></i>
-                        <a href="mailto:info@admin.com">info@admin.com</a>
+                        <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a>
                     </p>
                     <p class="mb-0">
                         <i class="fab fa-whatsapp"></i>
-                        <a href="https://wa.me/628151888930" target="_blank">+628151888930</a>
+                        <a href="https://wa.me/{{ $contactWhatsapp }}" target="_blank">{{ $contactWhatsapp }}</a>
                     </p>
                 </div>
             </div>
@@ -46,7 +52,7 @@
         
         <div class="row">
             <div class="col-12 text-center">
-                <small class="text-muted">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</small>
+                <small class="text-muted">&copy; {{ date('Y') }} {{ $siteTitle }}. All rights reserved.</small>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kategori: ' . $categoryName . ' - Portal Islam')
+@section('title', 'Kategori: ' . $categoryName . ' - SMPIT Al-Itqon')
 
 @section('content')
 <div class="container mt-4">

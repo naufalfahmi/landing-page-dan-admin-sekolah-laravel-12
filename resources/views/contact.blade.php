@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Hubungi Kami - ' . config('app.name'))
+@section('title', 'Hubungi Kami - SMPIT Al-Itqon')
 
 @section('meta')
 <meta name="description" content="Hubungi kami untuk informasi lebih lanjut tentang sekolah. Kirim pesan atau kunjungi lokasi sekolah kami di Jl. KH. Sholeh Iskandar Km.2 Kd. Badak Bogor.">
 <meta name="keywords" content="kontak sekolah, hubungi kami, lokasi sekolah, alamat sekolah, informasi sekolah">
-<meta property="og:title" content="Hubungi Kami - {{ config('app.name') }}">
+<meta property="og:title" content="Hubungi Kami - SMPIT Al-Itqon">
 <meta property="og:description" content="Hubungi kami untuk informasi lebih lanjut tentang sekolah">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ url()->current() }}">
@@ -34,18 +34,42 @@
                     </h2>
                     <p class="text-muted mb-4">Kirim pesan kepada kami dan kami akan merespons secepat mungkin.</p>
                     
-                    <form id="contactForm" method="POST" action="#" novalidate>
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Terjadi kesalahan:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+
+                    <form id="contactForm" method="POST" action="{{ route('contact.store') }}" novalidate>
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">
                                 <i class="fas fa-user text-primary me-1"></i>
                                 Nama Lengkap <span class="text-danger">*</span>
                             </label>
-                            <input type="text" class="form-control" id="name" name="name" required 
-                                   placeholder="Masukkan nama lengkap Anda">
-                            <div class="invalid-feedback">
-                                Mohon masukkan nama lengkap Anda.
-                            </div>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                                   id="name" name="name" value="{{ old('name') }}" required 
+                                   placeholder="Masukkan nama lengkap Anda" maxlength="100">
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @else
+                                <div class="invalid-feedback">Mohon masukkan nama lengkap Anda.</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
@@ -53,11 +77,29 @@
                                 <i class="fas fa-envelope text-primary me-1"></i>
                                 Email <span class="text-danger">*</span>
                             </label>
-                            <input type="email" class="form-control" id="email" name="email" required 
-                                   placeholder="contoh@email.com">
-                            <div class="invalid-feedback">
-                                Mohon masukkan alamat email yang valid.
-                            </div>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                                   id="email" name="email" value="{{ old('email') }}" required 
+                                   placeholder="contoh@email.com" maxlength="100">
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @else
+                                <div class="invalid-feedback">Mohon masukkan alamat email yang valid.</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">
+                                <i class="fas fa-phone text-primary me-1"></i>
+                                Nomor Telepon
+                            </label>
+                            <input type="tel" class="form-control @error('phone') is-invalid @enderror" 
+                                   id="phone" name="phone" value="{{ old('phone') }}" 
+                                   placeholder="+62 812 3456 7890" maxlength="20">
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @else
+                                <div class="form-text">Opsional - untuk memudahkan kami menghubungi Anda</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
@@ -65,35 +107,48 @@
                                 <i class="fas fa-tag text-primary me-1"></i>
                                 Subjek <span class="text-danger">*</span>
                             </label>
-                            <select class="form-select" id="subject" name="subject" required>
-                                <option value="">Pilih subjek pesan</option>
-                                <option value="informasi-pendaftaran">Informasi Pendaftaran</option>
-                                <option value="informasi-sekolah">Informasi Sekolah</option>
-                                <option value="keluhan-saran">Keluhan & Saran</option>
-                                <option value="kerjasama">Kerjasama</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                            <div class="invalid-feedback">
-                                Mohon pilih subjek pesan.
-                            </div>
+                            <input type="text" class="form-control @error('subject') is-invalid @enderror" 
+                                   id="subject" name="subject" value="{{ old('subject') }}" required 
+                                   placeholder="Masukkan subjek pesan Anda" maxlength="200">
+                            @error('subject')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @else
+                                <div class="invalid-feedback">Mohon masukkan subjek pesan.</div>
+                            @enderror
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <label for="message" class="form-label">
                                 <i class="fas fa-comment text-primary me-1"></i>
                                 Pesan <span class="text-danger">*</span>
                             </label>
-                            <textarea class="form-control" id="message" name="message" rows="5" required 
-                                      placeholder="Tuliskan pesan Anda di sini..."></textarea>
-                            <div class="invalid-feedback">
-                                Mohon tuliskan pesan Anda.
-                            </div>
+                            <textarea class="form-control @error('message') is-invalid @enderror" 
+                                      id="message" name="message" rows="5" required 
+                                      placeholder="Tuliskan pesan Anda di sini..." maxlength="2000">{{ old('message') }}</textarea>
+                            <div class="form-text">Maksimal 2000 karakter</div>
+                            @error('message')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @else
+                                <div class="invalid-feedback">Mohon tuliskan pesan Anda.</div>
+                            @enderror
+                        </div>
+
+                        <!-- reCAPTCHA -->
+                        <div class="mb-3">
+                            <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                            @error('g-recaptcha-response')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
                                 <i class="fas fa-paper-plane me-2"></i>
-                                Kirim Pesan
+                                <span class="btn-text">Kirim Pesan</span>
+                                <span class="btn-loading d-none">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Mengirim...
+                                </span>
                             </button>
                         </div>
                     </form>
@@ -113,12 +168,19 @@
                     
                     <!-- Contact Info -->
                     <div class="contact-info mb-4">
+                        @php
+                            $contactAddress = \App\Models\Setting::getValue('contact_address', 'Jl. KH. Sholeh Iskandar Km.2 Kd. Badak Bogor');
+                            $contactPhone = \App\Models\Setting::getValue('contact_phone', '+62 815 1888 930');
+                            $contactEmail = \App\Models\Setting::getValue('contact_email', 'info@admin.com');
+                            $contactWhatsapp = \App\Models\Setting::getValue('contact_whatsapp', '628151888930');
+                        @endphp
+                        
                         <div class="contact-item mb-3">
                             <div class="d-flex align-items-start">
                                 <i class="fas fa-map-marker-alt text-primary me-3 mt-1"></i>
                                 <div>
                                     <h6 class="mb-1">Alamat</h6>
-                                    <p class="text-muted mb-0">Jl. KH. Sholeh Iskandar Km.2 Kd. Badak Bogor</p>
+                                    <p class="text-muted mb-0">{{ $contactAddress }}</p>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +191,7 @@
                                 <div>
                                     <h6 class="mb-1">Telepon</h6>
                                     <p class="text-muted mb-0">
-                                        <a href="tel:+628151888930" class="text-decoration-none">+62 815 1888 930</a>
+                                        <a href="tel:{{ $contactPhone }}" class="text-decoration-none">{{ $contactPhone }}</a>
                                     </p>
                                 </div>
                             </div>
@@ -141,26 +203,49 @@
                                 <div>
                                     <h6 class="mb-1">Email</h6>
                                     <p class="text-muted mb-0">
-                                        <a href="mailto:info@admin.com" class="text-decoration-none">info@admin.com</a>
+                                        <a href="mailto:{{ $contactEmail }}" class="text-decoration-none">{{ $contactEmail }}</a>
                                     </p>
                                 </div>
                             </div>
                         </div>
+                        
+                        @if(!empty($contactWhatsapp))
+                        <div class="contact-item mb-3">
+                            <div class="d-flex align-items-start">
+                                <i class="fab fa-whatsapp text-primary me-3 mt-1"></i>
+                                <div>
+                                    <h6 class="mb-1">WhatsApp</h6>
+                                    <p class="text-muted mb-0">
+                                        <a href="https://wa.me/{{ $contactWhatsapp }}" target="_blank" class="text-decoration-none">{{ $contactWhatsapp }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
 
                     <!-- Google Maps Embed -->
-                    <div class="map-container">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.1234567890123!2d106.1234567890123!3d-6.123456789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sJl.%20KH.%20Sholeh%20Iskandar%20Km.2%20Kd.%20Badak%20Bogor!5e0!3m2!1sen!2sid!4v1234567890123!5m2!1sen!2sid"
-                            width="100%" 
-                            height="300" 
-                            style="border:0; border-radius: 8px;" 
-                            allowfullscreen="" 
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade"
-                            title="Lokasi Sekolah - Jl. KH. Sholeh Iskandar Km.2 Kd. Badak Bogor">
-                        </iframe>
-                    </div>
+                    @php
+                        $contactMapEmbed = \App\Models\Setting::getValue('contact_map_embed');
+                    @endphp
+                    @if(!empty($contactMapEmbed))
+                        <div class="map-container">
+                            {!! $contactMapEmbed !!}
+                        </div>
+                    @else
+                        <div class="map-container">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.1234567890123!2d106.1234567890123!3d-6.123456789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sJl.%20KH.%20Sholeh%20Iskandar%20Km.2%20Kd.%20Badak%20Bogor!5e0!3m2!1sen!2sid!4v1234567890123!5m2!1sen!2sid"
+                                width="100%" 
+                                height="300" 
+                                style="border:0; border-radius: 8px;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade"
+                                title="Lokasi Sekolah - {{ $contactAddress }}">
+                            </iframe>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -728,11 +813,43 @@
 @endpush
 
 @push('scripts')
+<!-- reCAPTCHA Script -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Form validation
     const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
     
+    // Character counter for message
+    const messageTextarea = document.getElementById('message');
+    const maxLength = 2000;
+    
+    messageTextarea.addEventListener('input', function() {
+        const currentLength = this.value.length;
+        const remaining = maxLength - currentLength;
+        
+        // Update character counter
+        let counter = document.getElementById('char-counter');
+        if (!counter) {
+            counter = document.createElement('small');
+            counter.id = 'char-counter';
+            counter.className = 'form-text text-muted';
+            this.parentNode.appendChild(counter);
+        }
+        
+        counter.textContent = `${currentLength}/${maxLength} karakter`;
+        
+        if (remaining < 50) {
+            counter.className = 'form-text text-warning';
+        } else {
+            counter.className = 'form-text text-muted';
+        }
+    });
+    
+    // Form submission
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -742,30 +859,76 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Check if form is valid
         if (form.checkValidity()) {
-            // Here you would typically send the form data to your server
-            // For now, we'll just show a success message
-            showSuccessMessage();
+            // Check reCAPTCHA
+            const recaptchaResponse = grecaptcha.getResponse();
+            if (!recaptchaResponse) {
+                alert('Silakan verifikasi bahwa Anda bukan robot.');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.classList.add('d-none');
+            btnLoading.classList.remove('d-none');
+            
+            // Submit form
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessMessage(data.message || 'Pesan berhasil dikirim!');
+                    form.reset();
+                    grecaptcha.reset();
+                } else {
+                    showErrorMessage(data.message || 'Terjadi kesalahan saat mengirim pesan.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorMessage('Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.classList.remove('d-none');
+                btnLoading.classList.add('d-none');
+            });
         } else {
             form.classList.add('was-validated');
         }
     });
     
-    function showSuccessMessage() {
+    function showSuccessMessage(message) {
+        // Remove existing alerts
+        const existingAlerts = document.querySelectorAll('.alert');
+        existingAlerts.forEach(alert => alert.remove());
+        
         // Create success alert
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-success alert-dismissible fade show';
         alertDiv.innerHTML = `
             <i class="fas fa-check-circle me-2"></i>
-            <strong>Pesan berhasil dikirim!</strong> Terima kasih atas pesan Anda. Kami akan merespons secepat mungkin.
+            <strong>${message}</strong>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         `;
         
         // Insert alert before form
         form.parentNode.insertBefore(alertDiv, form);
         
-        // Reset form
-        form.reset();
+        // Reset form validation
         form.classList.remove('was-validated');
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         
         // Auto dismiss after 5 seconds
         setTimeout(() => {
@@ -774,6 +937,38 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 5000);
     }
+    
+    function showErrorMessage(message) {
+        // Remove existing alerts
+        const existingAlerts = document.querySelectorAll('.alert');
+        existingAlerts.forEach(alert => alert.remove());
+        
+        // Create error alert
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+        alertDiv.innerHTML = `
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>${message}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Insert alert before form
+        form.parentNode.insertBefore(alertDiv, form);
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // Input sanitization
+    const inputs = form.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            // Remove potentially dangerous characters
+            if (this.type === 'text' || this.type === 'textarea') {
+                this.value = this.value.replace(/[<>]/g, '');
+            }
+        });
+    });
 });
 </script>
 @endpush

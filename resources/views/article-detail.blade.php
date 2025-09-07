@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $article['title'] . ' - Portal Islam')
+@section('title', $article['title'] . ' - SMPIT Al-Itqon')
 
 @push('styles')
     @vite('resources/css/article-detail.css')

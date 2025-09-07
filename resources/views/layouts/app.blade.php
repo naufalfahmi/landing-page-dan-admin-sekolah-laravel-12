@@ -3,6 +3,7 @@
     <head>
         @php
             $siteTitle = \App\Models\Setting::getValue('site_title', config('app.name', 'Laravel'));
+            $siteLogo = \App\Models\Setting::getValue('site_logo');
             $siteIcon = \App\Models\Setting::getValue('site_icon');
             $favicon = \App\Models\Setting::getValue('favicon');
             $metaKeywords = \App\Models\Setting::getValue('meta_keywords');
@@ -25,10 +26,13 @@
         @endif
 
         @if(!empty($favicon))
-            <link rel="icon" type="image/png" href="{{ $favicon }}">
+            <link rel="icon" type="image/x-icon" href="{{ $favicon }}">
+            <link rel="shortcut icon" type="image/x-icon" href="{{ $favicon }}">
         @endif
         @if(!empty($siteIcon))
-            <link rel="apple-touch-icon" href="{{ $siteIcon }}">
+            <link rel="apple-touch-icon" sizes="180x180" href="{{ $siteIcon }}">
+            <link rel="icon" type="image/png" sizes="32x32" href="{{ $siteIcon }}">
+            <link rel="icon" type="image/png" sizes="16x16" href="{{ $siteIcon }}">
         @endif
 
         <!-- Fonts -->

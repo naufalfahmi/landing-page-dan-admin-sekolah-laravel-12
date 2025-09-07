@@ -15,7 +15,7 @@ class SliderSeeder extends Seeder
     {
         $sliders = [
             [
-                'title' => 'Selamat Datang di Portal Islam',
+                'title' => 'Selamat Datang di SMPIT Al-Itqon',
                 'description' => 'Portal resmi sekolah yang menyediakan informasi terbaru tentang kegiatan, pengumuman, dan berita sekolah.',
                 'image' => 'https://picsum.photos/1200/500?random=1',
                 'link' => null,

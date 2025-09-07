@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Artikel')
+@section('title', 'Kelola Galeri')
 
 @section('content')
 <div class="row">
@@ -8,24 +8,24 @@
 		<div class="card overflow-hidden">
 			<div class="card-body">
 				<div class="d-flex justify-content-between align-items-baseline mb-4 mb-md-3">
-					<h6 class="card-title mb-0">Kelola Artikel</h6>
+					<h6 class="card-title mb-0">Kelola Galeri</h6>
 					<div class="dropdown">
 						<button class="btn p-0" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-							<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.articles.create') }}"><i data-feather="plus" class="icon-sm me-2"></i> <span class="">Tambah Artikel</span></a>
+							<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.galleries.create') }}"><i data-feather="plus" class="icon-sm me-2"></i> <span class="">Tambah Galeri</span></a>
 						</div>
 					</div>
 				</div>
 				<div class="row align-items-start">
 					<div class="col-md-7">
-						<p class="text-muted tx-13 mb-3 mb-md-0">Kelola semua artikel SMPIT Al-Itqon. Anda dapat menambah, mengedit, atau menghapus artikel.</p>
+						<p class="text-muted tx-13 mb-3 mb-md-0">Kelola semua galeri foto SMPIT Al-Itqon. Anda dapat menambah, mengedit, atau menghapus galeri.</p>
 					</div>
 					<div class="col-md-5 d-flex justify-content-md-end">
-						<a href="{{ route('admin.articles.create') }}" class="btn btn-primary mb-3 mb-md-0">
+						<a href="{{ route('admin.galleries.create') }}" class="btn btn-primary mb-3 mb-md-0">
 							<i data-feather="plus" class="icon-sm me-2"></i>
-							Tambah Artikel
+							Tambah Galeri
 						</a>
 					</div>
 				</div>
@@ -38,6 +38,13 @@
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
+				@if(session('success'))
+					<div class="alert alert-success alert-dismissible fade show" role="alert">
+						{{ session('success') }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+				@endif
+
 				<div class="table-responsive">
 					<table id="dataTableExample" class="table">
 						<thead>
@@ -45,73 +52,60 @@
 								<th>ID</th>
 								<th>Gambar</th>
 								<th>Judul</th>
-								<th>Penulis</th>
 								<th>Kategori</th>
 								<th>Status</th>
-								<th>Tanggal</th>
+								<th>Urutan</th>
+								<th>Dilihat</th>
 								<th>Aksi</th>
 							</tr>
 						</thead>
 						<tbody>
-							@foreach($articles as $article)
+							@foreach($galleries as $gallery)
 							<tr>
-								<td>{{ $article->id }}</td>
+								<td>{{ $gallery->id }}</td>
 								<td>
-									@if(!empty($article->image))
-										<img src="{{ $article->image }}" alt="img" class="img-xs rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+									@if(!empty($gallery->image))
+										<img src="{{ asset('storage/' . $gallery->image) }}" alt="img" class="img-xs rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
 									@else
-										@php
-											$name = $article->author->name ?? 'PI';
-											$parts = preg_split('/\s+/', trim($name));
-											$initials = '';
-											foreach ($parts as $p) { $initials .= mb_strtoupper(mb_substr($p, 0, 1)); if (mb_strlen($initials) >= 2) break; }
-										@endphp
 										<div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: .8rem; font-weight: bold;">
-											{{ $initials }}
+											GL
 										</div>
 									@endif
 								</td>
 								<td>
 									<div>
-										<h6 class="mb-0">{{ Str::limit($article->title, 50) }}</h6>
-										<small class="text-muted">{{ Str::limit($article->excerpt, 60) }}</small>
+										<h6 class="mb-0">{{ Str::limit($gallery->title, 50) }}</h6>
+										<small class="text-muted">{{ Str::limit($gallery->description, 60) }}</small>
 									</div>
 								</td>
-								<td>{{ $article->author->name }}</td>
 								<td>
-									@foreach($article->categories as $category)
-										<span class="badge bg-primary me-1">{{ $category->name }}</span>
-									@endforeach
+									<span class="badge bg-{{ $gallery->category_color }}">{{ $gallery->category_label }}</span>
 								</td>
 								<td>
-									@if($article->status === 'published')
+									@if($gallery->is_published)
 										<span class="badge bg-success">Terbit</span>
 									@else
 										<span class="badge bg-warning">Draft</span>
 									@endif
 								</td>
-								<td>{{ $article->published_at->format('d M Y') }}</td>
+								<td>{{ $gallery->sort_order }}</td>
+								<td>{{ number_format($gallery->views ?? 0) }}</td>
 								<td>
 									<div class="dropdown">
 										<button class="btn p-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											<i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
 										</button>
 										<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-											<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.articles.show', $article) }}"><i data-feather="eye" class="icon-sm me-2"></i> <span class="">Lihat</span></a>
-											<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.articles.edit', $article) }}"><i data-feather="edit" class="icon-sm me-2"></i> <span class="">Edit</span></a>
-											<a class="dropdown-item d-flex align-items-center" href="{{ route('article.detail', $article->slug) }}" target="_blank"><i data-feather="external-link" class="icon-sm me-2"></i> <span class="">Preview</span></a>
-											@php
-												$sl = \App\Models\Shortlink::where('article_id', $article->id)->first();
-												$shortUrl = $sl ? $sl->full_url : route('article.detail', $article->slug);
-												$waText = urlencode($article->title . ' - ' . $shortUrl);
-												$waLink = 'https://api.whatsapp.com/send?text=' . $waText;
-											@endphp
-											<a class="dropdown-item d-flex align-items-center" href="{{ $waLink }}" target="_blank"><i data-feather="share-2" class="icon-sm me-2"></i> <span class="">Share WhatsApp</span></a>
+											<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.galleries.show', $gallery) }}"><i data-feather="eye" class="icon-sm me-2"></i> <span class="">Lihat</span></a>
+											<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.galleries.edit', $gallery) }}"><i data-feather="edit" class="icon-sm me-2"></i> <span class="">Edit</span></a>
+											@if($gallery->is_published)
+											<a class="dropdown-item d-flex align-items-center" href="{{ route('galleries.show', $gallery->slug) }}" target="_blank"><i data-feather="external-link" class="icon-sm me-2"></i> <span class="">Preview</span></a>
+											@endif
 											<div class="dropdown-divider"></div>
-											<form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="d-inline">
+											<form action="{{ route('admin.galleries.destroy', $gallery) }}" method="POST" class="d-inline">
 												@csrf
 												@method('DELETE')
-												<button type="submit" class="dropdown-item d-flex align-items-center text-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus artikel ini?')">
+												<button type="submit" class="dropdown-item d-flex align-items-center text-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus galeri ini?')">
 													<i data-feather="trash-2" class="icon-sm me-2"></i> <span class="">Hapus</span>
 												</button>
 											</form>

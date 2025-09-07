@@ -41,10 +41,11 @@ Route::get('/announcements/{announcement}', [AnnouncementController::class, 'sho
 Route::get('/galleries', [GalleryController::class, 'index'])->name('galleries.index');
 Route::get('/galleries/{gallery}', [GalleryController::class, 'show'])->name('galleries.show');
 
-// Contact route
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
+// Contact routes
+Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'])
+    ->middleware('throttle:3,15') // 3 requests per 15 minutes
+    ->name('contact.store');
 
 // Documents route
 Route::get('/documents', function (Request $request) {
@@ -138,21 +139,43 @@ Route::get('/s/{code}', [ShortlinkController::class, 'redirect'])->name('shortli
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/top-pages', [AdminDashboardController::class, 'getTopPages'])->name('dashboard.top-pages');
     
     // Articles management
-    Route::resource('articles', AdminArticleController::class);
+    Route::get('/articleCreate', [AdminArticleController::class, 'create'])->name('articles.create');
+    Route::post('/articleCreate', [AdminArticleController::class, 'store'])->name('articles.store');
+    Route::resource('articles', AdminArticleController::class)->except(['create', 'store']);
     
     // Authors management
-    Route::resource('authors', AdminAuthorController::class);
+    Route::get('/authorCreate', [AdminAuthorController::class, 'create'])->name('authors.create');
+    Route::post('/authorCreate', [AdminAuthorController::class, 'store'])->name('authors.store');
+    Route::resource('authors', AdminAuthorController::class)->except(['create', 'store']);
     
     // Categories management
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    Route::get('/categoryCreate', [\App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categoryCreate', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
+    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'store']);
     
     // Sliders management
-    Route::resource('sliders', \App\Http\Controllers\Admin\SliderController::class);
+    Route::get('/sliderCreate', [\App\Http\Controllers\Admin\SliderController::class, 'create'])->name('sliders.create');
+    Route::post('/sliderCreate', [\App\Http\Controllers\Admin\SliderController::class, 'store'])->name('sliders.store');
+    Route::resource('sliders', \App\Http\Controllers\Admin\SliderController::class)->except(['create', 'store']);
     
     // Announcements management
-    Route::resource('announcements', AdminAnnouncementController::class);
+    Route::get('/announcementCreate', [AdminAnnouncementController::class, 'create'])->name('announcements.create');
+    Route::post('/announcementCreate', [AdminAnnouncementController::class, 'store'])->name('announcements.store');
+    Route::resource('announcements', AdminAnnouncementController::class)->except(['create', 'store']);
+    
+    // Galleries management
+    Route::get('/galleryCreate', [\App\Http\Controllers\Admin\GalleryController::class, 'create'])->name('galleries.create');
+    Route::post('/galleryCreate', [\App\Http\Controllers\Admin\GalleryController::class, 'store'])->name('galleries.store');
+    Route::resource('galleries', \App\Http\Controllers\Admin\GalleryController::class)->except(['create', 'store']);
+    
+    // Contact messages management
+    Route::get('/contact', [\App\Http\Controllers\Admin\ContactController::class, 'index'])->name('contact.index');
+    Route::get('/contact/{contact}', [\App\Http\Controllers\Admin\ContactController::class, 'show'])->name('contact.show');
+    Route::patch('/contact/{contact}/mark-replied', [\App\Http\Controllers\Admin\ContactController::class, 'markAsReplied'])->name('contact.mark-replied');
+    Route::delete('/contact/{contact}', [\App\Http\Controllers\Admin\ContactController::class, 'destroy'])->name('contact.destroy');
     
     // Shortlinks management
     Route::get('/shortlinks', [ShortlinkController::class, 'index'])->name('shortlinks.index');

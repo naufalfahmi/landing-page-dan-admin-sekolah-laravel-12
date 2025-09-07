@@ -20,7 +20,7 @@
 				</div>
 				<div class="row align-items-start">
 					<div class="col-md-7">
-						<p class="text-muted tx-13 mb-3 mb-md-0">Buat artikel baru untuk Portal Islam. Pastikan mengisi semua field yang diperlukan.</p>
+						<p class="text-muted tx-13 mb-3 mb-md-0">Buat artikel baru untuk SMPIT Al-Itqon. Pastikan mengisi semua field yang diperlukan.</p>
 					</div>
 				</div>
 			</div>

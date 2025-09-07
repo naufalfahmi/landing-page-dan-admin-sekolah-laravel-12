@@ -17,7 +17,7 @@ License: For each use you must have a valid license purchased only from above li
 	<meta name="author" content="NobleUI">
 	<meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
-	<title>Login - Portal Islam</title>
+	<title>Login - SMPIT Al-Itqon</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +56,7 @@ License: For each use you must have a valid license purchased only from above li
                   <div class="auth-side-wrapper">
                     <div class="d-flex align-items-center justify-content-center h-100">
                       <div class="text-center text-white">
-                        <h3 class="mb-3">Portal Islam</h3>
+                        <h3 class="mb-3">SMPIT Al-Itqon</h3>
                         <p class="mb-0">Selamat datang di portal berita dan artikel Islami</p>
                       </div>
                     </div>

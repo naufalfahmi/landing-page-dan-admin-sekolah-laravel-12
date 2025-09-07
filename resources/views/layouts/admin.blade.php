@@ -17,7 +17,30 @@ License: For each use you must have a valid license purchased only from above li
 	<meta name="author" content="NobleUI">
 	<meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
-	<title>@yield('title', 'Admin Dashboard') - Portal Islam</title>
+	@php
+		$siteTitle = \App\Models\Setting::getValue('site_title', config('app.name', 'SMPIT Al-Itqon'));
+		$siteIcon = \App\Models\Setting::getValue('site_icon');
+		$favicon = \App\Models\Setting::getValue('favicon');
+	@endphp
+	<title>@yield('title', 'Admin Dashboard') - {{ $siteTitle }}</title>
+	
+	<!-- Favicon and Site Icons -->
+	@if(!empty($favicon))
+		<link rel="icon" type="image/x-icon" href="{{ $favicon }}">
+		<link rel="shortcut icon" type="image/x-icon" href="{{ $favicon }}">
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ $favicon }}">
+		<link rel="icon" type="image/png" sizes="16x16" href="{{ $favicon }}">
+	@endif
+	@if(!empty($siteIcon))
+		<link rel="apple-touch-icon" sizes="180x180" href="{{ $siteIcon }}">
+		<link rel="icon" type="image/png" sizes="192x192" href="{{ $siteIcon }}">
+		<link rel="icon" type="image/png" sizes="512x512" href="{{ $siteIcon }}">
+	@endif
+	<!-- Fallback favicon -->
+	@if(empty($favicon) && empty($siteIcon))
+		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+		<link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+	@endif
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,8 +78,16 @@ License: For each use you must have a valid license purchased only from above li
 		<!-- partial:partials/_sidebar.html -->
 		<nav class="sidebar">
 			<div class="sidebar-header">
-				<a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
-					Portal<span>Islam</span>
+				<a href="{{ route('admin.dashboard') }}" class="sidebar-brand d-flex align-items-center">
+					@php
+						$siteLogo = \App\Models\Setting::getValue('site_logo');
+						$siteTitle = \App\Models\Setting::getValue('site_title', config('app.name', 'SMPIT Al-Itqon'));
+					@endphp
+					@if(!empty($siteLogo))
+						<img src="{{ $siteLogo }}" alt="{{ $siteTitle }}" style="height: 32px; max-width: 120px;">
+					@else
+						<span>{{ $siteTitle }}</span>
+					@endif
 				</a>
 				<div class="sidebar-toggler not-active">
 					<span></span>
@@ -76,7 +107,7 @@ License: For each use you must have a valid license purchased only from above li
 					@php $isAuthorOnly = auth()->check() && \App\Models\Author::where('email', auth()->user()->email)->exists(); @endphp
 					<li class="nav-item nav-category">Content Management</li>
 					<li class="nav-item">
-						@php $articlesOpen = request()->routeIs('admin.articles.*'); @endphp
+						@php $articlesOpen = str_contains(request()->route()->getName(), 'admin.articles'); @endphp
 						<a class="nav-link" data-bs-toggle="collapse" href="#articles" role="button" aria-expanded="{{ $articlesOpen ? 'true' : 'false' }}" aria-controls="articles">
 							<i class="link-icon" data-feather="book"></i>
 							<span class="link-title">Artikel</span>
@@ -85,7 +116,7 @@ License: For each use you must have a valid license purchased only from above li
 						<div class="collapse {{ $articlesOpen ? 'show' : '' }}" id="articles">
 							<ul class="nav sub-menu">
 								<li class="nav-item">
-									<a href="{{ route('admin.articles.index') }}" class="nav-link {{ request()->routeIs('admin.articles.index') ? 'active' : '' }}">Daftar Artikel</a>
+									<a href="{{ route('admin.articles.index') }}" class="nav-link {{ request()->routeIs('admin.articles.index') || request()->routeIs('admin.articles.show') || request()->routeIs('admin.articles.edit') ? 'active' : '' }}">Daftar Artikel</a>
 								</li>
 								<li class="nav-item">
 									<a href="{{ route('admin.articles.create') }}" class="nav-link {{ request()->routeIs('admin.articles.create') ? 'active' : '' }}">Tambah Artikel</a>
@@ -99,7 +130,7 @@ License: For each use you must have a valid license purchased only from above li
 					@if (!$isAuthor)
 					@if(!$isAuthorOnly)
 					<li class="nav-item">
-						@php $categoriesOpen = request()->routeIs('admin.categories.*'); @endphp
+						@php $categoriesOpen = str_contains(request()->route()->getName(), 'admin.categories'); @endphp
 						<a class="nav-link" data-bs-toggle="collapse" href="#categories" role="button" aria-expanded="{{ $categoriesOpen ? 'true' : 'false' }}" aria-controls="categories">
 							<i class="link-icon" data-feather="tag"></i>
 							<span class="link-title">Kategori</span>
@@ -108,7 +139,7 @@ License: For each use you must have a valid license purchased only from above li
 						<div class="collapse {{ $categoriesOpen ? 'show' : '' }}" id="categories">
 							<ul class="nav sub-menu">
 								<li class="nav-item">
-									<a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}">Daftar Kategori</a>
+									<a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.index') || request()->routeIs('admin.categories.show') || request()->routeIs('admin.categories.edit') ? 'active' : '' }}">Daftar Kategori</a>
 								</li>
 								<li class="nav-item">
 									<a href="{{ route('admin.categories.create') }}" class="nav-link {{ request()->routeIs('admin.categories.create') ? 'active' : '' }}">Tambah Kategori</a>
@@ -117,7 +148,7 @@ License: For each use you must have a valid license purchased only from above li
 						</div>
 					</li>
 					<li class="nav-item">
-						@php $authorsOpen = request()->routeIs('admin.authors.*'); @endphp
+						@php $authorsOpen = str_contains(request()->route()->getName(), 'admin.authors'); @endphp
 						<a class="nav-link" data-bs-toggle="collapse" href="#authors" role="button" aria-expanded="{{ $authorsOpen ? 'true' : 'false' }}" aria-controls="authors">
 							<i class="link-icon" data-feather="user"></i>
 							<span class="link-title">Penulis</span>
@@ -126,7 +157,7 @@ License: For each use you must have a valid license purchased only from above li
 						<div class="collapse {{ $authorsOpen ? 'show' : '' }}" id="authors">
 							<ul class="nav sub-menu">
 								<li class="nav-item">
-									<a href="{{ route('admin.authors.index') }}" class="nav-link {{ request()->routeIs('admin.authors.index') ? 'active' : '' }}">Daftar Penulis</a>
+									<a href="{{ route('admin.authors.index') }}" class="nav-link {{ request()->routeIs('admin.authors.index') || request()->routeIs('admin.authors.show') || request()->routeIs('admin.authors.edit') ? 'active' : '' }}">Daftar Penulis</a>
 								</li>
 								<li class="nav-item">
 									<a href="{{ route('admin.authors.create') }}" class="nav-link {{ request()->routeIs('admin.authors.create') ? 'active' : '' }}">Tambah Penulis</a>
@@ -137,7 +168,67 @@ License: For each use you must have a valid license purchased only from above li
 					@endif
 					@endif
 					<li class="nav-item">
-						<a href="{{ route('admin.shortlinks.index') }}" class="nav-link">
+						@php $slidersOpen = str_contains(request()->route()->getName(), 'admin.sliders'); @endphp
+						<a class="nav-link" data-bs-toggle="collapse" href="#sliders" role="button" aria-expanded="{{ $slidersOpen ? 'true' : 'false' }}" aria-controls="sliders">
+							<i class="link-icon" data-feather="image"></i>
+							<span class="link-title">Slider</span>
+							<i class="link-arrow" data-feather="chevron-down"></i>
+						</a>
+						<div class="collapse {{ $slidersOpen ? 'show' : '' }}" id="sliders">
+							<ul class="nav sub-menu">
+								<li class="nav-item">
+									<a href="{{ route('admin.sliders.index') }}" class="nav-link {{ request()->routeIs('admin.sliders.index') || request()->routeIs('admin.sliders.show') || request()->routeIs('admin.sliders.edit') ? 'active' : '' }}">Daftar Slider</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ route('admin.sliders.create') }}" class="nav-link {{ request()->routeIs('admin.sliders.create') ? 'active' : '' }}">Tambah Slider</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li class="nav-item">
+						@php $announcementsOpen = str_contains(request()->route()->getName(), 'admin.announcements'); @endphp
+						<a class="nav-link" data-bs-toggle="collapse" href="#announcements" role="button" aria-expanded="{{ $announcementsOpen ? 'true' : 'false' }}" aria-controls="announcements">
+							<i class="link-icon" data-feather="bell"></i>
+							<span class="link-title">Pengumuman</span>
+							<i class="link-arrow" data-feather="chevron-down"></i>
+						</a>
+						<div class="collapse {{ $announcementsOpen ? 'show' : '' }}" id="announcements">
+							<ul class="nav sub-menu">
+								<li class="nav-item">
+									<a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.index') || request()->routeIs('admin.announcements.show') || request()->routeIs('admin.announcements.edit') ? 'active' : '' }}">Daftar Pengumuman</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ route('admin.announcements.create') }}" class="nav-link {{ request()->routeIs('admin.announcements.create') ? 'active' : '' }}">Tambah Pengumuman</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li class="nav-item">
+						@php $galleriesOpen = str_contains(request()->route()->getName(), 'admin.galleries'); @endphp
+						<a class="nav-link" data-bs-toggle="collapse" href="#galleries" role="button" aria-expanded="{{ $galleriesOpen ? 'true' : 'false' }}" aria-controls="galleries">
+							<i class="link-icon" data-feather="camera"></i>
+							<span class="link-title">Galeri</span>
+							<i class="link-arrow" data-feather="chevron-down"></i>
+						</a>
+						<div class="collapse {{ $galleriesOpen ? 'show' : '' }}" id="galleries">
+							<ul class="nav sub-menu">
+								<li class="nav-item">
+									<a href="{{ route('admin.galleries.index') }}" class="nav-link {{ request()->routeIs('admin.galleries.index') || request()->routeIs('admin.galleries.show') || request()->routeIs('admin.galleries.edit') ? 'active' : '' }}">Daftar Galeri</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ route('admin.galleries.create') }}" class="nav-link {{ request()->routeIs('admin.galleries.create') ? 'active' : '' }}">Tambah Galeri</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li class="nav-item">
+						<a href="{{ route('admin.contact.index') }}" class="nav-link {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}">
+							<i class="link-icon" data-feather="mail"></i>
+							<span class="link-title">Hubungi Kami</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ route('admin.shortlinks.index') }}" class="nav-link {{ request()->routeIs('admin.shortlinks.*') ? 'active' : '' }}">
 							<i class="link-icon" data-feather="link"></i>
 							<span class="link-title">Shortlink</span>
 						</a>
@@ -256,7 +347,7 @@ License: For each use you must have a valid license purchased only from above li
 
 			<!-- partial:partials/_footer.html -->
 			<footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
-				<p class="text-muted mb-1 mb-md-0">Copyright © 2025 <a href="{{ route('home') }}" target="_blank">Portal Islam</a>.</p>
+				<p class="text-muted mb-1 mb-md-0">Copyright © 2025 <a href="{{ route('home') }}" target="_blank">SMPIT Al-Itqon</a>.</p>
 				<p class="text-muted">Handcrafted With <i class="mb-1 text-primary ms-1 icon-sm" data-feather="heart"></i></p>
 			</footer>
 			<!-- partial -->

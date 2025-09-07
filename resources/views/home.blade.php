@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Portal Islam - Berita dan Artikel Islami')
+@php
+    $siteTitle = \App\Models\Setting::getValue('site_title', 'SMPIT Al-Itqon');
+    $siteSubtitle = \App\Models\Setting::getValue('site_subtitle', 'Berita dan Artikel Islami');
+@endphp
+@section('title', $siteTitle . ' - ' . $siteSubtitle)
 
 @section('content')
 <!-- Hero Slider Section -->

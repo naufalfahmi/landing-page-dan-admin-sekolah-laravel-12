@@ -20,7 +20,7 @@
 				</div>
 				<div class="row align-items-start">
 					<div class="col-md-7">
-						<p class="text-muted tx-13 mb-3 mb-md-0">Kelola semua shortlink Portal Islam. Buat link pendek untuk memudahkan berbagi.</p>
+						<p class="text-muted tx-13 mb-3 mb-md-0">Kelola semua shortlink SMPIT Al-Itqon. Buat link pendek untuk memudahkan berbagi.</p>
 					</div>
 					<div class="col-md-5 d-flex justify-content-md-end">
 						<button type="button" class="btn btn-primary mb-3 mb-md-0" data-bs-toggle="modal" data-bs-target="#createShortlinkModal">

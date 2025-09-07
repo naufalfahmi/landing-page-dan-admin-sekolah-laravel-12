@@ -20,7 +20,7 @@
 				</div>
 				<div class="row align-items-start">
 					<div class="col-md-7">
-						<p class="text-muted tx-13 mb-3 mb-md-0">Kelola semua penulis artikel Portal Islam. Anda dapat menambah, mengedit, atau menghapus penulis.</p>
+						<p class="text-muted tx-13 mb-3 mb-md-0">Kelola semua penulis artikel SMPIT Al-Itqon. Anda dapat menambah, mengedit, atau menghapus penulis.</p>
 					</div>
 					<div class="col-md-5 d-flex justify-content-md-end">
 						<a href="{{ route('admin.authors.create') }}" class="btn btn-primary mb-3 mb-md-0">

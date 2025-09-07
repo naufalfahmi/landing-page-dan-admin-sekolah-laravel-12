@@ -21,7 +21,7 @@
 				</div>
 				<div class="row align-items-start">
 					<div class="col-md-7">
-						<p class="text-muted tx-13 mb-3 mb-md-0">Detail lengkap artikel Portal Islam.</p>
+						<p class="text-muted tx-13 mb-3 mb-md-0">Detail lengkap artikel SMPIT Al-Itqon.</p>
 					</div>
 				</div>
 			</div>

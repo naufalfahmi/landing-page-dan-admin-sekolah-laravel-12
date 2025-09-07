@@ -1,4 +1,4 @@
-# Portal Islam — Laravel 12 + Bootstrap 5
+# SMPIT Al-Itqon — Laravel 12 + Bootstrap 5
 
 Portal artikel keislaman berbasis Laravel 12 yang ringan, SEO‑aware, dan mobile‑first.
 

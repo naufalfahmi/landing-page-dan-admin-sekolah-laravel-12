@@ -74,6 +74,31 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(-1px);
 }
 
+/* Address link styling */
+.address-link {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.address-link:hover {
+    color: #f8f9fa !important;
+    text-decoration: underline !important;
+    transform: translateY(-1px);
+}
+
+.address-link i.fa-external-link-alt {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.address-link:hover i.fa-external-link-alt {
+    opacity: 1;
+}
+
 /* Breadcrumb Styles */
 .breadcrumb-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);

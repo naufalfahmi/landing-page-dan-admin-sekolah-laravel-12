@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Admin Portal Islam',
+            'name' => 'Admin SMPIT Al-Itqon',
             'email' => 'admin@portal-islam.com',
         ]);
 

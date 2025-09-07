@@ -1,6 +1,16 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">Portal Islam</a>
+        <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
+            @php
+                $siteLogo = \App\Models\Setting::getValue('site_logo');
+                $siteTitle = \App\Models\Setting::getValue('site_title', config('app.name', 'SMPIT Al-Itqon'));
+            @endphp
+            @if(!empty($siteLogo))
+                <img src="{{ $siteLogo }}" alt="{{ $siteTitle }}" style="height: 40px; max-width: 150px;">
+            @else
+                <span class="fw-bold">{{ $siteTitle }}</span>
+            @endif
+        </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
