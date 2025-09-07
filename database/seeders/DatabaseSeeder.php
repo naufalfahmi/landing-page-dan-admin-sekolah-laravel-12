@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         // Seed articles and authors
         $this->call([
             ArticleSeeder::class,
+            DocumentSeeder::class,
+            SliderSeeder::class,
         ]);
     }
 }

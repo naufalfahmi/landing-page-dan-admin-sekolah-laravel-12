@@ -14,6 +14,11 @@ class AnnouncementController extends Controller
     {
         $query = Announcement::published()->latest('published_at');
 
+        // Search by title
+        if ($request->filled('search')) {
+            $query->where('title', 'LIKE', '%' . $request->search . '%');
+        }
+
         // Filter by category
         if ($request->has('category') && $request->category) {
             $query->byCategory($request->category);
@@ -24,7 +29,7 @@ class AnnouncementController extends Controller
             $query->byPriority($request->priority);
         }
 
-        $announcements = $query->paginate(10);
+        $announcements = $query->paginate(10)->withQueryString();
 
         $categories = [
             'akademik' => 'Akademik',

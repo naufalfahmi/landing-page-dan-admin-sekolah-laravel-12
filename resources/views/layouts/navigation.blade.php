@@ -16,6 +16,22 @@
                     <a class="nav-link {{ request()->routeIs('announcements.*') ? 'active' : '' }}" href="{{ route('announcements.index') }}">Pengumuman</a>
                 </li>
                 
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('articles.*') ? 'active' : '' }}" href="{{ route('articles.index') }}">Berita</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('galleries.*') ? 'active' : '' }}" href="{{ route('galleries.index') }}">Galeri</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('documents.*') ? 'active' : '' }}" href="{{ route('documents.index') }}">Dokumen</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}">Kontak</a>
+                </li>
+                
                 @auth
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.*') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Admin</a>

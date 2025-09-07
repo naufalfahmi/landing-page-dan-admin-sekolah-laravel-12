@@ -7,8 +7,8 @@
                 <ul class="footer-links">
                     <li><a href="{{ route('home') }}">Beranda</a></li>
                     <li><a href="{{ route('announcements.index') }}">Pengumuman</a></li>
-                    <li><a href="{{ route('announcements.index', ['category' => 'akademik']) }}">Akademik</a></li>
-                    <li><a href="{{ route('announcements.index', ['category' => 'kegiatan']) }}">Kegiatan</a></li>
+                    <li><a href="{{ route('galleries.index') }}">Galeri</a></li>
+                    <li><a href="{{ route('articles.index') }}">Berita</a></li>
                 </ul>
             </div>
             

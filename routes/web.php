@@ -1,9 +1,11 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ShortlinkController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
@@ -35,6 +37,100 @@ Route::get('/author/{slug}', [ArticleController::class, 'showByAuthor'])->name('
 Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
 Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
 
+// Galleries routes
+Route::get('/galleries', [GalleryController::class, 'index'])->name('galleries.index');
+Route::get('/galleries/{gallery}', [GalleryController::class, 'show'])->name('galleries.show');
+
+// Contact route
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+// Documents route
+Route::get('/documents', function (Request $request) {
+    $query = \App\Models\Announcement::published()
+        ->whereNotNull('attachment');
+    
+    // Filter by category
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
+    }
+    
+    // Filter by file type
+    if ($request->filled('file_type')) {
+        $fileType = $request->file_type;
+        if ($fileType === 'pdf') {
+            $query->where('attachment', 'LIKE', '%.pdf');
+        } elseif ($fileType === 'doc') {
+            $query->where(function($q) {
+                $q->where('attachment', 'LIKE', '%.doc')
+                  ->orWhere('attachment', 'LIKE', '%.docx');
+            });
+        } elseif ($fileType === 'xls') {
+            $query->where(function($q) {
+                $q->where('attachment', 'LIKE', '%.xls')
+                  ->orWhere('attachment', 'LIKE', '%.xlsx');
+            });
+        } elseif ($fileType === 'ppt') {
+            $query->where(function($q) {
+                $q->where('attachment', 'LIKE', '%.ppt')
+                  ->orWhere('attachment', 'LIKE', '%.pptx');
+            });
+        }
+    }
+    
+    // Search by title
+    if ($request->filled('search')) {
+        $query->where('title', 'LIKE', '%' . $request->search . '%');
+    }
+    
+    $documents = $query->latest('published_at')
+        ->paginate(8)
+        ->withQueryString()
+        ->through(function ($announcement) {
+            $fileExtension = pathinfo($announcement->attachment, PATHINFO_EXTENSION);
+            $fileSize = filesize(public_path($announcement->attachment)) ?? 0;
+            $units = ['B', 'KB', 'MB', 'GB'];
+            
+            for ($i = 0; $fileSize > 1024 && $i < count($units) - 1; $i++) {
+                $fileSize /= 1024;
+            }
+            
+            return (object) [
+                'id' => $announcement->id,
+                'title' => $announcement->title,
+                'description' => $announcement->summary,
+                'file_url' => $announcement->attachment,
+                'file_type' => strtolower($fileExtension),
+                'file_size' => round($fileSize, 1) . ' ' . $units[$i],
+                'category_label' => $announcement->category_label,
+                'announcement_slug' => $announcement->slug,
+                'published_at' => $announcement->published_at,
+            ];
+        });
+    
+    // Get filter options
+    $categories = \App\Models\Announcement::published()
+        ->whereNotNull('attachment')
+        ->distinct()
+        ->pluck('category')
+        ->map(function($category) {
+            return [
+                'value' => $category,
+                'label' => ucfirst($category)
+            ];
+        });
+    
+    $fileTypes = [
+        ['value' => 'pdf', 'label' => 'PDF'],
+        ['value' => 'doc', 'label' => 'Word (DOC/DOCX)'],
+        ['value' => 'xls', 'label' => 'Excel (XLS/XLSX)'],
+        ['value' => 'ppt', 'label' => 'PowerPoint (PPT/PPTX)'],
+    ];
+    
+    return view('documents.index', compact('documents', 'categories', 'fileTypes'));
+})->name('documents.index');
+
 // Shortlink routes
 Route::get('/s/{code}', [ShortlinkController::class, 'redirect'])->name('shortlink.redirect');
 
@@ -51,6 +147,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     
     // Categories management
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    
+    // Sliders management
+    Route::resource('sliders', \App\Http\Controllers\Admin\SliderController::class);
     
     // Announcements management
     Route::resource('announcements', AdminAnnouncementController::class);

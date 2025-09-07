@@ -9,6 +9,12 @@
 <!-- Announcements Widget -->
 @include('components.announcements-widget')
 
+<!-- Documents Widget -->
+@include('components.documents-widget')
+
+<!-- Gallery Widget -->
+@include('components.gallery-widget')
+
 <!-- Articles Section -->
 <div class="articles-widget">
     <div class="container">

@@ -5,12 +5,12 @@
 @section('content')
 <div class="container mt-4">
     <!-- Page Header -->
-    <div class="row mb-4">
+    <header class="row mb-4">
         <div class="col-12">
-            <h1 class="page-title">Semua Berita</h1>
+            <h1 class="page-title">Berita</h1>
             <p class="page-subtitle">Kumpulan artikel dan berita terbaru dari sekolah</p>
         </div>
-    </div>
+    </header>
 
     <!-- Articles Grid -->
     <div class="row">
@@ -268,6 +268,34 @@
     font-size: 0.8rem;
 }
 
+/* Page Header Styling - Same as Contact and Gallery */
+.page-title {
+    color: #03aca5;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #03aca5, #02d4c7);
+    border-radius: 2px;
+}
+
+.page-subtitle {
+    color: #666;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
 @media (max-width: 768px) {
     .page-title {
         font-size: 2rem;
@@ -292,6 +320,12 @@
     .pagination .page-item:last-child .page-link {
         font-size: 0.8rem;
         padding: 0.5rem 0.6rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-title {
+        font-size: 1.75rem;
     }
 }
 </style>

@@ -1,27 +1,21 @@
 <!-- Hero Slider Component -->
+@if($sliders->count() > 0)
 <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-pause="hover">
     <!-- Carousel Inner -->
     <div class="carousel-inner">
-        <!-- Slide 1 -->
-        <div class="carousel-item active">
+        @foreach($sliders as $index => $slider)
+        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
             <div class="hero-slide">
-                <img src="https://uika-bogor.ac.id/assets/slider/5a73c5de72cd706f3680f21791bc2476.jpg" class="d-block w-100" alt="Slide 1">
+                @if($slider->link)
+                    <a href="{{ $slider->link }}" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ $slider->image }}" class="d-block w-100" alt="{{ $slider->title }}">
+                    </a>
+                @else
+                    <img src="{{ $slider->image }}" class="d-block w-100" alt="{{ $slider->title }}">
+                @endif
             </div>
         </div>
-
-        <!-- Slide 2 -->
-        <div class="carousel-item">
-            <div class="hero-slide">
-                <img src="https://picsum.photos/1200/800?random=2" class="d-block w-100" alt="Slide 2">
-            </div>
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="carousel-item">
-            <div class="hero-slide">
-                <img src="https://picsum.photos/1200/800?random=3" class="d-block w-100" alt="Slide 3">
-            </div>
-        </div>
+        @endforeach
     </div>
 
     <!-- Navigation Arrows -->
@@ -34,3 +28,16 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+@else
+<!-- Default slider jika tidak ada data -->
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-pause="hover">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="hero-slide">
+                <img src="https://picsum.photos/1200/500?random=1" class="d-block w-100" alt="Default Slide 1">
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+

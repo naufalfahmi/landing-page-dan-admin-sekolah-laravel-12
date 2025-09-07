@@ -41,9 +41,35 @@
         
         <!-- Font Awesome for icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <!-- GLightbox CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        <!-- GLightbox JS -->
+        <script src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof GLightbox !== 'undefined') {
+                const lightbox = GLightbox({
+                    selector: '.glightbox',
+                    touchNavigation: true,
+                    loop: true,
+                    autoplayVideos: false,
+                    width: '90vw',
+                    height: '90vh',
+                    zoomable: true,
+                    draggable: true,
+                    dragToleranceX: 40,
+                    dragToleranceY: 65,
+                    preload: true
+                });
+                console.log('GLightbox initialized from layout');
+            }
+        });
+        </script>
         
         <!-- Additional CSS for specific pages -->
         @stack('styles')
