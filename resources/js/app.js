@@ -1,5 +1,5 @@
 import './bootstrap';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import './hero-slider';
 
 import Alpine from 'alpinejs';
 

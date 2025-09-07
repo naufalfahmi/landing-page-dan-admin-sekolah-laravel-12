@@ -3,7 +3,18 @@
 @section('title', 'Portal Islam - Berita dan Artikel Islami')
 
 @section('content')
-<div class="container mt-4">
+<!-- Hero Slider Section -->
+@include('components.hero-slider')
+
+<!-- Articles Section -->
+<div class="container mt-4" id="articles">
+    <!-- Section Heading -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="section-heading text-center">Berita Seputar SMP</h2>
+        </div>
+    </div>
+    
     <div class="row">
         @foreach($articles as $article)
         <div class="col-md-4 mb-4">
