@@ -21,22 +21,16 @@
             @forelse($galleries as $gallery)
             <div class="photo-item-widget" data-category="{{ $gallery->category ? $gallery->category->slug : '' }}">
                 <div class="photo-container-widget">
-                    <a href="{{ asset('storage/' . $gallery->image) }}" 
-                       id="gallery-widget-{{ $gallery->id }}"
-                       class="glightbox" 
-                       data-gallery="gallery-widget"
-                       data-title="{{ $gallery->title }}"
-                       data-description="{{ $gallery->description }}"
-                       data-type="image">
+                    <a href="{{ route('galleries.show', $gallery->slug) }}" id="gallery-widget-{{ $gallery->id }}">
                         <img src="{{ asset('storage/' . ($gallery->thumbnail ?? $gallery->image)) }}" 
                              alt="{{ $gallery->title }}" 
                              loading="lazy"
                              class="photo-image-widget">
                         <div class="photo-overlay-widget">
                             <div class="photo-actions-widget">
-                                <a href="{{ route('galleries.show', $gallery->slug) }}" class="photo-btn-widget" onclick="event.stopPropagation();">
+                                <span class="photo-btn-widget" onclick="event.stopPropagation();">
                                     <i class="fas fa-info-circle"></i>
-                                </a>
+                                </span>
                             </div>
                             <div class="photo-info-widget">
                                 <div class="photo-category-widget" style="background: {{ $gallery->category_color }}20; color: {{ $gallery->category_color }};">

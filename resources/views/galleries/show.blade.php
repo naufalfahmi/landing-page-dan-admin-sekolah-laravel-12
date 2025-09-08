@@ -48,15 +48,24 @@
 
                 <!-- Image -->
                 <div class="gallery-image-detail">
-                    <a href="{{ asset('storage/' . $gallery->image) }}" 
-                       id="gallery-detail-{{ $gallery->id }}"
-                       class="glightbox" 
-                       data-gallery="gallery-detail"
-                       data-title="{{ $gallery->title }}"
-                       data-description="{{ $gallery->description }}"
-                       data-type="image">
-                        <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}" class="img-fluid rounded">
-                    </a>
+                    <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}" class="img-fluid rounded">
+                </div>
+
+                <!-- Next/Prev Navigation -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    @if($previousGallery)
+                        <a href="{{ route('galleries.show', $previousGallery->slug) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Sebelumnya
+                        </a>
+                    @else
+                        <span></span>
+                    @endif
+
+                    @if($nextGallery)
+                        <a href="{{ route('galleries.show', $nextGallery->slug) }}" class="btn btn-outline-secondary">
+                            Selanjutnya <i class="fas fa-arrow-right"></i>
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Description -->
@@ -92,13 +101,7 @@
                     @foreach($relatedGalleries as $related)
                     <div class="related-item">
                         <div class="related-image">
-                            <a href="{{ asset('storage/' . $related->image) }}" 
-                               id="gallery-related-{{ $related->id }}"
-                               class="glightbox" 
-                               data-gallery="gallery-detail"
-                               data-title="{{ $related->title }}"
-                               data-description="{{ $related->description }}"
-                               data-type="image">
+                            <a href="{{ route('galleries.show', $related->slug) }}" class="text-decoration-none">
                                 <img src="{{ asset('storage/' . ($related->thumbnail ?? $related->image)) }}" alt="{{ $related->title }}" class="img-fluid">
                             </a>
                         </div>
@@ -287,60 +290,6 @@
         float: none !important;
         margin-top: 1rem;
     }
-}
-
-/* GLightbox Custom Styles - Ensure full size display and perfect centering */
-.glightbox-image img {
-    max-width: none !important;
-    max-height: none !important;
-    width: auto !important;
-    height: auto !important;
-    object-fit: contain !important;
-    display: block !important;
-    margin: 0 auto !important;
-}
-
-.glightbox-image {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    height: 100% !important;
-    text-align: center !important;
-}
-
-/* Force lightbox to use full viewport */
-.glightbox-container {
-    width: 90vw !important;
-    height: 90vh !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.glightbox-image-container {
-    width: 100% !important;
-    height: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-}
-
-/* Additional centering for the lightbox content */
-.glightbox-content {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* Center the lightbox modal itself */
-.glightbox {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }
 </style>
 @endpush

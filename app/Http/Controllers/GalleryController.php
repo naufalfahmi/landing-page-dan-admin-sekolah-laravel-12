@@ -39,6 +39,33 @@ class GalleryController extends Controller
         // Increment view count
         $gallery->incrementViews();
 
+        // Previous and next within the same category, following the same ordering logic
+        $previousGallery = Gallery::published()
+            ->where('category_id', $gallery->category_id)
+            ->where(function ($q) use ($gallery) {
+                $q->where('sort_order', '<', $gallery->sort_order)
+                  ->orWhere(function ($q2) use ($gallery) {
+                      $q2->where('sort_order', $gallery->sort_order)
+                         ->where('created_at', '>', $gallery->created_at);
+                  });
+            })
+            ->orderBy('sort_order', 'desc')
+            ->orderBy('created_at', 'asc')
+            ->first();
+
+        $nextGallery = Gallery::published()
+            ->where('category_id', $gallery->category_id)
+            ->where(function ($q) use ($gallery) {
+                $q->where('sort_order', '>', $gallery->sort_order)
+                  ->orWhere(function ($q2) use ($gallery) {
+                      $q2->where('sort_order', $gallery->sort_order)
+                         ->where('created_at', '<', $gallery->created_at);
+                  });
+            })
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
         // Get related galleries from same category
         $relatedGalleries = Gallery::with('category')
             ->published()
@@ -48,7 +75,7 @@ class GalleryController extends Controller
             ->take(6)
             ->get();
 
-        return view('galleries.show', compact('gallery', 'relatedGalleries'));
+        return view('galleries.show', compact('gallery', 'relatedGalleries', 'previousGallery', 'nextGallery'));
     }
 
     /**
