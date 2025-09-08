@@ -21,14 +21,14 @@
             @forelse($galleries as $gallery)
             <div class="photo-item-widget" data-category="{{ $gallery->category ? $gallery->category->slug : '' }}">
                 <div class="photo-container-widget">
-                    <a href="{{ $gallery->image }}" 
+                    <a href="{{ asset('storage/' . $gallery->image) }}" 
                        id="gallery-widget-{{ $gallery->id }}"
                        class="glightbox" 
                        data-gallery="gallery-widget"
                        data-title="{{ $gallery->title }}"
                        data-description="{{ $gallery->description }}"
                        data-type="image">
-                        <img src="{{ $gallery->thumbnail ?? $gallery->image }}" 
+                        <img src="{{ asset('storage/' . ($gallery->thumbnail ?? $gallery->image)) }}" 
                              alt="{{ $gallery->title }}" 
                              loading="lazy"
                              class="photo-image-widget">

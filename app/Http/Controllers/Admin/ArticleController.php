@@ -40,17 +40,19 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'excerpt' => 'required|string|max:500',
-            'content' => 'required|string',
-            'author_id' => 'required|exists:authors,id',
-            'categories' => 'required|array|min:1',
-            'categories.*' => 'exists:categories,id',
-            'image' => 'nullable|image|max:2048',
-            'status' => 'required|in:draft,published',
-            'short_code' => 'nullable|alpha_dash|max:64|unique:shortlinks,short_code',
-        ]);
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'excerpt' => 'required|string|max:500',
+                'content' => 'required|string',
+                'author_id' => 'required|exists:authors,id',
+                'categories' => 'required|array|min:1',
+                'categories.*' => 'exists:categories,id',
+                'image' => 'nullable|image|max:2048',
+                'status' => 'required|in:draft,published',
+                'short_code' => 'nullable|alpha_dash|max:64|unique:shortlinks,short_code',
+                'published_at' => 'nullable|date',
+            ]);
 
         $article = Article::create([
             'title' => $request->title,
@@ -59,7 +61,7 @@ class ArticleController extends Controller
             'author_id' => $request->author_id,
             'image' => null,
             'status' => $request->status,
-            'published_at' => $request->status === 'published' ? now() : null,
+            'published_at' => $request->status === 'published' ? ($request->published_at ? $request->published_at : now()) : null,
         ]);
 
         // Handle image upload
@@ -85,8 +87,14 @@ class ArticleController extends Controller
             ]
         );
 
-        return redirect()->route('admin.articles.index')
-            ->with('success', 'Artikel berhasil dibuat!');
+            return redirect()->route('admin.articles.index')
+                ->with('success', 'Artikel berhasil dibuat!');
+        } catch (\Exception $e) {
+            \Log::error('Article creation error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat menyimpan artikel: ' . $e->getMessage());
+        }
     }
 
     /**

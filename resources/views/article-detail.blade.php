@@ -49,7 +49,7 @@
                     <span class="posted-by">
                         <span class="meta-label">By</span>
                         <span class="author vcard" itemprop="author" itemscope itemtype="https://schema.org/Person">
-                            <a class="url fn n" href="{{ route('author.show', Str::slug($article['author'])) }}" itemprop="url"><span itemprop="name">{{ $article['author'] }}</span></a>
+                            <span class="url fn n" itemprop="name">{{ $article['author'] }}</span>
                         </span>
                     </span>
                     <span class="posted-on">
@@ -61,7 +61,7 @@
                     <span class="post-views-icon">
                         <i class="bi bi-eye-fill"></i>
                     </span> 
-                    <span class="post-views-count">{{ rand(20, 100) }}</span>
+                    <span class="post-views-count">{{ $article['views'] ?? 0 }}</span>
                 </div>
                 
                 <!-- Share Buttons -->
@@ -150,7 +150,7 @@
                             <span class="posted-by">
                                 <span class="meta-label">By</span>
                                 <span class="author vcard">
-                                    <a class="url fn n" href="{{ route('author.show', Str::slug($recentPost['author'])) }}">{{ $recentPost['author'] }}</a>
+                                    <span class="url fn n">{{ $recentPost['author'] }}</span>
                                 </span>
                             </span>
                             <span class="posted-on">

@@ -78,9 +78,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add loading animation for images
         const carouselImages = carousel.querySelectorAll('img');
         carouselImages.forEach(img => {
-            img.addEventListener('load', function() {
-                this.style.opacity = '1';
-            });
+            // Check if image is already loaded
+            if (img.complete && img.naturalHeight !== 0) {
+                img.style.opacity = '1';
+            } else {
+                img.addEventListener('load', function() {
+                    this.style.opacity = '1';
+                });
+                
+                img.addEventListener('error', function() {
+                    console.error('Failed to load image:', this.src);
+                    this.style.opacity = '1'; // Show even if failed to load
+                });
+            }
             
             // Set initial opacity
             img.style.opacity = '0';

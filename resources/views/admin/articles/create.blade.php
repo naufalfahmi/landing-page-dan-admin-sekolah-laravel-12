@@ -32,7 +32,7 @@
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
-				<form class="forms-sample" method="POST" action="{{ route('admin.articles.store') }}" enctype="multipart/form-data">
+				<form class="forms-sample" method="POST" action="{{ route('admin.articles.store') }}" enctype="multipart/form-data" id="articleForm" novalidate>
 					@csrf
 					
 					<div class="row">
@@ -162,12 +162,98 @@
 		});
 
 		// Initialize CKEditor
+		let editor;
 		ClassicEditor
-			.create(document.querySelector('#content'), { height: '500px' })
-			.then(editor => {
+			.create(document.querySelector('#content'), { 
+				height: '500px',
+				toolbar: {
+					items: [
+						'heading', '|',
+						'bold', 'italic', 'link', '|',
+						'bulletedList', 'numberedList', '|',
+						'outdent', 'indent', '|',
+						'blockQuote', 'insertTable', '|',
+						'undo', 'redo'
+					]
+				}
+			})
+			.then(editorInstance => {
+				editor = editorInstance;
 				editor.ui.view.editable.element.style.minHeight = '500px';
 			})
-			.catch(error => { console.error(error); });
+			.catch(error => { 
+				console.error('CKEditor error:', error); 
+			});
+
+		// Handle form submission
+		$('#articleForm').on('submit', function(e) {
+			console.log('Form submission started');
+			
+			// Update textarea with CKEditor content before submit
+			if (editor) {
+				console.log('Updating CKEditor content');
+				editor.updateSourceElement();
+				
+				// Validate content is not empty
+				const content = editor.getData().trim();
+				if (!content) {
+					e.preventDefault();
+					alert('Konten artikel tidak boleh kosong!');
+					editor.editing.view.focus();
+					return false;
+				}
+			}
+			
+			// Validate required fields manually
+			const title = $('#title').val().trim();
+			const excerpt = $('#excerpt').val().trim();
+			const authorId = $('#author_id').val();
+			const categories = $('#categories').select2('val');
+			
+			console.log('Categories value:', categories);
+			console.log('Categories type:', typeof categories);
+			console.log('Categories length:', categories ? categories.length : 'null');
+			
+			if (!title) {
+				e.preventDefault();
+				alert('Judul artikel tidak boleh kosong!');
+				$('#title').focus();
+				return false;
+			}
+			
+			if (!excerpt) {
+				e.preventDefault();
+				alert('Ringkasan artikel tidak boleh kosong!');
+				$('#excerpt').focus();
+				return false;
+			}
+			
+			if (!authorId) {
+				e.preventDefault();
+				alert('Penulis harus dipilih!');
+				$('#author_id').focus();
+				return false;
+			}
+			
+			if (!categories || (Array.isArray(categories) && categories.length === 0) || (typeof categories === 'string' && categories === '')) {
+				e.preventDefault();
+				alert('Minimal satu kategori harus dipilih!');
+				$('#categories').select2('open');
+				return false;
+			}
+			
+			// Show loading state
+			const submitBtn = $(this).find('button[type="submit"]');
+			const originalText = submitBtn.text();
+			submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...');
+			
+			console.log('Form submitted successfully');
+			
+			// Re-enable button after 10 seconds as fallback
+			setTimeout(() => {
+				submitBtn.prop('disabled', false).text(originalText);
+			}, 10000);
+		});
 	});
 </script>
 @endpush

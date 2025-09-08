@@ -168,6 +168,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Announcements management
     Route::get('/announcementCreate', [AdminAnnouncementController::class, 'create'])->name('announcements.create');
     Route::post('/announcementCreate', [AdminAnnouncementController::class, 'store'])->name('announcements.store');
+    Route::post('/announcements/category', [AdminAnnouncementController::class, 'storeCategory'])->name('announcements.category.store');
     Route::resource('announcements', AdminAnnouncementController::class)->except(['create', 'store']);
     
     // Announcement Categories management

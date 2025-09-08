@@ -24,7 +24,7 @@ class AnnouncementController extends Controller
      */
     public function create()
     {
-        $categories = AnnouncementCategory::active()->ordered()->get();
+        $categories = AnnouncementCategory::active()->ordered()->get()->pluck('name', 'id');
 
         $priorities = [
             'low' => 'Rendah',
@@ -86,7 +86,7 @@ class AnnouncementController extends Controller
      */
     public function edit(Announcement $announcement)
     {
-        $categories = AnnouncementCategory::active()->ordered()->get();
+        $categories = AnnouncementCategory::active()->ordered()->get()->pluck('name', 'id');
 
         $priorities = [
             'low' => 'Rendah',
@@ -149,5 +149,34 @@ class AnnouncementController extends Controller
 
         return redirect()->route('admin.announcements.index')
             ->with('success', 'Pengumuman berhasil dihapus!');
+    }
+
+    /**
+     * Store a new category via AJAX
+     */
+    public function storeCategory(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:announcement_categories,name',
+            'description' => 'nullable|string|max:500',
+            'color' => 'nullable|string|max:7',
+        ]);
+
+        $category = AnnouncementCategory::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'color' => $request->color ?? '#007bff',
+            'is_active' => true,
+            'sort_order' => AnnouncementCategory::max('sort_order') + 1,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'category' => [
+                'id' => $category->id,
+                'name' => $category->name,
+            ],
+            'message' => 'Kategori berhasil ditambahkan!'
+        ]);
     }
 }

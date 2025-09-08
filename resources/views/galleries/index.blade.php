@@ -54,14 +54,14 @@
         @forelse($galleries as $gallery)
         <div class="photo-item-widget" data-category="{{ $gallery->category ? $gallery->category->slug : '' }}">
             <div class="photo-container-widget">
-                <a href="{{ $gallery->image }}" 
+                <a href="{{ asset('storage/' . $gallery->image) }}" 
                    id="gallery-item-{{ $gallery->id }}"
                    class="glightbox" 
                    data-gallery="gallery-main"
                    data-title="{{ $gallery->title }}"
                    data-description="{{ $gallery->description }}"
                    data-type="image">
-                    <img src="{{ $gallery->thumbnail ?? $gallery->image }}" 
+                    <img src="{{ asset('storage/' . ($gallery->thumbnail ?? $gallery->image)) }}" 
                          alt="{{ $gallery->title }}" 
                          class="photo-image-widget"
                          loading="lazy">
@@ -313,6 +313,60 @@
     .page-title {
         font-size: 1.75rem;
     }
+}
+
+/* GLightbox Custom Styles - Ensure full size display and perfect centering */
+.glightbox-image img {
+    max-width: none !important;
+    max-height: none !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+
+.glightbox-image {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    text-align: center !important;
+}
+
+/* Force lightbox to use full viewport */
+.glightbox-container {
+    width: 90vw !important;
+    height: 90vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.glightbox-image-container {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* Additional centering for the lightbox content */
+.glightbox-content {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Center the lightbox modal itself */
+.glightbox {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 </style>
 @endpush

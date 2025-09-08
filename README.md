@@ -13,7 +13,7 @@ Portal artikel keislaman berbasis Laravel 12 yang ringan, SEO‑aware, dan mobil
   - Microdata Schema.org `Article` (homepage card & halaman detail)
   - `<meta name="robots">` otomatis: homepage `index,follow`, halaman lain `noindex,follow`
   - Canonical link per halaman
-  - `robots.txt` blokir `/admin/`, `/login`, `/register`, `/password/`
+  - `robots.txt` blokir `/admin/`, `/admin-access-itqon`, `/register`, `/password/`
 - **UI/UX**:
   - Navbar sticky (`sticky-top`), responsif, kategori dinamis
   - Kartu artikel dengan kategori, penulis, dan tanggal

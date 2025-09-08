@@ -61,6 +61,13 @@ class ArticleController extends Controller
             abort(404);
         }
 
+        // Increment view count (prevent double counting in same session)
+        $sessionKey = 'viewed_article_' . $article->id;
+        if (!session()->has($sessionKey)) {
+            $article->increment('views');
+            session()->put($sessionKey, true);
+        }
+
         // Ambil 5 artikel terbaru untuk sidebar (exclude artikel yang sedang dibaca)
         $recentPosts = Article::with(['author', 'categories'])
             ->published()
@@ -83,6 +90,7 @@ class ArticleController extends Controller
             'categories' => $article->categories,
             'author' => $article->author->name,
             'date' => $article->published_at->format('d/m/Y'),
+            'views' => $article->views,
             'shortlink' => $shortlink->full_url
         ];
 

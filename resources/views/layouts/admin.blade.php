@@ -13,6 +13,7 @@ License: For each use you must have a valid license purchased only from above li
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
 	<meta name="author" content="NobleUI">
 	<meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
@@ -64,6 +65,10 @@ License: For each use you must have a valid license purchased only from above li
   <!-- Layout styles -->  
 	<link rel="stylesheet" href="{{ asset('template/assets/css/demo1/style.css') }}">
   <!-- End layout styles -->
+
+  <!-- Toastr CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <!-- End Toastr CSS -->
 
   <link rel="shortcut icon" href="{{ asset('template/assets/images/favicon.png') }}" />
 </head>
@@ -371,6 +376,30 @@ License: For each use you must have a valid license purchased only from above li
 	<!-- Custom js for this page -->
 	@stack('custom-js')
 	<!-- End custom js for this page -->
+
+	<!-- Toastr JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script>
+		// Configure toastr
+		toastr.options = {
+			"closeButton": true,
+			"debug": false,
+			"newestOnTop": false,
+			"progressBar": true,
+			"positionClass": "toast-top-right",
+			"preventDuplicates": false,
+			"onclick": null,
+			"showDuration": "300",
+			"hideDuration": "1000",
+			"timeOut": "5000",
+			"extendedTimeOut": "1000",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "fadeIn",
+			"hideMethod": "fadeOut"
+		};
+	</script>
+	<!-- End Toastr JS -->
 
 	<!-- Logout Form -->
 	<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

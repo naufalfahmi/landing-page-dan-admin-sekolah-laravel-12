@@ -8,10 +8,10 @@
             <div class="hero-slide">
                 @if($slider->link)
                     <a href="{{ $slider->link }}" target="_blank" rel="noopener noreferrer">
-                        <img src="{{ $slider->image }}" class="d-block w-100" alt="{{ $slider->title }}">
+                        <img src="{{ asset('storage/' . $slider->image) }}" class="d-block w-100" alt="{{ $slider->title }}">
                     </a>
                 @else
-                    <img src="{{ $slider->image }}" class="d-block w-100" alt="{{ $slider->title }}">
+                    <img src="{{ asset('storage/' . $slider->image) }}" class="d-block w-100" alt="{{ $slider->title }}">
                 @endif
             </div>
         </div>

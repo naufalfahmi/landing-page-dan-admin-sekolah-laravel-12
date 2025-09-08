@@ -64,7 +64,10 @@ License: For each use you must have a valid license purchased only from above li
                 </div>
                 <div class="col-md-8 ps-md-0">
                   <div class="auth-form-wrapper px-4 py-5">
-                    <a href="{{ route('home') }}" class="noble-ui-logo d-block mb-2">Portal<span>Islam</span></a>
+                    @php
+                        $siteTitle = \App\Models\Setting::getValue('site_title', 'Portal Islam');
+                    @endphp
+                    <a href="{{ route('home') }}" class="noble-ui-logo d-block mb-2">{{ $siteTitle }}</a>
                     <h5 class="text-muted fw-normal mb-4">Selamat datang! Silakan masuk ke akun Anda.</h5>
                     
                     <!-- Session Status -->
@@ -101,9 +104,6 @@ License: For each use you must have a valid license purchased only from above li
                         
                         <div>
                             <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white">Masuk</button>
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" class="d-block mt-3 text-muted">Lupa password?</a>
-                            @endif
                         </div>
                     </form>
                   </div>

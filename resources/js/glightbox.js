@@ -116,6 +116,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 cssEfects: {
                     fade: { in: 'fadeIn', out: 'fadeOut' },
                     slide: { in: 'slideInRight', out: 'slideOutLeft' }
+                },
+                // Force image to use original size and prevent caching
+                onSlideChange: function(data) {
+                    console.log('Slide changed to:', data.index);
+                    // Force reload the image to prevent cache issues
+                    const currentSlide = this.slides[data.index];
+                    if (currentSlide && currentSlide.href) {
+                        const timestamp = Date.now();
+                        const separator = currentSlide.href.includes('?') ? '&' : '?';
+                        currentSlide.href = currentSlide.href.split('?')[0] + separator + 'nocache=' + timestamp;
+                        console.log('Updated slide href:', currentSlide.href);
+                    }
+                },
+                // Ensure images are displayed at full size and perfectly centered
+                onOpen: function(data) {
+                    console.log('Lightbox opened, ensuring full size display and centering');
+                    // Force the image to display at full size and center it
+                    setTimeout(() => {
+                        const lightboxImg = document.querySelector('.glightbox-image img');
+                        const lightboxContainer = document.querySelector('.glightbox-image');
+                        const lightboxContent = document.querySelector('.glightbox-content');
+                        
+                        if (lightboxImg) {
+                            lightboxImg.style.maxWidth = 'none';
+                            lightboxImg.style.maxHeight = 'none';
+                            lightboxImg.style.width = 'auto';
+                            lightboxImg.style.height = 'auto';
+                            lightboxImg.style.objectFit = 'contain';
+                            lightboxImg.style.display = 'block';
+                            lightboxImg.style.margin = '0 auto';
+                            console.log('Image size forced to full size and centered');
+                        }
+                        
+                        if (lightboxContainer) {
+                            lightboxContainer.style.display = 'flex';
+                            lightboxContainer.style.alignItems = 'center';
+                            lightboxContainer.style.justifyContent = 'center';
+                            lightboxContainer.style.textAlign = 'center';
+                        }
+                        
+                        if (lightboxContent) {
+                            lightboxContent.style.display = 'flex';
+                            lightboxContent.style.alignItems = 'center';
+                            lightboxContent.style.justifyContent = 'center';
+                        }
+                    }, 100);
                 }
             });
             
