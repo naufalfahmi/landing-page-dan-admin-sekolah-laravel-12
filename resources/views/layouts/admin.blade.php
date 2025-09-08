@@ -70,7 +70,7 @@ License: For each use you must have a valid license purchased only from above li
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <!-- End Toastr CSS -->
 
-  <link rel="shortcut icon" href="{{ asset('template/assets/images/favicon.png') }}" />
+  
 </head>
 @php
     $routeName = \Illuminate\Support\Facades\Route::currentRouteName();

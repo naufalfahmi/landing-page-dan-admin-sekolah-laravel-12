@@ -66,28 +66,56 @@
                     </div>
                 </div>
 
-                <!-- Attachment -->
-                @if($announcement->attachment)
+                <!-- Attachments -->
+                @php
+                    $hasMultiple = isset($announcement->attachments) && $announcement->attachments->count() > 0;
+                @endphp
+                @if($hasMultiple || $announcement->attachment)
                 <div class="announcement-attachment mt-4">
                     <div class="card">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fas fa-paperclip"></i> Lampiran</h5>
                         </div>
                         <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="attachment-icon me-3">
-                                    <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                            @if($hasMultiple)
+                                <div class="list-group">
+                                    @foreach($announcement->attachments as $att)
+                                    <div class="list-group-item d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <div class="attachment-icon me-3">
+                                                <i class="fas fa-file-alt fa-2x text-secondary"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">{{ $att->file_name ?? basename($att->file_url) }}</h6>
+                                                @if($att->file_type)
+                                                <small class="text-muted">{{ strtoupper($att->file_type) }} @if($att->file_size) • {{ number_format($att->file_size / 1024, 1) }} KB @endif</small>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <a href="{{ $att->file_url }}" target="_blank" class="btn btn-primary">
+                                                <i class="fas fa-download"></i> Download
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @endforeach
                                 </div>
-                                <div class="attachment-info flex-grow-1">
-                                    <h6 class="mb-1">{{ $announcement->attachment_name }}</h6>
-                                    <small class="text-muted">File lampiran</small>
+                            @else
+                                <div class="d-flex align-items-center">
+                                    <div class="attachment-icon me-3">
+                                        <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                                    </div>
+                                    <div class="attachment-info flex-grow-1">
+                                        <h6 class="mb-1">{{ $announcement->attachment_name }}</h6>
+                                        <small class="text-muted">File lampiran</small>
+                                    </div>
+                                    <div class="attachment-actions">
+                                        <a href="{{ $announcement->attachment }}" target="_blank" class="btn btn-primary">
+                                            <i class="fas fa-download"></i> Download
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="attachment-actions">
-                                    <a href="{{ $announcement->attachment }}" target="_blank" class="btn btn-primary">
-                                        <i class="fas fa-download"></i> Download
-                                    </a>
-                                </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -100,9 +128,9 @@
                     </a>
                     
                     <div class="float-end">
-                        <button class="btn btn-outline-secondary" onclick="window.print()">
-                            <i class="fas fa-print"></i> Cetak
-                        </button>
+                        <a href="https://wa.me/?text={{ urlencode($announcement->title . ' - ' . ($shortlinkUrl ?? route('announcements.show', $announcement->slug))) }}" target="_blank" rel="noopener" class="btn btn-success">
+                            <i class="fab fa-whatsapp"></i> Bagikan via WhatsApp
+                        </a>
                     </div>
                 </div>
             </article>
@@ -191,6 +219,15 @@
 .announcement-attachment .card {
     border-radius: 10px;
     border: 1px solid #e9ecef;
+}
+
+/* Make attachment list mobile friendly */
+.announcement-attachment .list-group-item {
+    gap: 0.75rem;
+}
+
+.announcement-attachment .list-group-item h6 {
+    word-break: break-word;
 }
 
 .attachment-icon {
@@ -288,6 +325,20 @@
     .announcement-actions .float-end {
         float: none !important;
         margin-top: 1rem;
+    }
+
+    /* Stack attachment list on mobile */
+    .announcement-attachment .list-group-item {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .announcement-attachment .list-group-item > div:last-child {
+        margin-top: 0.5rem;
+    }
+
+    .announcement-attachment .btn {
+        width: 100%;
     }
 }
 </style>

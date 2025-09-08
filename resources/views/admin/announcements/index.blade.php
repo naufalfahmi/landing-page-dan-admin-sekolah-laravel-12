@@ -92,6 +92,7 @@
 											<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.announcements.edit', $announcement) }}"><i data-feather="edit" class="icon-sm me-2"></i> <span class="">Edit</span></a>
 											@if($announcement->is_published)
 											<a class="dropdown-item d-flex align-items-center" href="{{ route('announcements.show', $announcement->slug) }}" target="_blank"><i data-feather="external-link" class="icon-sm me-2"></i> <span class="">Preview</span></a>
+                                            <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.announcements.share-whatsapp', $announcement) }}" target="_blank"><i data-feather="share-2" class="icon-sm me-2"></i> <span class="">Bagikan ke WhatsApp</span></a>
 											@endif
 											@if($announcement->attachment)
 											<a class="dropdown-item d-flex align-items-center" href="{{ $announcement->attachment }}" target="_blank"><i data-feather="download" class="icon-sm me-2"></i> <span class="">Download</span></a>

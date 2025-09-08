@@ -1,5 +1,4 @@
 import './bootstrap';
-import './hero-slider';
 import './glightbox';
 
 import Alpine from 'alpinejs';

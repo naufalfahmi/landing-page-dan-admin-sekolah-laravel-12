@@ -5,7 +5,7 @@
     $contactEmail = \App\Models\Setting::getValue('contact_email', 'info@admin.com');
     $contactWhatsapp = \App\Models\Setting::getValue('contact_whatsapp', '628151888930');
 @endphp
-<div class="top-bar">
+<div class="top-bar d-none d-md-block">
     <div class="container">
         <div class="top-bar-content">
             <div class="top-bar-info">

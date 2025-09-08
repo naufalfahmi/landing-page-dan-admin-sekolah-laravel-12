@@ -92,7 +92,16 @@ Route::get('/documents', function (Request $request) {
         ->withQueryString()
         ->through(function ($announcement) {
             $fileExtension = pathinfo($announcement->attachment, PATHINFO_EXTENSION);
-            $fileSize = filesize(public_path($announcement->attachment)) ?? 0;
+
+            // Resolve local filesystem path from public URL or relative path
+            $attachment = $announcement->attachment;
+            $pathPart = parse_url($attachment, PHP_URL_PATH) ?: $attachment;
+            $filePath = public_path(ltrim($pathPart, '/'));
+
+            $fileSize = 0;
+            if (is_string($filePath) && file_exists($filePath)) {
+                $fileSize = filesize($filePath) ?: 0;
+            }
             $units = ['B', 'KB', 'MB', 'GB'];
             
             for ($i = 0; $fileSize > 1024 && $i < count($units) - 1; $i++) {
@@ -169,6 +178,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/announcementCreate', [AdminAnnouncementController::class, 'create'])->name('announcements.create');
     Route::post('/announcementCreate', [AdminAnnouncementController::class, 'store'])->name('announcements.store');
     Route::post('/announcements/category', [AdminAnnouncementController::class, 'storeCategory'])->name('announcements.category.store');
+    Route::delete('/announcements/{announcement}/attachments/{attachment}', [AdminAnnouncementController::class, 'destroyAttachment'])->name('announcements.attachments.destroy');
+    // Share to WhatsApp
+    Route::get('/announcements/{announcement}/share-whatsapp', [AdminAnnouncementController::class, 'shareWhatsapp'])->name('announcements.share-whatsapp');
     Route::resource('announcements', AdminAnnouncementController::class)->except(['create', 'store']);
     
     // Announcement Categories management

@@ -101,10 +101,10 @@
 							</div>
 
 							<div class="mb-3">
-								<label for="attachment" class="form-label">Lampiran</label>
-								<input type="file" class="form-control @error('attachment') is-invalid @enderror" id="attachment" name="attachment" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-								<small class="form-text text-muted">Format: PDF, JPG, PNG, DOC, DOCX (Max: 10MB)</small>
-								@error('attachment')
+								<label for="attachments" class="form-label">Lampiran (bisa pilih beberapa file)</label>
+								<input type="file" class="form-control @error('attachments.*') is-invalid @enderror" id="attachments" name="attachments[]" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+								<small class="form-text text-muted">Format: PDF, JPG, PNG, DOC, DOCX (maks 10MB per file).</small>
+								@error('attachments.*')
 									<div class="invalid-feedback">{{ $message }}</div>
 								@enderror
 							</div>

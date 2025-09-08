@@ -95,6 +95,14 @@ class Announcement extends Model
     }
 
     /**
+     * Get attachments for the announcement
+     */
+    public function attachments()
+    {
+        return $this->hasMany(AnnouncementAttachment::class)->orderBy('sort_order');
+    }
+
+    /**
      * Increment view count
      */
     public function incrementViews()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use App\Models\AnnouncementCategory;
+use App\Models\Shortlink;
 use Illuminate\Http\Request;
 
 class AnnouncementController extends Controller
@@ -50,8 +51,8 @@ class AnnouncementController extends Controller
      */
     public function show(Announcement $announcement)
     {
-        // Load category relationship
-        $announcement->load('category');
+        // Load relationships
+        $announcement->load(['category', 'attachments']);
         
         // Increment view count
         $announcement->incrementViews();
@@ -65,7 +66,19 @@ class AnnouncementController extends Controller
             ->take(5)
             ->get();
 
-        return view('announcements.show', compact('announcement', 'relatedAnnouncements'));
+        // Prepare shortlink for sharing
+        $targetUrl = route('announcements.show', $announcement->slug);
+        $shortlink = Shortlink::where('target_url', $targetUrl)->first();
+        if (!$shortlink) {
+            $shortlink = Shortlink::create([
+                'short_code' => Shortlink::generateShortCode(),
+                'target_url' => $targetUrl,
+                'clicks' => 0,
+            ]);
+        }
+        $shortlinkUrl = $shortlink->full_url;
+
+        return view('announcements.show', compact('announcement', 'relatedAnnouncements', 'shortlinkUrl'));
     }
 
     /**

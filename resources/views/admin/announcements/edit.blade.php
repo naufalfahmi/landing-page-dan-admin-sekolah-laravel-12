@@ -103,21 +103,47 @@
 							</div>
 
 							<div class="mb-3">
-								<label for="attachment" class="form-label">Lampiran</label>
+								<label for="attachments" class="form-label">Lampiran (bisa pilih beberapa file)</label>
 								@if($announcement->attachment)
 									<div class="mb-2">
-										<small class="text-muted">File saat ini:</small>
+										<small class="text-muted">Lampiran lama (tetap tersimpan):</small>
 										<a href="{{ $announcement->attachment }}" target="_blank" class="d-block">
 											<i data-feather="file" class="icon-sm me-1"></i>
 											{{ $announcement->attachment_name ?? 'Download' }}
 										</a>
 									</div>
 								@endif
-								<input type="file" class="form-control @error('attachment') is-invalid @enderror" id="attachment" name="attachment" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-								<small class="form-text text-muted">Format: PDF, JPG, PNG, DOC, DOCX (Max: 10MB)</small>
-								@error('attachment')
+								<input type="file" class="form-control @error('attachments.*') is-invalid @enderror" id="attachments" name="attachments[]" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+								<small class="form-text text-muted">Format: PDF, JPG, PNG, DOC, DOCX (maks 10MB per file).</small>
+								@error('attachments.*')
 									<div class="invalid-feedback">{{ $message }}</div>
 								@enderror
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label">Lampiran yang sudah terunggah</label>
+								@if($announcement->attachments && $announcement->attachments->count())
+									<div class="list-group mb-2">
+										@foreach($announcement->attachments as $att)
+											<div class="list-group-item d-flex justify-content-between align-items-center">
+												<div class="text-truncate">
+													<i data-feather="paperclip" class="icon-sm me-1"></i>
+													{{ $att->file_name ?? basename($att->file_url) }}
+												</div>
+												<form action="{{ route('admin.announcements.attachments.destroy', [$announcement, $att]) }}" method="POST" onsubmit="return confirm('Hapus lampiran ini?')">
+													@csrf
+													@method('DELETE')
+													<button type="submit" class="btn btn-sm btn-outline-danger">
+														<i data-feather="trash" class="icon-sm"></i>
+														Hapus
+													</button>
+												</form>
+											</div>
+										@endforeach
+									</div>
+								@else
+									<p class="text-muted">Belum ada lampiran tambahan.</p>
+								@endif
 							</div>
 
 							<div class="mb-3">

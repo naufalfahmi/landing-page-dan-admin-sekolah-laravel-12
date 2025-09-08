@@ -7,8 +7,8 @@
 @section('title', $siteTitle . ' - ' . $siteSubtitle)
 
 @section('content')
-<!-- Hero Slider Section -->
-@include('components.hero-slider')
+<!-- Hero Banner Section -->
+@include('components.hero-banner')
 
 <!-- Announcements Widget -->
 @include('components.announcements-widget')

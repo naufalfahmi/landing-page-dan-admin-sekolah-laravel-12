@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\AnnouncementCategory;
+use App\Models\Shortlink;
+use App\Models\AnnouncementAttachment;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -48,6 +51,7 @@ class AnnouncementController extends Controller
             'category_id' => 'required|exists:announcement_categories,id',
             'priority' => 'required|in:low,normal,high,urgent',
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
+            'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
         ]);
@@ -66,7 +70,25 @@ class AnnouncementController extends Controller
             $data['attachment_name'] = $file->getClientOriginalName();
         }
 
-        Announcement::create($data);
+        $announcement = Announcement::create($data);
+
+        // Handle multiple attachments (optional)
+        if ($request->hasFile('attachments')) {
+            $sortOrder = 0;
+            foreach ($request->file('attachments') as $file) {
+                if (!$file) { continue; }
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('announcements', $filename, 'public');
+                AnnouncementAttachment::create([
+                    'announcement_id' => $announcement->id,
+                    'file_url' => asset('storage/' . $path),
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_type' => strtolower($file->getClientOriginalExtension()),
+                    'file_size' => $file->getSize(),
+                    'sort_order' => $sortOrder++,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.announcements.index')
             ->with('success', 'Pengumuman berhasil dibuat!');
@@ -77,7 +99,7 @@ class AnnouncementController extends Controller
      */
     public function show(Announcement $announcement)
     {
-        $announcement->load('category');
+        $announcement->load(['category', 'attachments']);
         return view('admin.announcements.show', compact('announcement'));
     }
 
@@ -87,6 +109,7 @@ class AnnouncementController extends Controller
     public function edit(Announcement $announcement)
     {
         $categories = AnnouncementCategory::active()->ordered()->get()->pluck('name', 'id');
+        $announcement->load('attachments');
 
         $priorities = [
             'low' => 'Rendah',
@@ -110,6 +133,7 @@ class AnnouncementController extends Controller
             'category_id' => 'required|exists:announcement_categories,id',
             'priority' => 'required|in:low,normal,high,urgent',
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
+            'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
         ]);
@@ -136,6 +160,25 @@ class AnnouncementController extends Controller
 
         $announcement->update($data);
 
+        // Handle multiple attachments addition (optional)
+        if ($request->hasFile('attachments')) {
+            $currentMax = (int) ($announcement->attachments()->max('sort_order') ?? 0);
+            $sortOrder = $currentMax + 1;
+            foreach ($request->file('attachments') as $file) {
+                if (!$file) { continue; }
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('announcements', $filename, 'public');
+                AnnouncementAttachment::create([
+                    'announcement_id' => $announcement->id,
+                    'file_url' => asset('storage/' . $path),
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_type' => strtolower($file->getClientOriginalExtension()),
+                    'file_size' => $file->getSize(),
+                    'sort_order' => $sortOrder++,
+                ]);
+            }
+        }
+
         return redirect()->route('admin.announcements.index')
             ->with('success', 'Pengumuman berhasil diperbarui!');
     }
@@ -149,6 +192,30 @@ class AnnouncementController extends Controller
 
         return redirect()->route('admin.announcements.index')
             ->with('success', 'Pengumuman berhasil dihapus!');
+    }
+
+    /**
+     * Delete a specific attachment from an announcement
+     */
+    public function destroyAttachment(Announcement $announcement, AnnouncementAttachment $attachment)
+    {
+        // Ensure attachment belongs to the announcement
+        if ($attachment->announcement_id !== $announcement->id) {
+            abort(404);
+        }
+
+        // Try to delete physical file if it's within storage path
+        $pathPart = parse_url($attachment->file_url, PHP_URL_PATH);
+        if ($pathPart) {
+            $publicPath = public_path(ltrim($pathPart, '/'));
+            if (is_file($publicPath)) {
+                @unlink($publicPath);
+            }
+        }
+
+        $attachment->delete();
+
+        return back()->with('success', 'Lampiran berhasil dihapus');
     }
 
     /**
@@ -178,5 +245,30 @@ class AnnouncementController extends Controller
             ],
             'message' => 'Kategori berhasil ditambahkan!'
         ]);
+    }
+
+    /**
+     * Share announcement to WhatsApp using shortlink
+     */
+    public function shareWhatsapp(Announcement $announcement)
+    {
+        // Build public target URL for the announcement detail page
+        $targetUrl = route('announcements.show', $announcement->slug);
+
+        // Reuse existing shortlink by target_url or create a new one
+        $shortlink = Shortlink::where('target_url', $targetUrl)->first();
+        if (!$shortlink) {
+            $shortlink = Shortlink::create([
+                'short_code' => Shortlink::generateShortCode(),
+                'target_url' => $targetUrl,
+                'clicks' => 0,
+            ]);
+        }
+
+        $siteTitle = Setting::getValue('site_title', config('app.name', '')); 
+        $shareText = trim($announcement->title . ' - ' . $shortlink->full_url . ($siteTitle ? ' - ' . $siteTitle : ''));
+        $waUrl = 'https://wa.me/?text=' . urlencode($shareText);
+
+        return redirect()->away($waUrl);
     }
 }

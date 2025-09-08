@@ -6,7 +6,7 @@
                 $siteTitle = \App\Models\Setting::getValue('site_title', config('app.name', 'SMPIT Al-Itqon'));
             @endphp
             @if(!empty($siteLogo))
-                <img src="{{ $siteLogo }}" alt="{{ $siteTitle }}" style="height: 40px; max-width: 150px;">
+                <img src="{{ $siteLogo }}" alt="{{ $siteTitle }}" style="height: 70px; object-fit: contain;">
             @else
                 <span class="fw-bold">{{ $siteTitle }}</span>
             @endif
