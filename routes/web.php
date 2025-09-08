@@ -54,7 +54,9 @@ Route::get('/documents', function (Request $request) {
     
     // Filter by category
     if ($request->filled('category')) {
-        $query->where('category', $request->category);
+        $query->whereHas('category', function($q) use ($request) {
+            $q->where('slug', $request->category);
+        });
     }
     
     // Filter by file type
@@ -111,14 +113,16 @@ Route::get('/documents', function (Request $request) {
         });
     
     // Get filter options
-    $categories = \App\Models\Announcement::published()
-        ->whereNotNull('attachment')
-        ->distinct()
-        ->pluck('category')
+    $categories = \App\Models\AnnouncementCategory::whereHas('announcements', function($query) {
+            $query->published()->whereNotNull('attachment');
+        })
+        ->active()
+        ->ordered()
+        ->get()
         ->map(function($category) {
             return [
-                'value' => $category,
-                'label' => ucfirst($category)
+                'value' => $category->slug,
+                'label' => $category->name
             ];
         });
     
@@ -166,10 +170,20 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('/announcementCreate', [AdminAnnouncementController::class, 'store'])->name('announcements.store');
     Route::resource('announcements', AdminAnnouncementController::class)->except(['create', 'store']);
     
+    // Announcement Categories management
+    Route::get('/announcementCategoryCreate', [\App\Http\Controllers\Admin\AnnouncementCategoryController::class, 'create'])->name('announcement-categories.create');
+    Route::post('/announcementCategoryCreate', [\App\Http\Controllers\Admin\AnnouncementCategoryController::class, 'store'])->name('announcement-categories.store');
+    Route::resource('announcement-categories', \App\Http\Controllers\Admin\AnnouncementCategoryController::class)->except(['create', 'store']);
+    
     // Galleries management
     Route::get('/galleryCreate', [\App\Http\Controllers\Admin\GalleryController::class, 'create'])->name('galleries.create');
     Route::post('/galleryCreate', [\App\Http\Controllers\Admin\GalleryController::class, 'store'])->name('galleries.store');
     Route::resource('galleries', \App\Http\Controllers\Admin\GalleryController::class)->except(['create', 'store']);
+    
+    // Gallery Categories management
+    Route::get('/galleryCategoryCreate', [\App\Http\Controllers\Admin\GalleryCategoryController::class, 'create'])->name('gallery-categories.create');
+    Route::post('/galleryCategoryCreate', [\App\Http\Controllers\Admin\GalleryCategoryController::class, 'store'])->name('gallery-categories.store');
+    Route::resource('gallery-categories', \App\Http\Controllers\Admin\GalleryCategoryController::class)->except(['create', 'store']);
     
     // Contact messages management
     Route::get('/contact', [\App\Http\Controllers\Admin\ContactController::class, 'index'])->name('contact.index');

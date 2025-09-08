@@ -15,7 +15,7 @@ class Announcement extends Model
         'slug',
         'summary',
         'content',
-        'category',
+        'category_id',
         'priority',
         'attachment',
         'attachment_name',
@@ -70,7 +70,12 @@ class Announcement extends Model
      */
     public function scopeByCategory($query, $category)
     {
-        return $query->where('category', $category);
+        if (is_numeric($category)) {
+            return $query->where('category_id', $category);
+        }
+        return $query->whereHas('category', function($q) use ($category) {
+            $q->where('slug', $category);
+        });
     }
 
     /**
@@ -79,6 +84,14 @@ class Announcement extends Model
     public function scopeByPriority($query, $priority)
     {
         return $query->where('priority', $priority);
+    }
+
+    /**
+     * Get the category that owns the announcement.
+     */
+    public function category()
+    {
+        return $this->belongsTo(AnnouncementCategory::class, 'category_id');
     }
 
     /**
@@ -94,15 +107,7 @@ class Announcement extends Model
      */
     public function getCategoryLabelAttribute()
     {
-        $labels = [
-            'akademik' => 'Akademik',
-            'kegiatan' => 'Kegiatan',
-            'ujian' => 'Ujian',
-            'libur' => 'Libur',
-            'umum' => 'Umum'
-        ];
-
-        return $labels[$this->category] ?? 'Umum';
+        return $this->category ? $this->category->name : 'Tidak Berkategori';
     }
 
     /**

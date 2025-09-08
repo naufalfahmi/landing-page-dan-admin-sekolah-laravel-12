@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Galeri')
+@section('title', 'Kelola Kategori Galeri')
 
 @section('content')
 <div class="row">
@@ -8,26 +8,25 @@
 		<div class="card overflow-hidden">
 			<div class="card-body">
 				<div class="d-flex justify-content-between align-items-baseline mb-4 mb-md-3">
-					<h6 class="card-title mb-0">Edit Galeri</h6>
+					<h6 class="card-title mb-0">Kelola Kategori Galeri</h6>
 					<div class="dropdown">
 						<button class="btn p-0" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-							<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.galleries.index') }}"><i data-feather="list" class="icon-sm me-2"></i> <span class="">Daftar Galeri</span></a>
-							<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.galleries.show', $gallery) }}"><i data-feather="eye" class="icon-sm me-2"></i> <span class="">Lihat Detail</span></a>
+							<button class="dropdown-item d-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#addCategoryModal"><i data-feather="plus" class="icon-sm me-2"></i> <span class="">Tambah Kategori</span></button>
 						</div>
 					</div>
 				</div>
 				<div class="row align-items-start">
 					<div class="col-md-7">
-						<p class="text-muted tx-13 mb-3 mb-md-0">Edit galeri "{{ $gallery->title }}". Perbarui informasi yang diperlukan.</p>
+						<p class="text-muted tx-13 mb-3 mb-md-0">Kelola kategori galeri untuk mengorganisir foto-foto di SMPIT Al-Itqon.</p>
 					</div>
 					<div class="col-md-5 d-flex justify-content-md-end">
-						<a href="{{ route('admin.galleries.index') }}" class="btn btn-secondary mb-3 mb-md-0">
-							<i data-feather="arrow-left" class="icon-sm me-2"></i>
-							Kembali
-						</a>
+						<button type="button" class="btn btn-primary mb-3 mb-md-0" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+							<i data-feather="plus" class="icon-sm me-2"></i>
+							Tambah Kategori
+						</button>
 					</div>
 				</div>
 			</div>
@@ -39,110 +38,91 @@
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
-				<form action="{{ route('admin.galleries.update', $gallery) }}" method="POST" enctype="multipart/form-data">
-					@csrf
-					@method('PUT')
-					
-					<div class="row">
-						<div class="col-md-8">
-							<div class="mb-3">
-								<label for="title" class="form-label">Judul Galeri <span class="text-danger">*</span></label>
-								<input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $gallery->title) }}" required>
-								@error('title')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
-							</div>
+				@if(session('success'))
+					<div class="alert alert-success alert-dismissible fade show" role="alert">
+						{{ session('success') }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+				@endif
 
-							<div class="mb-3">
-								<label for="description" class="form-label">Deskripsi</label>
-								<textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="4">{{ old('description', $gallery->description) }}</textarea>
-								@error('description')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
-							</div>
+				@if(session('error'))
+					<div class="alert alert-danger alert-dismissible fade show" role="alert">
+						{{ session('error') }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+				@endif
 
-							<div class="mb-3">
-								<label for="image" class="form-label">Gambar Utama</label>
-								@if($gallery->image)
-									<div class="mb-2">
-										<small class="text-muted">Gambar saat ini:</small>
-										<div class="d-flex gap-2 mt-1">
-											<img src="{{ asset('storage/' . $gallery->image) }}" alt="Current image" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
-											@if($gallery->thumbnail)
-												<div>
-													<small class="text-muted d-block">Thumbnail:</small>
-													<img src="{{ asset('storage/' . $gallery->thumbnail) }}" alt="Current thumbnail" class="img-thumbnail" style="max-width: 100px; max-height: 75px;">
-												</div>
-											@endif
+				<div class="table-responsive">
+					<table id="dataTableExample" class="table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Nama</th>
+								<th>Deskripsi</th>
+								<th>Icon</th>
+								<th>Warna</th>
+								<th>Status</th>
+								<th>Jumlah Galeri</th>
+								<th>Urutan</th>
+								<th>Aksi</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach($categories as $category)
+							<tr>
+								<td>{{ $category->id }}</td>
+								<td>
+									<div>
+										<h6 class="mb-0">{{ $category->name }}</h6>
+										<small class="text-muted">{{ $category->slug }}</small>
+									</div>
+								</td>
+								<td>{{ Str::limit($category->description, 50) }}</td>
+								<td>
+									@if($category->icon)
+										<i class="{{ $category->icon }}"></i>
+									@else
+										<i class="fas fa-folder"></i>
+									@endif
+								</td>
+								<td>
+									<span class="badge bg-{{ $category->color }}">{{ ucfirst($category->color) }}</span>
+								</td>
+								<td>
+									@if($category->is_active)
+										<span class="badge bg-success">Aktif</span>
+									@else
+										<span class="badge bg-secondary">Tidak Aktif</span>
+									@endif
+								</td>
+								<td>
+									<span class="badge bg-info">{{ $category->galleries_count }}</span>
+								</td>
+								<td>{{ $category->sort_order }}</td>
+								<td>
+									<div class="dropdown">
+										<button class="btn p-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+										</button>
+										<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+											<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.gallery-categories.show', $category) }}"><i data-feather="eye" class="icon-sm me-2"></i> <span class="">Lihat</span></a>
+											<a class="dropdown-item d-flex align-items-center" href="{{ route('admin.gallery-categories.edit', $category) }}"><i data-feather="edit" class="icon-sm me-2"></i> <span class="">Edit</span></a>
+											<div class="dropdown-divider"></div>
+											<form action="{{ route('admin.gallery-categories.destroy', $category) }}" method="POST" class="d-inline">
+												@csrf
+												@method('DELETE')
+												<button type="submit" class="dropdown-item d-flex align-items-center text-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
+													<i data-feather="trash-2" class="icon-sm me-2"></i> <span class="">Hapus</span>
+												</button>
+											</form>
 										</div>
 									</div>
-								@endif
-								<input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
-								<small class="form-text text-muted">Format: JPG, PNG, GIF, WebP (Max: 20MB) - Thumbnail akan dibuat otomatis</small>
-								@error('image')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
-							</div>
-						</div>
-
-						<div class="col-md-4">
-							<div class="mb-3">
-								<label for="category_id" class="form-label">Kategori <span class="text-danger">*</span></label>
-								<select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
-									<option value="">Pilih Kategori</option>
-									@foreach($categories as $category)
-										<option value="{{ $category->id }}" {{ old('category_id', $gallery->category_id) == $category->id ? 'selected' : '' }}>
-											{{ $category->name }}
-										</option>
-									@endforeach
-								</select>
-								@error('category_id')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
-								<small class="form-text text-muted">
-									<button type="button" class="btn btn-link p-0 text-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-										<i data-feather="plus" class="icon-sm me-1"></i>Tambah Kategori Baru
-									</button>
-								</small>
-							</div>
-
-							<div class="mb-3">
-								<label for="sort_order" class="form-label">Urutan Tampil</label>
-								<input type="number" class="form-control @error('sort_order') is-invalid @enderror" id="sort_order" name="sort_order" value="{{ old('sort_order', $gallery->sort_order) }}" min="0">
-								<small class="form-text text-muted">Angka kecil akan ditampilkan lebih dulu</small>
-								@error('sort_order')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
-							</div>
-
-							<div class="mb-3">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" id="is_published" name="is_published" value="1" {{ old('is_published', $gallery->is_published) ? 'checked' : '' }}>
-									<label class="form-check-label" for="is_published">
-										Publikasikan
-									</label>
-								</div>
-							</div>
-
-							<div class="mb-3">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" value="1" {{ old('is_featured', $gallery->is_featured) ? 'checked' : '' }}>
-									<label class="form-check-label" for="is_featured">
-										Featured
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="d-flex justify-content-end">
-						<a href="{{ route('admin.galleries.index') }}" class="btn btn-secondary me-2">Batal</a>
-						<button type="submit" class="btn btn-primary">
-							<i data-feather="save" class="icon-sm me-2"></i>
-							Update Galeri
-						</button>
-					</div>
-				</form>
+								</td>
+							</tr>
+							@endforeach
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -239,28 +219,39 @@
 </div>
 @endsection
 
+@push('plugin-css')
+<link rel="stylesheet" href="{{ asset('template/assets/vendors/datatables.net-bs5/dataTables.bootstrap5.css') }}">
+@endpush
+
+@push('plugin-js')
+<script src="{{ asset('template/assets/vendors/datatables.net/jquery.dataTables.js') }}"></script>
+<script src="{{ asset('template/assets/vendors/datatables.net-bs5/dataTables.bootstrap5.js') }}"></script>
+@endpush
+
 @push('custom-js')
 <script>
 	$(function() {
 		'use strict';
 		
-		// Auto-resize textarea
-		$('textarea').on('input', function() {
-			this.style.height = 'auto';
-			this.style.height = (this.scrollHeight) + 'px';
-		});
-
-		// Image preview
-		$('#image').on('change', function() {
-			const file = this.files[0];
-			if (file) {
-				const reader = new FileReader();
-				reader.onload = function(e) {
-					$('#image-preview').remove();
-					$('#image').after('<div id="image-preview" class="mt-2"><img src="' + e.target.result + '" class="img-thumbnail" style="max-width: 200px; max-height: 150px;"></div>');
-				};
-				reader.readAsDataURL(file);
+		$('#dataTableExample').DataTable({
+			"aLengthMenu": [
+				[10, 30, 50, -1],
+				[10, 30, 50, "All"]
+			],
+			"iDisplayLength": 10,
+			"language": {
+				search: ""
 			}
+		});
+		$('#dataTableExample').each(function() {
+			var datatable = $(this);
+			// SEARCH - Add the placeholder for Search and Turn this into in-line form control
+			var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
+			search_input.attr('placeholder', 'Search');
+			search_input.removeClass('form-control-sm');
+			// LENGTH - Inline-Form control
+			var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
+			length_sel.removeClass('form-control-sm');
 		});
 
 		// Modal form functionality
@@ -359,7 +350,6 @@
 				}
 			});
 		});
-
 	});
 </script>
 @endpush

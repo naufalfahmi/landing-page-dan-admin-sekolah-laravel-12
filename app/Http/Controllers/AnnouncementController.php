@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\AnnouncementCategory;
 use Illuminate\Http\Request;
 
 class AnnouncementController extends Controller
@@ -12,7 +13,7 @@ class AnnouncementController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Announcement::published()->latest('published_at');
+        $query = Announcement::with('category')->published()->latest('published_at');
 
         // Search by title
         if ($request->filled('search')) {
@@ -31,13 +32,8 @@ class AnnouncementController extends Controller
 
         $announcements = $query->paginate(10)->withQueryString();
 
-        $categories = [
-            'akademik' => 'Akademik',
-            'kegiatan' => 'Kegiatan',
-            'ujian' => 'Ujian',
-            'libur' => 'Libur',
-            'umum' => 'Umum'
-        ];
+        // Get active categories for filter
+        $categories = AnnouncementCategory::active()->ordered()->get();
 
         $priorities = [
             'urgent' => 'Mendesak',
@@ -54,13 +50,17 @@ class AnnouncementController extends Controller
      */
     public function show(Announcement $announcement)
     {
+        // Load category relationship
+        $announcement->load('category');
+        
         // Increment view count
         $announcement->incrementViews();
 
-        // Get related announcements
-        $relatedAnnouncements = Announcement::published()
+        // Get related announcements from same category
+        $relatedAnnouncements = Announcement::with('category')
+            ->published()
             ->where('id', '!=', $announcement->id)
-            ->where('category', $announcement->category)
+            ->where('category_id', $announcement->category_id)
             ->latest('published_at')
             ->take(5)
             ->get();
@@ -73,7 +73,8 @@ class AnnouncementController extends Controller
      */
     public function getFeatured()
     {
-        return Announcement::published()
+        return Announcement::with('category')
+            ->published()
             ->featured()
             ->latest('published_at')
             ->take(5)
@@ -85,7 +86,8 @@ class AnnouncementController extends Controller
      */
     public function getLatest()
     {
-        return Announcement::published()
+        return Announcement::with('category')
+            ->published()
             ->latest('published_at')
             ->take(5)
             ->get();

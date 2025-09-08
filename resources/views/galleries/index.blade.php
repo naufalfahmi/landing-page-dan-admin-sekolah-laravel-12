@@ -35,13 +35,13 @@
                        aria-label="Lihat semua foto galeri">
                         <i class="fas fa-th" aria-hidden="true"></i> Semua
                     </a>
-                    @foreach($categories as $key => $label)
-                    <a href="{{ route('galleries.index', ['category' => $key]) }}" 
-                       class="filter-btn {{ request('category') == $key ? 'active' : '' }}"
+                    @foreach($categories as $category)
+                    <a href="{{ route('galleries.index', ['category' => $category->slug]) }}" 
+                       class="filter-btn {{ request('category') == $category->slug ? 'active' : '' }}"
                        role="tab"
-                       aria-selected="{{ request('category') == $key ? 'true' : 'false' }}"
-                       aria-label="Lihat foto kategori {{ $label }}">
-                        <i class="{{ \App\Models\Gallery::where('category', $key)->first()?->category_icon ?? 'fas fa-folder' }}" aria-hidden="true"></i> {{ $label }}
+                       aria-selected="{{ request('category') == $category->slug ? 'true' : 'false' }}"
+                       aria-label="Lihat foto kategori {{ $category->name }}">
+                        <i class="{{ $category->icon ?? 'fas fa-folder' }}" aria-hidden="true"></i> {{ $category->name }}
                     </a>
                     @endforeach
                 </nav>
@@ -52,11 +52,12 @@
     <!-- Gallery Grid -->
     <div class="photo-grid-widget">
         @forelse($galleries as $gallery)
-        <div class="photo-item-widget" data-category="{{ $gallery->category }}">
+        <div class="photo-item-widget" data-category="{{ $gallery->category ? $gallery->category->slug : '' }}">
             <div class="photo-container-widget">
                 <a href="{{ $gallery->image }}" 
+                   id="gallery-item-{{ $gallery->id }}"
                    class="glightbox" 
-                   data-gallery="gallery1"
+                   data-gallery="gallery-main"
                    data-title="{{ $gallery->title }}"
                    data-description="{{ $gallery->description }}"
                    data-type="image">

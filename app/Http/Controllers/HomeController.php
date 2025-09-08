@@ -23,18 +23,21 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        $announcements = Announcement::published()
+        $announcements = Announcement::with('category')
+            ->published()
             ->latest('published_at')
             ->take(3)
             ->get();
 
-        $galleries = Gallery::published()
+        $galleries = Gallery::with('category')
+            ->published()
             ->ordered()
             ->take(8)
             ->get();
 
         // Get documents from announcements with attachments
-        $documents = Announcement::published()
+        $documents = Announcement::with('category')
+            ->published()
             ->whereNotNull('attachment')
             ->latest('published_at')
             ->take(4)

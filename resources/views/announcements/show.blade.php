@@ -139,18 +139,11 @@
                     <a href="{{ route('announcements.index') }}" class="quick-link">
                         <i class="fas fa-list"></i> Semua Pengumuman
                     </a>
-                    <a href="{{ route('announcements.index', ['category' => 'akademik']) }}" class="quick-link">
-                        <i class="fas fa-graduation-cap"></i> Akademik
+                    @if($announcement->category)
+                    <a href="{{ route('announcements.index', ['category' => $announcement->category->slug]) }}" class="quick-link">
+                        <i class="fas fa-tag"></i> {{ $announcement->category->name }}
                     </a>
-                    <a href="{{ route('announcements.index', ['category' => 'kegiatan']) }}" class="quick-link">
-                        <i class="fas fa-calendar-check"></i> Kegiatan
-                    </a>
-                    <a href="{{ route('announcements.index', ['category' => 'ujian']) }}" class="quick-link">
-                        <i class="fas fa-clipboard-check"></i> Ujian
-                    </a>
-                    <a href="{{ route('announcements.index', ['category' => 'libur']) }}" class="quick-link">
-                        <i class="fas fa-calendar-times"></i> Libur
-                    </a>
+                    @endif
                 </div>
             </div>
         </div>

@@ -62,17 +62,8 @@
 							<div class="mb-3">
 								<label for="image" class="form-label">Gambar Utama <span class="text-danger">*</span></label>
 								<input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*" required>
-								<small class="form-text text-muted">Format: JPG, PNG, GIF (Max: 5MB)</small>
+								<small class="form-text text-muted">Format: JPG, PNG, GIF, WebP (Max: 20MB) - Thumbnail akan dibuat otomatis</small>
 								@error('image')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
-							</div>
-
-							<div class="mb-3">
-								<label for="thumbnail" class="form-label">Thumbnail</label>
-								<input type="file" class="form-control @error('thumbnail') is-invalid @enderror" id="thumbnail" name="thumbnail" accept="image/*">
-								<small class="form-text text-muted">Format: JPG, PNG, GIF (Max: 2MB) - Opsional</small>
-								@error('thumbnail')
 									<div class="invalid-feedback">{{ $message }}</div>
 								@enderror
 							</div>
@@ -80,17 +71,23 @@
 
 						<div class="col-md-4">
 							<div class="mb-3">
-								<label for="category" class="form-label">Kategori <span class="text-danger">*</span></label>
-								<select class="form-select @error('category') is-invalid @enderror" id="category" name="category" required>
+								<label for="category_id" class="form-label">Kategori <span class="text-danger">*</span></label>
+								<select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
 									<option value="">Pilih Kategori</option>
-									<option value="kegiatan-belajar" {{ old('category') == 'kegiatan-belajar' ? 'selected' : '' }}>Kegiatan Belajar</option>
-									<option value="ekstrakurikuler" {{ old('category') == 'ekstrakurikuler' ? 'selected' : '' }}>Ekstrakurikuler</option>
-									<option value="acara-sekolah" {{ old('category') == 'acara-sekolah' ? 'selected' : '' }}>Acara Sekolah</option>
-									<option value="fasilitas" {{ old('category') == 'fasilitas' ? 'selected' : '' }}>Fasilitas</option>
+									@foreach($categories as $category)
+										<option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+											{{ $category->name }}
+										</option>
+									@endforeach
 								</select>
-								@error('category')
+								@error('category_id')
 									<div class="invalid-feedback">{{ $message }}</div>
 								@enderror
+								<small class="form-text text-muted">
+									<button type="button" class="btn btn-link p-0 text-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+										<i data-feather="plus" class="icon-sm me-1"></i>Tambah Kategori Baru
+									</button>
+								</small>
 							</div>
 
 							<div class="mb-3">
@@ -134,6 +131,96 @@
 		</div>
 	</div>
 </div>
+
+<!-- Modal Tambah Kategori -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addCategoryModalLabel">Tambah Kategori Galeri</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form id="addCategoryForm" action="{{ route('admin.gallery-categories.store') }}" method="POST">
+				@csrf
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="modal_name" class="form-label">Nama Kategori <span class="text-danger">*</span></label>
+								<input type="text" class="form-control @error('name') is-invalid @enderror" id="modal_name" name="name" value="{{ old('name') }}" required>
+								@error('name')
+									<div class="invalid-feedback">{{ $message }}</div>
+								@enderror
+							</div>
+
+							<div class="mb-3">
+								<label for="modal_icon" class="form-label">Icon</label>
+								<input type="text" class="form-control @error('icon') is-invalid @enderror" id="modal_icon" name="icon" value="{{ old('icon', 'fas fa-folder') }}" placeholder="fas fa-folder">
+								<small class="form-text text-muted">Contoh: fas fa-folder, fas fa-camera, fas fa-image</small>
+								@error('icon')
+									<div class="invalid-feedback">{{ $message }}</div>
+								@enderror
+							</div>
+
+							<div class="mb-3">
+								<label for="modal_color" class="form-label">Warna <span class="text-danger">*</span></label>
+								<select class="form-select @error('color') is-invalid @enderror" id="modal_color" name="color" required>
+									<option value="">Pilih Warna</option>
+									<option value="primary" {{ old('color') == 'primary' ? 'selected' : '' }}>Primary (Biru)</option>
+									<option value="secondary" {{ old('color') == 'secondary' ? 'selected' : '' }}>Secondary (Abu-abu)</option>
+									<option value="success" {{ old('color') == 'success' ? 'selected' : '' }}>Success (Hijau)</option>
+									<option value="danger" {{ old('color') == 'danger' ? 'selected' : '' }}>Danger (Merah)</option>
+									<option value="warning" {{ old('color') == 'warning' ? 'selected' : '' }}>Warning (Kuning)</option>
+									<option value="info" {{ old('color') == 'info' ? 'selected' : '' }}>Info (Biru Muda)</option>
+									<option value="light" {{ old('color') == 'light' ? 'selected' : '' }}>Light (Terang)</option>
+									<option value="dark" {{ old('color') == 'dark' ? 'selected' : '' }}>Dark (Gelap)</option>
+								</select>
+								@error('color')
+									<div class="invalid-feedback">{{ $message }}</div>
+								@enderror
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="modal_description" class="form-label">Deskripsi</label>
+								<textarea class="form-control @error('description') is-invalid @enderror" id="modal_description" name="description" rows="4">{{ old('description') }}</textarea>
+								@error('description')
+									<div class="invalid-feedback">{{ $message }}</div>
+								@enderror
+							</div>
+
+							<div class="mb-3">
+								<label for="modal_sort_order" class="form-label">Urutan Tampil</label>
+								<input type="number" class="form-control @error('sort_order') is-invalid @enderror" id="modal_sort_order" name="sort_order" value="{{ old('sort_order', 0) }}" min="0">
+								<small class="form-text text-muted">Angka kecil akan ditampilkan lebih dulu</small>
+								@error('sort_order')
+									<div class="invalid-feedback">{{ $message }}</div>
+								@enderror
+							</div>
+
+							<div class="mb-3">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" id="modal_is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
+									<label class="form-check-label" for="modal_is_active">
+										Aktif
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+					<button type="submit" class="btn btn-primary">
+						<i data-feather="save" class="icon-sm me-2"></i>
+						Simpan Kategori
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 @endsection
 
 @push('custom-js')
@@ -160,17 +247,103 @@
 			}
 		});
 
-		$('#thumbnail').on('change', function() {
-			const file = this.files[0];
-			if (file) {
-				const reader = new FileReader();
-				reader.onload = function(e) {
-					$('#thumbnail-preview').remove();
-					$('#thumbnail').after('<div id="thumbnail-preview" class="mt-2"><img src="' + e.target.result + '" class="img-thumbnail" style="max-width: 150px; max-height: 100px;"></div>');
-				};
-				reader.readAsDataURL(file);
+		// Modal form functionality
+		$('#addCategoryModal').on('show.bs.modal', function () {
+			// Reset form
+			$('#addCategoryForm')[0].reset();
+			$('#modal_icon').val('fas fa-folder');
+			$('#modal_is_active').prop('checked', true);
+			$('#modal_sort_order').val(0);
+			$('#icon-preview, #color-preview').remove();
+		});
+
+		// Preview icon in modal
+		$('#modal_icon').on('input', function() {
+			const iconClass = $(this).val();
+			$('#icon-preview').remove();
+			if (iconClass) {
+				$(this).after('<div id="icon-preview" class="mt-2"><i class="' + iconClass + ' fa-2x"></i></div>');
 			}
 		});
+
+		// Preview color in modal
+		$('#modal_color').on('change', function() {
+			const color = $(this).val();
+			$('#color-preview').remove();
+			if (color) {
+				$(this).after('<div id="color-preview" class="mt-2"><span class="badge bg-' + color + '">Preview Warna</span></div>');
+			}
+		});
+
+		// Auto-resize textarea in modal
+		$('#modal_description').on('input', function() {
+			this.style.height = 'auto';
+			this.style.height = (this.scrollHeight) + 'px';
+		});
+
+		// Handle form submission via AJAX
+		$('#addCategoryForm').on('submit', function(e) {
+			e.preventDefault();
+			
+			const form = $(this);
+			const submitBtn = form.find('button[type="submit"]');
+			const originalText = submitBtn.html();
+			
+			// Disable submit button and show loading
+			submitBtn.prop('disabled', true).html('<i class="spinner-border spinner-border-sm me-2"></i>Menyimpan...');
+			
+			$.ajax({
+				url: form.attr('action'),
+				method: 'POST',
+				data: form.serialize(),
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest',
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+				success: function(response) {
+					// Show success message
+					$('.alert').remove();
+					$('.card-body').first().prepend(
+						'<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+						response.message +
+						'<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+						'</div>'
+					);
+					
+					// Close modal
+					$('#addCategoryModal').modal('hide');
+					
+					// Reload page to show new category
+					setTimeout(function() {
+						location.reload();
+					}, 1000);
+				},
+				error: function(xhr) {
+					// Handle validation errors
+					if (xhr.status === 422) {
+						const errors = xhr.responseJSON.errors;
+						// Clear previous errors
+						$('.is-invalid').removeClass('is-invalid');
+						$('.invalid-feedback').remove();
+						
+						// Show new errors
+						$.each(errors, function(field, messages) {
+							const input = form.find('[name="' + field + '"]');
+							input.addClass('is-invalid');
+							input.after('<div class="invalid-feedback">' + messages[0] + '</div>');
+						});
+					} else {
+						// Show general error
+						alert('Terjadi kesalahan. Silakan coba lagi.');
+					}
+				},
+				complete: function() {
+					// Re-enable submit button
+					submitBtn.prop('disabled', false).html(originalText);
+				}
+			});
+		});
+
 	});
 </script>
 @endpush

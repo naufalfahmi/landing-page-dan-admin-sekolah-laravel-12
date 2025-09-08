@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
+use App\Models\GalleryCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class GalleryController extends Controller
 {
@@ -15,7 +18,7 @@ class GalleryController extends Controller
      */
     public function index()
     {
-        $galleries = Gallery::ordered()->paginate(10);
+        $galleries = Gallery::with('category')->ordered()->paginate(10);
         return view('admin.galleries.index', compact('galleries'));
     }
 
@@ -24,7 +27,8 @@ class GalleryController extends Controller
      */
     public function create()
     {
-        return view('admin.galleries.create');
+        $categories = GalleryCategory::active()->ordered()->get();
+        return view('admin.galleries.create', compact('categories'));
     }
 
     /**
@@ -35,9 +39,8 @@ class GalleryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category' => 'required|in:kegiatan-belajar,ekstrakurikuler,acara-sekolah,fasilitas',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
+            'category_id' => 'required|exists:gallery_categories,id',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
             'sort_order' => 'integer|min:0',
@@ -51,14 +54,10 @@ class GalleryController extends Controller
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('galleries', $imageName, 'public');
             $data['image'] = $imagePath;
-        }
 
-        // Handle thumbnail upload
-        if ($request->hasFile('thumbnail')) {
-            $thumbnail = $request->file('thumbnail');
-            $thumbnailName = time() . '_thumb_' . Str::slug($request->title) . '.' . $thumbnail->getClientOriginalExtension();
-            $thumbnailPath = $thumbnail->storeAs('galleries/thumbnails', $thumbnailName, 'public');
-            $data['thumbnail'] = $thumbnailPath;
+            // Auto-generate thumbnail
+            $this->generateThumbnail($image, $imageName);
+            $data['thumbnail'] = 'galleries/thumbnails/' . $imageName;
         }
 
         $data['is_published'] = $request->has('is_published');
@@ -76,6 +75,7 @@ class GalleryController extends Controller
      */
     public function show(Gallery $gallery)
     {
+        $gallery->load('category');
         return view('admin.galleries.show', compact('gallery'));
     }
 
@@ -84,7 +84,8 @@ class GalleryController extends Controller
      */
     public function edit(Gallery $gallery)
     {
-        return view('admin.galleries.edit', compact('gallery'));
+        $categories = GalleryCategory::active()->ordered()->get();
+        return view('admin.galleries.edit', compact('gallery', 'categories'));
     }
 
     /**
@@ -95,9 +96,8 @@ class GalleryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category' => 'required|in:kegiatan-belajar,ekstrakurikuler,acara-sekolah,fasilitas',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
+            'category_id' => 'required|exists:gallery_categories,id',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
             'sort_order' => 'integer|min:0',
@@ -107,28 +107,22 @@ class GalleryController extends Controller
         
         // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image
+            // Delete old image and thumbnail
             if ($gallery->image && Storage::disk('public')->exists($gallery->image)) {
                 Storage::disk('public')->delete($gallery->image);
+            }
+            if ($gallery->thumbnail && Storage::disk('public')->exists($gallery->thumbnail)) {
+                Storage::disk('public')->delete($gallery->thumbnail);
             }
             
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('galleries', $imageName, 'public');
             $data['image'] = $imagePath;
-        }
 
-        // Handle thumbnail upload
-        if ($request->hasFile('thumbnail')) {
-            // Delete old thumbnail
-            if ($gallery->thumbnail && Storage::disk('public')->exists($gallery->thumbnail)) {
-                Storage::disk('public')->delete($gallery->thumbnail);
-            }
-            
-            $thumbnail = $request->file('thumbnail');
-            $thumbnailName = time() . '_thumb_' . Str::slug($request->title) . '.' . $thumbnail->getClientOriginalExtension();
-            $thumbnailPath = $thumbnail->storeAs('galleries/thumbnails', $thumbnailName, 'public');
-            $data['thumbnail'] = $thumbnailPath;
+            // Auto-generate thumbnail
+            $this->generateThumbnail($image, $imageName);
+            $data['thumbnail'] = 'galleries/thumbnails/' . $imageName;
         }
 
         $data['is_published'] = $request->has('is_published');
@@ -158,5 +152,35 @@ class GalleryController extends Controller
 
         return redirect()->route('admin.galleries.index')
             ->with('success', 'Galeri berhasil dihapus.');
+    }
+
+    /**
+     * Generate thumbnail from uploaded image
+     */
+    private function generateThumbnail($image, $imageName)
+    {
+        try {
+            $manager = new ImageManager(new Driver());
+            
+            // Create thumbnail directory if it doesn't exist
+            $thumbnailDir = storage_path('app/public/galleries/thumbnails');
+            if (!file_exists($thumbnailDir)) {
+                mkdir($thumbnailDir, 0755, true);
+            }
+            
+            // Process image
+            $img = $manager->read($image->getPathname());
+            
+            // Resize to thumbnail size (300x300, maintain aspect ratio)
+            $img->cover(300, 300);
+            
+            // Save thumbnail
+            $thumbnailPath = storage_path('app/public/galleries/thumbnails/' . $imageName);
+            $img->save($thumbnailPath, 85); // 85% quality
+            
+        } catch (\Exception $e) {
+            // Log error but don't fail the upload
+            \Log::error('Thumbnail generation failed: ' . $e->getMessage());
+        }
     }
 }

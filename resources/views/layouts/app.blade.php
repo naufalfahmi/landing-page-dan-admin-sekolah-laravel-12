@@ -54,26 +54,6 @@
         
         <!-- GLightbox JS -->
         <script src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js"></script>
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof GLightbox !== 'undefined') {
-                const lightbox = GLightbox({
-                    selector: '.glightbox',
-                    touchNavigation: true,
-                    loop: true,
-                    autoplayVideos: false,
-                    width: '90vw',
-                    height: '90vh',
-                    zoomable: true,
-                    draggable: true,
-                    dragToleranceX: 40,
-                    dragToleranceY: 65,
-                    preload: true
-                });
-                console.log('GLightbox initialized from layout');
-            }
-        });
-        </script>
         
         <!-- Additional CSS for specific pages -->
         @stack('styles')

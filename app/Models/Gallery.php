@@ -16,7 +16,7 @@ class Gallery extends Model
         'description',
         'image',
         'thumbnail',
-        'category',
+        'category_id',
         'is_featured',
         'is_published',
         'sort_order',
@@ -68,7 +68,12 @@ class Gallery extends Model
      */
     public function scopeByCategory($query, $category)
     {
-        return $query->where('category', $category);
+        if (is_numeric($category)) {
+            return $query->where('category_id', $category);
+        }
+        return $query->whereHas('category', function($q) use ($category) {
+            $q->where('slug', $category);
+        });
     }
 
     /**
@@ -77,6 +82,14 @@ class Gallery extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get the category that owns the gallery.
+     */
+    public function category()
+    {
+        return $this->belongsTo(GalleryCategory::class);
     }
 
     /**
@@ -92,14 +105,7 @@ class Gallery extends Model
      */
     public function getCategoryLabelAttribute()
     {
-        $labels = [
-            'kegiatan-belajar' => 'Kegiatan Belajar',
-            'ekstrakurikuler' => 'Ekstrakurikuler',
-            'acara-sekolah' => 'Acara Sekolah',
-            'fasilitas' => 'Fasilitas'
-        ];
-
-        return $labels[$this->category] ?? 'Kegiatan Belajar';
+        return $this->category ? $this->category->name : 'Tidak Berkategori';
     }
 
     /**
@@ -107,14 +113,7 @@ class Gallery extends Model
      */
     public function getCategoryIconAttribute()
     {
-        $icons = [
-            'kegiatan-belajar' => 'fas fa-book',
-            'ekstrakurikuler' => 'fas fa-futbol',
-            'acara-sekolah' => 'fas fa-calendar-check',
-            'fasilitas' => 'fas fa-building'
-        ];
-
-        return $icons[$this->category] ?? 'fas fa-book';
+        return $this->category ? $this->category->icon : 'fas fa-image';
     }
 
     /**
@@ -122,13 +121,6 @@ class Gallery extends Model
      */
     public function getCategoryColorAttribute()
     {
-        $colors = [
-            'kegiatan-belajar' => 'primary',
-            'ekstrakurikuler' => 'success',
-            'acara-sekolah' => 'warning',
-            'fasilitas' => 'info'
-        ];
-
-        return $colors[$this->category] ?? 'primary';
+        return $this->category ? $this->category->color : 'primary';
     }
 }

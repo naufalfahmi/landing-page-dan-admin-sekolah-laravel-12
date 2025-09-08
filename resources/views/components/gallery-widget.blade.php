@@ -19,9 +19,10 @@
         <!-- Photo Grid - Same as Galleries Page -->
         <div class="photo-grid-widget">
             @forelse($galleries as $gallery)
-            <div class="photo-item-widget" data-category="{{ $gallery->category }}">
+            <div class="photo-item-widget" data-category="{{ $gallery->category ? $gallery->category->slug : '' }}">
                 <div class="photo-container-widget">
                     <a href="{{ $gallery->image }}" 
+                       id="gallery-widget-{{ $gallery->id }}"
                        class="glightbox" 
                        data-gallery="gallery-widget"
                        data-title="{{ $gallery->title }}"

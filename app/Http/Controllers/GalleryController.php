@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
+use App\Models\GalleryCategory;
 use Illuminate\Http\Request;
 
 class GalleryController extends Controller
@@ -12,7 +13,7 @@ class GalleryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Gallery::published()->ordered();
+        $query = Gallery::with('category')->published()->ordered();
 
         // Filter by category
         if ($request->has('category') && $request->category) {
@@ -21,12 +22,8 @@ class GalleryController extends Controller
 
         $galleries = $query->paginate(12);
 
-        $categories = [
-            'kegiatan-belajar' => 'Kegiatan Belajar',
-            'ekstrakurikuler' => 'Ekstrakurikuler',
-            'acara-sekolah' => 'Acara Sekolah',
-            'fasilitas' => 'Fasilitas'
-        ];
+        // Get active categories for filter
+        $categories = GalleryCategory::active()->ordered()->get();
 
         return view('galleries.index', compact('galleries', 'categories'));
     }
@@ -36,13 +33,17 @@ class GalleryController extends Controller
      */
     public function show(Gallery $gallery)
     {
+        // Load category relationship
+        $gallery->load('category');
+        
         // Increment view count
         $gallery->incrementViews();
 
-        // Get related galleries
-        $relatedGalleries = Gallery::published()
+        // Get related galleries from same category
+        $relatedGalleries = Gallery::with('category')
+            ->published()
             ->where('id', '!=', $gallery->id)
-            ->where('category', $gallery->category)
+            ->where('category_id', $gallery->category_id)
             ->ordered()
             ->take(6)
             ->get();
@@ -55,7 +56,8 @@ class GalleryController extends Controller
      */
     public function getFeatured()
     {
-        return Gallery::published()
+        return Gallery::with('category')
+            ->published()
             ->featured()
             ->ordered()
             ->take(8)
@@ -67,7 +69,8 @@ class GalleryController extends Controller
      */
     public function getLatest()
     {
-        return Gallery::published()
+        return Gallery::with('category')
+            ->published()
             ->ordered()
             ->take(8)
             ->get();

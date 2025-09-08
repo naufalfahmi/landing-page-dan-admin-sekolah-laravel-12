@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             ArticleSeeder::class,
             DocumentSeeder::class,
             SliderSeeder::class,
+            AnnouncementCategorySeeder::class,
         ]);
     }
 }

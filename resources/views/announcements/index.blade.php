@@ -47,9 +47,9 @@
                                 </label>
                                 <select class="form-select filter-select" id="category" name="category">
                                     <option value="">Semua Kategori</option>
-                                    @foreach($categories as $key => $label)
-                                        <option value="{{ $key }}" {{ request('category') == $key ? 'selected' : '' }}>
-                                            {{ $label }}
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
+                                            {{ $category->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -101,7 +101,7 @@
                         untuk pencarian "<strong>{{ request('search') }}</strong>"
                     @endif
                     @if(request('category'))
-                        dengan kategori <strong>{{ $categories[request('category')] ?? ucfirst(request('category')) }}</strong>
+                        dengan kategori <strong>{{ $categories->where('slug', request('category'))->first()->name ?? ucfirst(request('category')) }}</strong>
                     @endif
                     @if(request('priority'))
                         dengan prioritas <strong>{{ $priorities[request('priority')] ?? ucfirst(request('priority')) }}</strong>

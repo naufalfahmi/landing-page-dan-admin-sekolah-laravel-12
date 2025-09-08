@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
+use App\Models\AnnouncementCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -14,7 +15,7 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
-        $announcements = Announcement::latest()->paginate(10);
+        $announcements = Announcement::with('category')->latest()->paginate(10);
         return view('admin.announcements.index', compact('announcements'));
     }
 
@@ -23,13 +24,7 @@ class AnnouncementController extends Controller
      */
     public function create()
     {
-        $categories = [
-            'akademik' => 'Akademik',
-            'kegiatan' => 'Kegiatan',
-            'ujian' => 'Ujian',
-            'libur' => 'Libur',
-            'umum' => 'Umum'
-        ];
+        $categories = AnnouncementCategory::active()->ordered()->get();
 
         $priorities = [
             'low' => 'Rendah',
@@ -50,7 +45,7 @@ class AnnouncementController extends Controller
             'title' => 'required|string|max:255',
             'summary' => 'required|string|max:500',
             'content' => 'required|string',
-            'category' => 'required|in:akademik,kegiatan,ujian,libur,umum',
+            'category_id' => 'required|exists:announcement_categories,id',
             'priority' => 'required|in:low,normal,high,urgent',
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
             'is_published' => 'boolean',
@@ -82,6 +77,7 @@ class AnnouncementController extends Controller
      */
     public function show(Announcement $announcement)
     {
+        $announcement->load('category');
         return view('admin.announcements.show', compact('announcement'));
     }
 
@@ -90,13 +86,7 @@ class AnnouncementController extends Controller
      */
     public function edit(Announcement $announcement)
     {
-        $categories = [
-            'akademik' => 'Akademik',
-            'kegiatan' => 'Kegiatan',
-            'ujian' => 'Ujian',
-            'libur' => 'Libur',
-            'umum' => 'Umum'
-        ];
+        $categories = AnnouncementCategory::active()->ordered()->get();
 
         $priorities = [
             'low' => 'Rendah',
@@ -117,7 +107,7 @@ class AnnouncementController extends Controller
             'title' => 'required|string|max:255',
             'summary' => 'required|string|max:500',
             'content' => 'required|string',
-            'category' => 'required|in:akademik,kegiatan,ujian,libur,umum',
+            'category_id' => 'required|exists:announcement_categories,id',
             'priority' => 'required|in:low,normal,high,urgent',
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
             'is_published' => 'boolean',
