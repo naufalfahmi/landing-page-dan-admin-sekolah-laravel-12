@@ -762,7 +762,9 @@ h1, h2, h3, h4, h5, h6 {
 #heroCarousel {
     position: relative;
     width: 100vw;
-    height: 100vh;
+    height: 60vh;
+    min-height: 400px;
+    max-height: 600px;
     overflow: hidden;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
@@ -772,7 +774,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-slide {
     position: relative;
-    height: 100vh;
+    height: 60vh;
+    min-height: 400px;
+    max-height: 600px;
     overflow: hidden;
 }
 
@@ -818,9 +822,442 @@ h1, h2, h3, h4, h5, h6 {
     height: 20px;
 }
 
+/* Hero Banner Carousel Styles */
+.hero-banner-carousel {
+    height: 60vh;
+    min-height: 400px;
+    max-height: 600px;
+    overflow: hidden;
+}
+
+.hero-banner-fallback {
+    height: 60vh;
+    min-height: 400px;
+    max-height: 600px;
+    overflow: hidden;
+}
+
+.hero-banner-img {
+    height: 60vh;
+    min-height: 400px;
+    max-height: 600px;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+}
+
+/* Desktop and Large Screens */
+@media (min-width: 1200px) {
+    #heroCarousel {
+        height: 70vh;
+        min-height: 500px;
+        max-height: 700px;
+    }
+    
+    .hero-slide {
+        height: 70vh;
+        min-height: 500px;
+        max-height: 700px;
+    }
+    
+    .hero-banner-carousel {
+        height: 70vh;
+        min-height: 500px;
+        max-height: 700px;
+    }
+    
+    .hero-banner-fallback {
+        height: 70vh;
+        min-height: 500px;
+        max-height: 700px;
+    }
+    
+    .hero-banner-img {
+        height: 70vh;
+        min-height: 500px;
+        max-height: 700px;
+    }
+}
+
+/* Tablet and Medium Screens */
+@media (min-width: 769px) and (max-width: 1199px) {
+    #heroCarousel {
+        height: 55vh;
+        min-height: 350px;
+        max-height: 550px;
+    }
+    
+    .hero-slide {
+        height: 55vh;
+        min-height: 350px;
+        max-height: 550px;
+    }
+    
+    .hero-banner-carousel {
+        height: 55vh;
+        min-height: 350px;
+        max-height: 550px;
+    }
+    
+    .hero-banner-fallback {
+        height: 55vh;
+        min-height: 350px;
+        max-height: 550px;
+    }
+    
+    .hero-banner-img {
+        height: 55vh;
+        min-height: 350px;
+        max-height: 550px;
+    }
+}
+
+/* Hero Banner Mobile Responsive */
+@media (max-width: 768px) {
+    .hero-banner-carousel {
+        height: 60vh;
+        min-height: 300px;
+        max-height: 500px;
+    }
+    
+    .hero-banner-fallback {
+        height: 60vh;
+        min-height: 300px;
+        max-height: 500px;
+    }
+    
+    .hero-banner-img {
+        height: 60vh;
+        min-height: 300px;
+        max-height: 500px;
+        object-fit: cover;
+        object-position: center top;
+        width: 100% !important;
+        min-width: 100%;
+        max-width: none;
+        display: block;
+    }
+    
+    .hero-banner-carousel .carousel-control-prev,
+    .hero-banner-carousel .carousel-control-next {
+        width: 45px;
+        height: 45px;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        opacity: 0.8;
+    }
+    
+    .hero-banner-carousel .carousel-control-prev {
+        left: 15px;
+    }
+    
+    .hero-banner-carousel .carousel-control-next {
+        right: 15px;
+    }
+    
+    .hero-banner-carousel .carousel-control-prev:hover,
+    .hero-banner-carousel .carousel-control-next:hover {
+        background: rgba(0, 0, 0, 0.8);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-banner-carousel {
+        height: 50vh;
+        min-height: 250px;
+        max-height: 400px;
+    }
+    
+    .hero-banner-fallback {
+        height: 50vh;
+        min-height: 250px;
+        max-height: 400px;
+    }
+    
+    .hero-banner-img {
+        height: 50vh;
+        min-height: 250px;
+        max-height: 400px;
+        object-fit: cover;
+        object-position: center top;
+        width: 100% !important;
+        min-width: 100%;
+        max-width: none;
+        display: block;
+    }
+    
+    .hero-banner-carousel .carousel-control-prev,
+    .hero-banner-carousel .carousel-control-next {
+        width: 40px;
+        height: 40px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        opacity: 0.9;
+    }
+    
+    .hero-banner-carousel .carousel-control-prev {
+        left: 10px;
+    }
+    
+    .hero-banner-carousel .carousel-control-next {
+        right: 10px;
+    }
+    
+    .hero-banner-carousel .carousel-control-prev:hover,
+    .hero-banner-carousel .carousel-control-next:hover {
+        background: rgba(0, 0, 0, 0.9);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-banner-carousel {
+        height: 45vh;
+        min-height: 200px;
+        max-height: 350px;
+    }
+    
+    .hero-banner-fallback {
+        height: 45vh;
+        min-height: 200px;
+        max-height: 350px;
+    }
+    
+    .hero-banner-img {
+        height: 45vh;
+        min-height: 200px;
+        max-height: 350px;
+        object-fit: cover;
+        object-position: center top;
+        width: 100% !important;
+        min-width: 100%;
+        max-width: none;
+        display: block;
+    }
+    
+    .hero-banner-carousel .carousel-control-prev,
+    .hero-banner-carousel .carousel-control-next {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .hero-banner-carousel .carousel-control-prev {
+        left: 8px;
+    }
+    
+    .hero-banner-carousel .carousel-control-next {
+        right: 8px;
+    }
+}
+
 /* Carousel Indicators - Hidden */
 .carousel-indicators {
     display: none !important;
+}
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+    .hero-slide img,
+    .hero-banner-img {
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
+    
+    .carousel-item {
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+    
+    /* Ensure full width on mobile */
+    .hero-slide,
+    .hero-banner-carousel .carousel-item {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .carousel-inner {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Touch Action Optimization */
+.hero-banner-carousel,
+#heroCarousel {
+    touch-action: pan-y pinch-zoom;
+}
+
+/* iPhone and iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+    .hero-slide img,
+    .hero-banner-img {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .hero-slide,
+    .hero-banner-carousel .carousel-item {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .carousel-inner {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    #heroCarousel,
+    .hero-banner-carousel {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+    }
+}
+
+/* iPhone 14 and smaller devices specific fixes */
+@media only screen 
+and (device-width: 390px) 
+and (device-height: 844px) 
+and (-webkit-device-pixel-ratio: 3) {
+    .hero-slide img,
+    .hero-banner-img {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .hero-slide,
+    .hero-banner-carousel .carousel-item {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100%;
+        overflow: hidden;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .carousel-inner {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    #heroCarousel,
+    .hero-banner-carousel {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+    }
+}
+
+/* iPhone safe area fixes - simplified */
+@supports (padding: max(0px)) {
+    .hero-slide img,
+    .hero-banner-img {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+    }
+    
+    .hero-slide,
+    .hero-banner-carousel .carousel-item {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .carousel-inner {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    #heroCarousel,
+    .hero-banner-carousel {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* General mobile viewport fixes */
+@media screen and (max-width: 428px) {
+    .hero-slide img,
+    .hero-banner-img {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .hero-slide,
+    .hero-banner-carousel .carousel-item {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100%;
+        overflow: hidden;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .carousel-inner {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    #heroCarousel,
+    .hero-banner-carousel {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+    }
+}
+
+/* Additional iPhone fixes - removed CSS containment to prevent image disappearing */
+
+/* Prevent text selection on carousel controls */
+.carousel-control-prev,
+.carousel-control-next {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Animations */
@@ -842,17 +1279,35 @@ h1, h2, h3, h4, h5, h6 {
 /* Mobile Responsive */
 @media (max-width: 768px) {
     #heroCarousel {
-        height: 100vh;
+        height: 60vh;
+        min-height: 300px;
+        max-height: 500px;
     }
     
     .hero-slide {
-        height: 100vh;
+        height: 60vh;
+        min-height: 300px;
+        max-height: 500px;
+        overflow: hidden;
+    }
+    
+    .hero-slide img {
+        object-fit: cover;
+        object-position: center top;
+        width: 100% !important;
+        height: 100%;
+        min-width: 100%;
+        max-width: none;
+        display: block;
     }
     
     .carousel-control-prev,
     .carousel-control-next {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        opacity: 0.8;
     }
     
     .carousel-control-prev {
@@ -861,6 +1316,12 @@ h1, h2, h3, h4, h5, h6 {
     
     .carousel-control-next {
         right: 15px;
+    }
+    
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        background: rgba(0, 0, 0, 0.8);
+        opacity: 1;
     }
     
     /* Breadcrumb Mobile */
@@ -880,17 +1341,35 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 576px) {
     #heroCarousel {
-        height: 100vh;
+        height: 50vh;
+        min-height: 250px;
+        max-height: 400px;
     }
     
     .hero-slide {
-        height: 100vh;
+        height: 50vh;
+        min-height: 250px;
+        max-height: 400px;
+        overflow: hidden;
+    }
+    
+    .hero-slide img {
+        object-fit: cover;
+        object-position: center top;
+        width: 100% !important;
+        height: 100%;
+        min-width: 100%;
+        max-width: none;
+        display: block;
     }
     
     .carousel-control-prev,
     .carousel-control-next {
         width: 40px;
         height: 40px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        opacity: 0.9;
     }
     
     .carousel-control-prev {
@@ -899,6 +1378,51 @@ h1, h2, h3, h4, h5, h6 {
     
     .carousel-control-next {
         right: 10px;
+    }
+    
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        background: rgba(0, 0, 0, 0.9);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    #heroCarousel {
+        height: 45vh;
+        min-height: 200px;
+        max-height: 350px;
+    }
+    
+    .hero-slide {
+        height: 45vh;
+        min-height: 200px;
+        max-height: 350px;
+        overflow: hidden;
+    }
+    
+    .hero-slide img {
+        object-fit: cover;
+        object-position: center top;
+        width: 100% !important;
+        height: 100%;
+        min-width: 100%;
+        max-width: none;
+        display: block;
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .carousel-control-prev {
+        left: 8px;
+    }
+    
+    .carousel-control-next {
+        right: 8px;
     }
 }
 
