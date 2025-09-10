@@ -268,11 +268,9 @@
 
 		// Handle form submission
 		$('#penaKarsaForm').on('submit', function(e) {
-			console.log('Form submission started');
 			
 			// Update textarea with CKEditor content before submit
 			if (editor) {
-				console.log('Updating CKEditor content');
 				editor.updateSourceElement();
 				
 				// Validate content is not empty

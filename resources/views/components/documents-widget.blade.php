@@ -8,9 +8,11 @@
                         <i class="fas fa-download"></i>
                         Dokumen & Download
                     </h3>
+                    @if(isset($documents) && count($documents) > 0)
                     <a href="{{ route('documents.index') }}" class="view-all-btn">
                         Lihat Semua <i class="fas fa-arrow-right"></i>
                     </a>
+                    @endif
                 </div>
             </div>
         </div>

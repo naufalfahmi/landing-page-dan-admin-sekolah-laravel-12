@@ -16,11 +16,34 @@
     @if($announcement->category)
         <meta property="article:tag" content="{{ $announcement->category->name }}">
     @endif
+
+    @php
+        $ogImage = null;
+        if(isset($announcement->attachments)) {
+            foreach ($announcement->attachments as $att) {
+                $mime = strtolower((string) $att->file_type);
+                $url = strtolower((string) $att->file_url);
+                if ((strlen($mime) && str_starts_with($mime, 'image/')) || preg_match('/\.(jpg|jpeg|png|webp)$/', $url)) {
+                    $ogImage = $att->file_url;
+                    break;
+                }
+            }
+        }
+    @endphp
+    @if(!empty($ogImage))
+        <meta property="og:image" content="{{ $ogImage }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:type" content="image/jpeg">
+    @endif
     
     <!-- Twitter Card Meta Tags for Announcement -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{{ $announcement->title }} - Pengumuman">
     <meta name="twitter:description" content="{{ $announcement->summary }}">
+    @if(!empty($ogImage))
+        <meta name="twitter:image" content="{{ $ogImage }}">
+    @endif
 @endpush
 
 @section('content')

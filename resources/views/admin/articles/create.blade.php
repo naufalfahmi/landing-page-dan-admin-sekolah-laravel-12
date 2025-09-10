@@ -187,11 +187,9 @@
 
 		// Handle form submission
 		$('#articleForm').on('submit', function(e) {
-			console.log('Form submission started');
 			
 			// Update textarea with CKEditor content before submit
 			if (editor) {
-				console.log('Updating CKEditor content');
 				editor.updateSourceElement();
 				
 				// Validate content is not empty
@@ -210,9 +208,7 @@
 			const authorId = $('#author_id').val();
 			const categories = $('#categories').select2('val');
 			
-			console.log('Categories value:', categories);
-			console.log('Categories type:', typeof categories);
-			console.log('Categories length:', categories ? categories.length : 'null');
+			
 			
 			if (!title) {
 				e.preventDefault();
@@ -247,7 +243,7 @@
 			const originalText = submitBtn.text();
 			submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...');
 			
-			console.log('Form submitted successfully');
+			
 			
 			// Re-enable button after 10 seconds as fallback
 			setTimeout(() => {

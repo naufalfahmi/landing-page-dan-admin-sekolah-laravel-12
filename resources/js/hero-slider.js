@@ -131,7 +131,6 @@ function initializeCarousel(carousel) {
         });
     } else if (carousel) {
         // Fallback: Simple carousel without Bootstrap
-        console.log('Bootstrap not available, using fallback carousel');
         initSimpleCarousel(carousel);
     }
 }

@@ -8,9 +8,11 @@
                         <i class="fas fa-images"></i>
                         Galeri Foto
                     </h3>
+                    @if(isset($galleries) && count($galleries) > 0)
                     <a href="{{ route('galleries.index') }}" class="view-all-btn">
                         Lihat Semua <i class="fas fa-arrow-right"></i>
                     </a>
+                    @endif
                 </div>
             </div>
         </div>

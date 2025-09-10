@@ -122,15 +122,17 @@
                         <i class="fas fa-pen-fancy"></i>
                         Pena Karsa
                     </h3>
+                    @if($penaKarsa && count($penaKarsa) > 0)
                     <a href="{{ route('pena-karsa.index') }}" class="view-all-btn">
                         Semua Karya <i class="fas fa-arrow-right"></i>
                     </a>
+                    @endif
                 </div>
             </div>
         </div>
     
         <div class="row">
-            @foreach($penaKarsa as $item)
+            @forelse($penaKarsa as $item)
             <div class="col-md-4 mb-4">
                 <article class="card pena-karsa-card h-100" itemscope itemtype="https://schema.org/Article">
                     <div class="pena-karsa-image-container">
@@ -198,7 +200,15 @@
                     </div>
                 </article>
             </div>
-            @endforeach
+            @empty
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-pen-fancy fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Belum ada tulisan</h4>
+                    <p class="text-muted">Tulisan akan muncul di sini ketika tersedia.</p>
+                </div>
+            </div>
+            @endforelse
         </div>
     </div>
 </div>

@@ -8,9 +8,11 @@
                         <i class="fas fa-bullhorn"></i>
                         Pengumuman Terbaru
                     </h3>
+                    @if(isset($announcements) && count($announcements) > 0)
                     <a href="{{ route('announcements.index') }}" class="view-all-btn">
                         Lihat Semua <i class="fas fa-arrow-right"></i>
                     </a>
+                    @endif
                 </div>
             </div>
         </div>

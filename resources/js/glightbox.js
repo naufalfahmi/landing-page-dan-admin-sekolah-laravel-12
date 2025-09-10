@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
         img.style.opacity = '0.5';
         img.onload = function() {
             img.style.opacity = '1';
-            console.log('Image reloaded successfully:', originalSrc);
         };
         img.onerror = function() {
             img.style.opacity = '1';
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to initialize GLightbox
     function initGLightbox() {
         if (typeof GLightbox === 'undefined') {
-            console.log('GLightbox not available, retrying...');
             setTimeout(initGLightbox, 500);
             return;
         }
@@ -32,9 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.glightboxInstance) {
             try {
                 window.glightboxInstance.destroy();
-            } catch (e) {
-                console.log('Error destroying instance:', e);
-            }
+            } catch (e) {}
         }
 
         // Initialize separate GLightbox instances for each gallery group
@@ -50,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             galleryGroups[galleryName].push(element);
         });
         
-        console.log('Found gallery groups:', Object.keys(galleryGroups));
+        
         
         // Initialize separate GLightbox instances for each gallery group
         Object.keys(galleryGroups).forEach(galleryName => {
@@ -66,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     // Mark duplicate elements for removal
                     elementsToRemove.push(element);
-                    console.log(`Removing duplicate element ${index}: ${element.href}`);
                 }
             });
             
@@ -75,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 element.remove();
             });
             
-            console.log(`Gallery "${galleryName}": ${galleryGroups[galleryName].length} total, ${uniqueElements.length} unique elements, ${elementsToRemove.length} duplicates removed`);
+            
             
             // Update the gallery group with unique elements only
             galleryGroups[galleryName] = uniqueElements;
@@ -119,19 +114,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 // Force image to use original size and prevent caching
                 onSlideChange: function(data) {
-                    console.log('Slide changed to:', data.index);
                     // Force reload the image to prevent cache issues
                     const currentSlide = this.slides[data.index];
                     if (currentSlide && currentSlide.href) {
                         const timestamp = Date.now();
                         const separator = currentSlide.href.includes('?') ? '&' : '?';
                         currentSlide.href = currentSlide.href.split('?')[0] + separator + 'nocache=' + timestamp;
-                        console.log('Updated slide href:', currentSlide.href);
                     }
                 },
                 // Ensure images are displayed at full size and perfectly centered
                 onOpen: function(data) {
-                    console.log('Lightbox opened, ensuring full size display and centering');
                     // Force the image to display at full size and center it
                     setTimeout(() => {
                         const lightboxImg = document.querySelector('.glightbox-image img');
@@ -146,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             lightboxImg.style.objectFit = 'contain';
                             lightboxImg.style.display = 'block';
                             lightboxImg.style.margin = '0 auto';
-                            console.log('Image size forced to full size and centered');
                         }
                         
                         if (lightboxContainer) {
@@ -174,9 +165,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 element.addEventListener('click', (e) => {
                     e.preventDefault();
                     
-                    console.log(`Clicked element ${index} in ${galleryName}:`, element.href);
-                    console.log(`Element ID:`, element.id);
-                    
                     // Create slides array with only the clicked element
                     const slides = [{
                         href: element.href,
@@ -195,31 +183,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set main instance for backward compatibility
         window.glightboxInstance = window.glightboxInstance_gallery_widget || window.glightboxInstance_gallery_main || window.glightboxInstance_default;
         
-        console.log('GLightbox initialized successfully');
         
         // Debug: Log gallery elements after cleanup
         const remainingElements = document.querySelectorAll('.glightbox');
-        console.log('Found gallery elements after cleanup:', remainingElements.length);
-        
-        // Log each group separately with detailed info
-        Object.keys(galleryGroups).forEach(galleryName => {
-            console.log(`Gallery "${galleryName}" has ${galleryGroups[galleryName].length} items:`);
-            galleryGroups[galleryName].forEach((element, index) => {
-                console.log(`  ${index}: ${element.href} - ${element.getAttribute('data-title')}`);
-            });
-        });
         
         // Check for duplicate elements after cleanup
         const allHrefs = Array.from(remainingElements).map(el => el.href);
         const uniqueHrefs = [...new Set(allHrefs)];
-        console.log('Total elements after cleanup:', allHrefs.length);
-        console.log('Unique elements after cleanup:', uniqueHrefs.length);
         if (allHrefs.length !== uniqueHrefs.length) {
-            console.warn('DUPLICATE ELEMENTS STILL DETECTED AFTER CLEANUP!');
             const duplicates = allHrefs.filter((href, index) => allHrefs.indexOf(href) !== index);
-            console.log('Remaining duplicate URLs:', [...new Set(duplicates)]);
-        } else {
-            console.log('✅ No duplicate elements found - cleanup successful!');
+            // Optionally handle duplicates silently
         }
 
         // Enhanced event listeners with ID tracking
@@ -227,20 +200,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const instance = window[`glightboxInstance_${galleryName}`];
             if (instance) {
                 instance.on('open', (data) => {
-                    console.log(`Lightbox opened in ${galleryName} at index:`, data.index);
-                    
-                    // Get the clicked element ID for verification
-                    const galleryElements = document.querySelectorAll(`[data-gallery="${galleryName}"]`);
-                    if (galleryElements[data.index]) {
-                        const clickedElement = galleryElements[data.index];
-                        console.log(`Clicked element ID:`, clickedElement.id);
-                        console.log(`Clicked element href:`, clickedElement.href);
-                        console.log(`Clicked element title:`, clickedElement.getAttribute('data-title'));
-                    }
+                    // no-op
                 });
 
                 instance.on('close', () => {
-                    console.log(`Lightbox closed in ${galleryName}`);
+                    // no-op
                 });
             }
         });
@@ -262,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (hasGalleryElements) {
-                    console.log('New gallery elements detected, re-initializing GLightbox...');
                     setTimeout(initGLightbox, 100);
                 }
             }

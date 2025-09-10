@@ -129,7 +129,7 @@
 			<div class="card-body">
 				<div class="d-flex align-items-center">
 					<div class="icon-sm bg-info text-white rounded-3 me-3">
-						<i data-feather="megaphone"></i>
+						<i data-feather="bell"></i>
 					</div>
 					<div>
 						<h6 class="mb-0">{{ $stats['total_announcements'] }}</h6>
@@ -234,7 +234,7 @@
 					@if($alerts['draft_announcements'] > 0)
 					<div class="col-md-4">
 						<div class="alert alert-info d-flex align-items-center" role="alert">
-							<i data-feather="megaphone" class="icon-sm me-2"></i>
+							<i data-feather="bell" class="icon-sm me-2"></i>
 							<div>
 								<strong>{{ $alerts['draft_announcements'] }} pengumuman</strong> dalam draft
 								<br><a href="{{ route('admin.announcements.index') }}?status=draft" class="alert-link">Review pengumuman</a>
@@ -386,7 +386,7 @@
 													@if(str_contains($page->page_url, '/article/'))
 														<i data-feather="book" class="icon-sm text-primary"></i>
 													@elseif(str_contains($page->page_url, '/announcements'))
-														<i data-feather="megaphone" class="icon-sm text-info"></i>
+														<i data-feather="bell" class="icon-sm text-info"></i>
 													@elseif(str_contains($page->page_url, '/galleries'))
 														<i data-feather="image" class="icon-sm text-warning"></i>
 													@elseif(str_contains($page->page_url, '/pena-karsa'))
@@ -1046,7 +1046,7 @@
 								iconClass = 'book';
 								iconColor = 'text-primary';
 							} else if (page.page_url.includes('/announcements')) {
-								iconClass = 'megaphone';
+								iconClass = 'bell';
 								iconColor = 'text-info';
 							} else if (page.page_url.includes('/galleries')) {
 								iconClass = 'image';
