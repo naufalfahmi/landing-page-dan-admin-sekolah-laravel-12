@@ -12,10 +12,12 @@
     <meta property="og:description" content="{{ $article['excerpt'] }}">
     <meta property="og:url" content="{{ request()->url() }}">
     @if(!empty($article['image']))
-    <meta property="og:image" content="{{ $article['image'] }}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:type" content="image/jpeg">
+    @section('og_image')
+        <meta property="og:image" content="{{ $article['image'] }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:type" content="image/jpeg">
+    @endsection
     @endif
     <meta property="og:locale" content="id_ID">
     <meta property="article:author" content="{{ $article['author'] }}">
@@ -29,7 +31,9 @@
     <meta name="twitter:title" content="{{ $article['title'] }} - SMPIT Al-Itqon">
     <meta name="twitter:description" content="{{ $article['excerpt'] }}">
     @if(!empty($article['image']))
-    <meta name="twitter:image" content="{{ $article['image'] }}">
+    @section('twitter_image')
+        <meta name="twitter:image" content="{{ $article['image'] }}">
+    @endsection
     @endif
 @endpush
 

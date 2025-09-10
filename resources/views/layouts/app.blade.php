@@ -32,7 +32,9 @@
         <meta property="og:title" content="@yield('title', $siteTitle)">
         <meta property="og:description" content="@yield('description', $metaDescription ?: 'Berita dan Artikel Islami dari SMPIT Al-Itqon')">
         <meta property="og:url" content="{{ url()->current() }}">
-        @if(!empty($siteLogo))
+        @if(View::hasSection('og_image'))
+            @yield('og_image')
+        @elseif(!empty($siteLogo))
             <meta property="og:image" content="{{ $siteLogo }}">
             <meta property="og:image:width" content="1200">
             <meta property="og:image:height" content="630">
@@ -44,7 +46,9 @@
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="@yield('title', $siteTitle)">
         <meta name="twitter:description" content="@yield('description', $metaDescription ?: 'Berita dan Artikel Islami dari SMPIT Al-Itqon')">
-        @if(!empty($siteLogo))
+        @if(View::hasSection('twitter_image'))
+            @yield('twitter_image')
+        @elseif(!empty($siteLogo))
             <meta name="twitter:image" content="{{ $siteLogo }}">
         @endif
 
