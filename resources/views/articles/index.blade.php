@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Semua Berita - ' . config('app.name'))
+@section('description', 'Kumpulan artikel dan berita terbaru dari sekolah: kajian Al-Quran, hadis, fikih, adab, opini, tokoh, dan lainnya.')
 
 @section('content')
 <div class="container mt-4">
