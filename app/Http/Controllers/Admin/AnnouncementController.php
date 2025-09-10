@@ -10,6 +10,8 @@ use App\Models\AnnouncementAttachment;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class AnnouncementController extends Controller
 {
@@ -52,25 +54,80 @@ class AnnouncementController extends Controller
             'priority' => 'required|in:low,normal,high,urgent',
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
             'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
+            'attachment_type' => 'nullable|in:file,link',
+            'attachment_link' => 'nullable|url|max:2048',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
         ]);
 
         $data = $request->except('attachment');
-        $data['slug'] = Str::slug($request->title);
+        // Ensure unique slug
+        $baseSlug = Str::slug($request->title);
+        $slug = $baseSlug;
+        $i = 1;
+        while (Announcement::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $i++;
+        }
+        $data['slug'] = $slug;
         $data['published_at'] = $request->is_published ? now() : null;
 
-        // Handle file upload
-        if ($request->hasFile('attachment')) {
-            $file = $request->file('attachment');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('announcements', $filename, 'public');
-            
-            $data['attachment'] = asset('storage/' . $path);
-            $data['attachment_name'] = $file->getClientOriginalName();
+        // Handle primary attachment (file or link) -> always go to attachments table
+        $primaryFileForAttachmentTable = null;
+        $primaryLinkForAttachmentTable = null;
+        if ($request->attachment_type === 'link' && $request->filled('attachment_link')) {
+            $primaryLinkForAttachmentTable = $request->attachment_link;
+            // Clean main announcement fields
+            $data['attachment'] = null;
+            $data['attachment_name'] = null;
+            $data['attachment_size'] = null;
+            $data['attachment_mime'] = null;
+        } elseif ($request->hasFile('attachment')) {
+            // For uploaded file, we will save it into announcement_attachments table after creating the announcement
+            $primaryFileForAttachmentTable = $request->file('attachment');
+            // Ensure main announcement attachment fields remain null (we will use attachments table)
+            $data['attachment'] = null;
+            $data['attachment_name'] = null;
+            $data['attachment_size'] = null;
+            $data['attachment_mime'] = null;
         }
 
         $announcement = Announcement::create($data);
+
+        // If there is a primary uploaded file, persist it as an AnnouncementAttachment record
+        if ($primaryFileForAttachmentTable) {
+            $file = $primaryFileForAttachmentTable;
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('announcements', $filename, 'public');
+            AnnouncementAttachment::create([
+                'announcement_id' => $announcement->id,
+                'file_url' => asset('storage/' . $path),
+                'file_name' => $file->getClientOriginalName(),
+                'file_type' => strtolower($file->getClientOriginalExtension()),
+                'file_size' => $file->getSize(),
+                'sort_order' => 0,
+            ]);
+        }
+        // If there is a primary link, persist it as an AnnouncementAttachment record
+        if ($primaryLinkForAttachmentTable) {
+            $fileUrl = $primaryLinkForAttachmentTable;
+            $fileName = parse_url($fileUrl, PHP_URL_PATH) ? basename(parse_url($fileUrl, PHP_URL_PATH)) : (parse_url($fileUrl, PHP_URL_HOST) ?: 'Link');
+            $size = null; $mime = null;
+            try {
+                $resp = Http::withHeaders(['User-Agent' => 'Mozilla/5.0'])->head($fileUrl);
+                if ($resp->ok()) {
+                    $size = (int) ($resp->header('Content-Length') ?? 0) ?: null;
+                    $mime = $resp->header('Content-Type');
+                }
+            } catch (\Throwable $e) {}
+            AnnouncementAttachment::create([
+                'announcement_id' => $announcement->id,
+                'file_url' => $fileUrl,
+                'file_name' => $fileName,
+                'file_type' => $mime ?: null,
+                'file_size' => $size,
+                'sort_order' => 0,
+            ]);
+        }
 
         // Handle multiple attachments (optional)
         if ($request->hasFile('attachments')) {
@@ -134,12 +191,25 @@ class AnnouncementController extends Controller
             'priority' => 'required|in:low,normal,high,urgent',
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
             'attachments.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
+            'attachment_type' => 'nullable|in:file,link',
+            'attachment_link' => 'nullable|url|max:2048',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
         ]);
 
         $data = $request->except('attachment');
-        $data['slug'] = Str::slug($request->title);
+        // Keep existing slug if title unchanged; otherwise generate unique slug
+        if ($request->title !== $announcement->title) {
+            $baseSlug = Str::slug($request->title);
+            $slug = $baseSlug;
+            $i = 1;
+            while (Announcement::where('slug', $slug)->where('id', '!=', $announcement->id)->exists()) {
+                $slug = $baseSlug . '-' . $i++;
+            }
+            $data['slug'] = $slug;
+        } else {
+            $data['slug'] = $announcement->slug;
+        }
         
         // Update published_at if status changed
         if ($request->is_published && !$announcement->is_published) {
@@ -148,14 +218,43 @@ class AnnouncementController extends Controller
             $data['published_at'] = null;
         }
 
-        // Handle file upload
-        if ($request->hasFile('attachment')) {
+        // Handle primary attachment (file or link)
+        if ($request->attachment_type === 'link') {
+            // Do not set main fields; create attachment record for link
+            if ($request->attachment_link) {
+                $fileUrl = $request->attachment_link;
+                $fileName = parse_url($fileUrl, PHP_URL_PATH) ? basename(parse_url($fileUrl, PHP_URL_PATH)) : (parse_url($fileUrl, PHP_URL_HOST) ?: 'Link');
+                $size = null; $mime = null;
+                try {
+                    $resp = Http::withHeaders(['User-Agent' => 'Mozilla/5.0'])->head($fileUrl);
+                    if ($resp->ok()) {
+                        $size = (int) ($resp->header('Content-Length') ?? 0) ?: null;
+                        $mime = $resp->header('Content-Type');
+                    }
+                } catch (\Throwable $e) {}
+                AnnouncementAttachment::create([
+                    'announcement_id' => $announcement->id,
+                    'file_url' => $fileUrl,
+                    'file_name' => $fileName,
+                    'file_type' => $mime ?: null,
+                    'file_size' => $size,
+                    'sort_order' => (int) ($announcement->attachments()->max('sort_order') ?? 0) + 1,
+                ]);
+            }
+        } elseif ($request->hasFile('attachment')) {
+            // For uploaded file, add it to attachments table instead of main announcement
             $file = $request->file('attachment');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('announcements', $filename, 'public');
-            
-            $data['attachment'] = asset('storage/' . $path);
-            $data['attachment_name'] = $file->getClientOriginalName();
+            AnnouncementAttachment::create([
+                'announcement_id' => $announcement->id,
+                'file_url' => asset('storage/' . $path),
+                'file_name' => $file->getClientOriginalName(),
+                'file_type' => strtolower($file->getClientOriginalExtension()),
+                'file_size' => $file->getSize(),
+                'sort_order' => (int) ($announcement->attachments()->max('sort_order') ?? 0) + 1,
+            ]);
+            // Ensure main fields untouched
         }
 
         $announcement->update($data);
@@ -188,6 +287,33 @@ class AnnouncementController extends Controller
      */
     public function destroy(Announcement $announcement)
     {
+        // Delete physical files for all attachments
+        $attachments = $announcement->attachments()->get();
+        foreach ($attachments as $attachment) {
+            $pathPart = parse_url($attachment->file_url, PHP_URL_PATH) ?: '';
+            if ($pathPart && str_starts_with($pathPart, '/storage/')) {
+                $relative = ltrim(substr($pathPart, 9), '/'); // remove '/storage/'
+                try { Storage::disk('public')->delete($relative); } catch (\Throwable $e) {}
+            } else {
+                // Fallback: try absolute public path
+                $publicPath = public_path(ltrim($pathPart, '/'));
+                if ($publicPath && is_file($publicPath)) { @unlink($publicPath); }
+            }
+        }
+        // Legacy: remove main attachment file if any (older records)
+        if ($announcement->attachment) {
+            $pathPart = parse_url($announcement->attachment, PHP_URL_PATH) ?: '';
+            if ($pathPart && str_starts_with($pathPart, '/storage/')) {
+                $relative = ltrim(substr($pathPart, 9), '/');
+                try { Storage::disk('public')->delete($relative); } catch (\Throwable $e) {}
+            } else {
+                $publicPath = public_path(ltrim($pathPart, '/'));
+                if ($publicPath && is_file($publicPath)) { @unlink($publicPath); }
+            }
+        }
+
+        // Delete attachment records then announcement
+        $announcement->attachments()->delete();
         $announcement->delete();
 
         return redirect()->route('admin.announcements.index')

@@ -153,19 +153,19 @@ License: For each use you must have a valid license purchased only from above li
 					@if (!$isAuthor)
 					@if(!$isAuthorOnly)
 					<li class="nav-item">
-						@php $categoriesOpen = str_contains(request()->route()->getName(), 'admin.categories'); @endphp
-						<a class="nav-link" data-bs-toggle="collapse" href="#categories" role="button" aria-expanded="{{ $categoriesOpen ? 'true' : 'false' }}" aria-controls="categories">
+						@php $articleCategoriesOpen = str_contains(request()->route()->getName(), 'admin.article-categories'); @endphp
+						<a class="nav-link" data-bs-toggle="collapse" href="#article-categories" role="button" aria-expanded="{{ $articleCategoriesOpen ? 'true' : 'false' }}" aria-controls="article-categories">
 							<i class="link-icon" data-feather="tag"></i>
-							<span class="link-title">Kategori</span>
+							<span class="link-title">Kategori Artikel</span>
 							<i class="link-arrow" data-feather="chevron-down"></i>
 						</a>
-						<div class="collapse {{ $categoriesOpen ? 'show' : '' }}" id="categories">
+						<div class="collapse {{ $articleCategoriesOpen ? 'show' : '' }}" id="article-categories">
 							<ul class="nav sub-menu">
 								<li class="nav-item">
-									<a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.index') || request()->routeIs('admin.categories.show') || request()->routeIs('admin.categories.edit') ? 'active' : '' }}">Daftar Kategori</a>
+									<a href="{{ route('admin.article-categories.index') }}" class="nav-link {{ request()->routeIs('admin.article-categories.index') || request()->routeIs('admin.article-categories.show') || request()->routeIs('admin.article-categories.edit') ? 'active' : '' }}">Daftar Kategori</a>
 								</li>
 								<li class="nav-item">
-									<a href="{{ route('admin.categories.create') }}" class="nav-link {{ request()->routeIs('admin.categories.create') ? 'active' : '' }}">Tambah Kategori</a>
+									<a href="{{ route('admin.article-categories.create') }}" class="nav-link {{ request()->routeIs('admin.article-categories.create') ? 'active' : '' }}">Tambah Kategori</a>
 								</li>
 							</ul>
 						</div>

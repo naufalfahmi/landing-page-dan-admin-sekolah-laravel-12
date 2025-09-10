@@ -49,7 +49,7 @@
 					<table id="dataTableExample" class="table">
 						<thead>
 							<tr>
-								<th>ID</th>
+								<th>No</th>
 								<th>Judul</th>
 								<th>Kategori</th>
 								<th>Prioritas</th>
@@ -61,7 +61,7 @@
 						<tbody>
 							@foreach($announcements as $announcement)
 							<tr>
-								<td>{{ $announcement->id }}</td>
+								<td>{{ $loop->iteration }}</td>
 								<td>
 									<div>
 										<h6 class="mb-0">{{ Str::limit($announcement->title, 50) }}</h6>

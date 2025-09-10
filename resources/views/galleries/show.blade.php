@@ -34,27 +34,6 @@
 
 @section('content')
 <div class="container mt-4">
-    <!-- Breadcrumb Section -->
-    <nav aria-label="breadcrumb" class="breadcrumb-section">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{{ route('home') }}">
-                        <i class="fas fa-home"></i> Beranda
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ route('galleries.index') }}">
-                        <i class="fas fa-images"></i> Galeri Foto
-                    </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    <i class="fas fa-camera"></i> {{ Str::limit($gallery->title, 50) }}
-                </li>
-            </ol>
-        </div>
-    </nav>
-
     <div class="row">
         <!-- Main Content -->
         <div class="col-lg-8">

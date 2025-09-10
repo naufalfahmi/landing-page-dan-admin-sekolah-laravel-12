@@ -42,7 +42,7 @@
 					<table id="dataTableExample" class="table">
 						<thead>
 							<tr>
-								<th>ID</th>
+								<th>No</th>
 								<th>Foto</th>
 								<th>Nama</th>
 								<th>Email</th>
@@ -56,7 +56,7 @@
 						<tbody>
 							@foreach($authors as $author)
 							<tr>
-								<td>{{ $author->id }}</td>
+								<td>{{ $loop->iteration }}</td>
 								<td>
 									@if(!empty($author->avatar))
 										<img src="{{ $author->avatar }}" alt="img" class="img-xs rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">

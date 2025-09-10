@@ -66,7 +66,15 @@
         @foreach($articles as $article)
         <div class="col-md-4 mb-4">
             <article class="card h-100" itemscope itemtype="https://schema.org/Article">
-                <img src="{{ $article->image }}" class="card-img-top" alt="{{ $article->title }}" itemprop="image">
+                <div class="article-image-container">
+                    @if($article->image)
+                        <img src="{{ $article->image }}" class="card-img-top article-image" alt="{{ $article->title }}" itemprop="image">
+                    @else
+                        <div class="article-placeholder">
+                            <i class="fas fa-newspaper"></i>
+                        </div>
+                    @endif
+                </div>
                 <div class="card-body d-flex flex-column">
                     <div class="mb-2">
                         <div class="entry-taxonomies">
@@ -194,4 +202,37 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Article Image Container and Placeholder */
+.article-image-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.article-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .article-image {
+    transform: scale(1.05);
+}
+
+.article-placeholder {
+    height: 200px;
+    background: linear-gradient(135deg, #03aca5, #0d9488);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.article-placeholder i {
+    font-size: 3rem;
+}
+</style>
 @endsection

@@ -101,12 +101,33 @@
 							</div>
 
 							<div class="mb-3">
-								<label for="attachments" class="form-label">Lampiran (bisa pilih beberapa file)</label>
-								<input type="file" class="form-control @error('attachments.*') is-invalid @enderror" id="attachments" name="attachments[]" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-								<small class="form-text text-muted">Format: PDF, JPG, PNG, DOC, DOCX (maks 10MB per file).</small>
-								@error('attachments.*')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
+								<label class="form-label">Lampiran</label>
+								<div class="btn-group btn-group-sm mb-2" role="group">
+									@php $defaultType = old('attachment_type', 'file'); @endphp
+									<input type="radio" class="btn-check" name="attachment_type" id="attachment_type_file" value="file" {{ $defaultType === 'file' ? 'checked' : '' }}>
+									<label class="btn {{ $defaultType === 'file' ? 'btn-primary active' : 'btn-outline-primary' }}" for="attachment_type_file">File</label>
+
+									<input type="radio" class="btn-check" name="attachment_type" id="attachment_type_link" value="link" {{ $defaultType === 'link' ? 'checked' : '' }}>
+									<label class="btn {{ $defaultType === 'link' ? 'btn-primary active' : 'btn-outline-primary' }}" for="attachment_type_link">Link</label>
+								</div>
+
+								<div id="attachment_file_group" class="mt-2" style="display: none;">
+									<label for="attachments" class="form-label">Pilih File (bisa beberapa)</label>
+									<input type="file" class="form-control @error('attachments.*') is-invalid @enderror" id="attachments" name="attachments[]" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+									<small class="form-text text-muted">Format: PDF, JPG, PNG, DOC, DOCX (maks 10MB per file).</small>
+									@error('attachments.*')
+										<div class="invalid-feedback">{{ $message }}</div>
+									@enderror
+								</div>
+
+								<div id="attachment_link_group" class="mt-2" style="display: none;">
+									<label for="attachment_link" class="form-label">URL Lampiran</label>
+									<input type="url" class="form-control @error('attachment_link') is-invalid @enderror" id="attachment_link" name="attachment_link" placeholder="https://contoh.com/dokumen.pdf" value="{{ old('attachment_link') }}">
+									<small class="form-text text-muted">Masukkan URL file (Google Drive, website resmi, dsb.).</small>
+									@error('attachment_link')
+										<div class="invalid-feedback">{{ $message }}</div>
+									@enderror
+								</div>
 							</div>
 
 							<div class="mb-3">
@@ -182,6 +203,31 @@
 <script>
 	$(function() {
 		'use strict';
+
+		// Toggle attachment type (file/link)
+		function updateAttachmentVisibility() {
+			const type = $('input[name="attachment_type"]:checked').val();
+			if (type === 'link') {
+				$('#attachment_link_group').show();
+				$('#attachment_file_group').hide();
+			} else {
+				$('#attachment_link_group').hide();
+				$('#attachment_file_group').show();
+			}
+
+			// sync active classes on labels
+			const $fileLabel = $('label[for="attachment_type_file"]');
+			const $linkLabel = $('label[for\="attachment_type_link\"]');
+			if (type === 'link') {
+				$fileLabel.removeClass('btn-primary active').addClass('btn-outline-primary');
+				$linkLabel.removeClass('btn-outline-primary').addClass('btn-primary active');
+			} else {
+				$linkLabel.removeClass('btn-primary active').addClass('btn-outline-primary');
+				$fileLabel.removeClass('btn-outline-primary').addClass('btn-primary active');
+			}
+		}
+		$('input[name="attachment_type"]').on('change', updateAttachmentVisibility);
+		updateAttachmentVisibility();
 		
 		// Auto-resize textarea
 		$('textarea').on('input', function() {

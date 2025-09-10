@@ -154,7 +154,7 @@
                             <a href="{{ route('announcements.show', $document->announcement_slug) }}" 
                                class="view-btn">
                                 <i class="fas fa-eye"></i>
-                                Lihat Detail
+                                Detail
                             </a>
                         </div>
                     </div>

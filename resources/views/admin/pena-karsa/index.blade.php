@@ -42,7 +42,7 @@
 					<table id="dataTableExample" class="table">
 						<thead>
 							<tr>
-								<th>ID</th>
+								<th>No</th>
 								<th>Gambar</th>
 								<th>Judul</th>
 								<th>Penulis</th>
@@ -57,7 +57,7 @@
 						<tbody>
 							@forelse($penaKarsa as $item)
 							<tr>
-								<td>{{ $item->id }}</td>
+								<td>{{ ($penaKarsa->currentPage() - 1) * $penaKarsa->perPage() + $loop->iteration }}</td>
 								<td>
 									@if($item->image)
 										<img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">

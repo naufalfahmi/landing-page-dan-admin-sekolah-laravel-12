@@ -1776,6 +1776,10 @@ and (-webkit-device-pixel-ratio: 3) {
     .top-bar-item a {
         font-size: 0.85rem;
     }
+    
+    .address-link {
+        font-size: 0.8rem;
+    }
 }
 
 /* Mobile responsive (max-width: 768px) */
@@ -1811,6 +1815,9 @@ and (-webkit-device-pixel-ratio: 3) {
         font-size: 0.8rem;
     }
     
+    .address-link {
+        font-size: 0.75rem;
+    }
     
     .navbar-nav .nav-link {
         padding: 0.75rem 1rem;
@@ -1874,6 +1881,10 @@ and (-webkit-device-pixel-ratio: 3) {
     
     .top-bar-item a {
         font-size: 0.75rem;
+    }
+    
+    .address-link {
+        font-size: 0.7rem;
     }
 }
 
@@ -2614,6 +2625,10 @@ footer {
         gap: 0.5rem;
     }
     
+    .pena-karsa-title-link {
+        font-size: 0.9rem;
+    }
+    
     .pena-karsa-title i {
         font-size: 1.5rem;
     }
@@ -2697,6 +2712,10 @@ footer {
         font-size: 1.8rem;
     }
     
+    .pena-karsa-title-link {
+        font-size: 1rem;
+    }
+    
     .banner-decoration {
         width: 80px;
         height: 80px;
@@ -2725,7 +2744,7 @@ footer {
     /* Pena Karsa header responsive removed - now uses standard widget styling */
     
     .pena-karsa-title {
-        font-size: 1.9rem;
+        font-size: 1.2rem;
     }
     
     .pena-karsa-image-container {
@@ -2740,7 +2759,7 @@ footer {
     }
     
     .pena-karsa-title {
-        font-size: 2.1rem;
+        font-size: 1.2rem;
     }
     
     .pena-karsa-image-container {
@@ -3039,7 +3058,7 @@ footer {
     }
     
     .pena-karsa-page-title {
-        font-size: 2.8rem;
+        font-size: 1.2rem;
     }
     
     .header-decoration {

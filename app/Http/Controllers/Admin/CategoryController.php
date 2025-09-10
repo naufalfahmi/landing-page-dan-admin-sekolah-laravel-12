@@ -11,13 +11,13 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('articles')->get();
-        return view('admin.categories.index', compact('categories'));
+        $categories = Category::withCount('articles')->latest()->get();
+        return view('admin.article-categories.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('admin.categories.create');
+        return view('admin.article-categories.create');
     }
 
     public function store(Request $request)
@@ -35,19 +35,19 @@ class CategoryController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ]);
 
-        return redirect()->route('admin.categories.index')
+        return redirect()->route('admin.article-categories.index')
             ->with('success', 'Kategori berhasil dibuat.');
     }
 
     public function show(Category $category)
     {
         $category->load('articles.author');
-        return view('admin.categories.show', compact('category'));
+        return view('admin.article-categories.show', compact('category'));
     }
 
     public function edit(Category $category)
     {
-        return view('admin.categories.edit', compact('category'));
+        return view('admin.article-categories.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category)
@@ -65,7 +65,7 @@ class CategoryController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ]);
 
-        return redirect()->route('admin.categories.index')
+        return redirect()->route('admin.article-categories.index')
             ->with('success', 'Kategori berhasil diperbarui.');
     }
 
@@ -73,13 +73,13 @@ class CategoryController extends Controller
     {
         // Check if category has articles
         if ($category->articles()->count() > 0) {
-            return redirect()->route('admin.categories.index')
+            return redirect()->route('admin.article-categories.index')
                 ->with('error', 'Tidak dapat menghapus kategori yang memiliki artikel.');
         }
 
         $category->delete();
 
-        return redirect()->route('admin.categories.index')
+        return redirect()->route('admin.article-categories.index')
             ->with('success', 'Kategori berhasil dihapus.');
     }
 }

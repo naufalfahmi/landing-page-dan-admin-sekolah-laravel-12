@@ -29,29 +29,20 @@
     </header>
 
 
-    <!-- Category Filters -->
-    <section class="row mb-4" aria-label="Filter Kategori Galeri">
+    <!-- Filter Section -->
+    <section class="row mb-4">
         <div class="col-12">
-            <div class="gallery-filters">
-                <h2 class="visually-hidden">Filter Kategori Galeri</h2>
-                <nav class="filter-buttons" role="tablist" aria-label="Kategori galeri">
-                    <a href="{{ route('galleries.index') }}" 
-                       class="filter-btn {{ !request('category') ? 'active' : '' }}"
-                       role="tab"
-                       aria-selected="{{ !request('category') ? 'true' : 'false' }}"
-                       aria-label="Lihat semua foto galeri">
-                        <i class="fas fa-th" aria-hidden="true"></i> Semua
+            <div class="filter-section">
+                <div class="filter-buttons">
+                    <a href="{{ route('galleries.index') }}" class="filter-btn {{ !request('category') ? 'active' : '' }}">
+                        Semua
                     </a>
                     @foreach($categories as $category)
-                    <a href="{{ route('galleries.index', ['category' => $category->slug]) }}" 
-                       class="filter-btn {{ request('category') == $category->slug ? 'active' : '' }}"
-                       role="tab"
-                       aria-selected="{{ request('category') == $category->slug ? 'true' : 'false' }}"
-                       aria-label="Lihat foto kategori {{ $category->name }}">
-                        <i class="{{ $category->icon ?? 'fas fa-folder' }}" aria-hidden="true"></i> {{ $category->name }}
+                    <a href="{{ route('galleries.index', ['category' => $category->slug]) }}" class="filter-btn {{ request('category') == $category->slug ? 'active' : '' }}">
+                        {{ $category->name }}
                     </a>
                     @endforeach
-                </nav>
+                </div>
             </div>
         </div>
     </section>
@@ -61,31 +52,45 @@
         @forelse($galleries as $gallery)
         <div class="photo-item-widget" data-category="{{ $gallery->category ? $gallery->category->slug : '' }}">
             <div class="photo-container-widget">
-                <a href="{{ asset('storage/' . $gallery->image) }}" 
-                   id="gallery-item-{{ $gallery->id }}"
-                   class="glightbox" 
-                   data-gallery="gallery-main"
-                   data-title="{{ $gallery->title }}"
-                   data-description="{{ $gallery->description }}"
-                   data-type="image">
-                    <img src="{{ asset('storage/' . ($gallery->thumbnail ?? $gallery->image)) }}" 
-                         alt="{{ $gallery->title }}" 
-                         class="photo-image-widget"
-                         loading="lazy">
-                    <div class="photo-overlay-widget">
-                        <div class="photo-actions-widget">
-                            <a href="{{ route('galleries.show', $gallery->slug) }}" class="photo-btn-widget" onclick="event.stopPropagation();">
-                                <i class="fas fa-info-circle"></i>
-                            </a>
-                        </div>
-                        <div class="photo-info-widget">
-                            <div class="photo-category-widget" style="background: {{ $gallery->category_color }}20; color: {{ $gallery->category_color }};">
-                                <i class="{{ $gallery->category_icon }}"></i> {{ $gallery->category_label }}
+                @if($gallery->image)
+                    <a href="{{ route('galleries.show', $gallery->slug) }}" 
+                       id="gallery-widget-{{ $gallery->id }}">
+                        <img src="{{ asset('storage/' . ($gallery->thumbnail ?? $gallery->image)) }}" 
+                             alt="{{ $gallery->title }}" 
+                             loading="lazy" 
+                             class="photo-image-widget">
+                        <div class="photo-overlay-widget">
+                            <div class="photo-actions-widget">
+                                <span class="photo-btn-widget" onclick="event.stopPropagation();">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
                             </div>
-                            <h3 class="photo-title-widget">{{ $gallery->title }}</h3>
+                            <div class="photo-info-widget">
+                                <div class="photo-category-widget" style="background: {{ $gallery->category_color }}20; color: {{ $gallery->category_color }};">
+                                    <i class="{{ $gallery->category_icon }}"></i> {{ $gallery->category_label }}
+                                </div>
+                                <h3 class="photo-title-widget">{{ $gallery->title }}</h3>
+                            </div>
+                        </div>
+                    </a>
+                @else
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-images"></i>
+                        <div class="gallery-placeholder-overlay">
+                            <div class="gallery-placeholder-actions">
+                                <a href="{{ route('galleries.show', $gallery->slug) }}" class="gallery-btn-placeholder">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                            </div>
+                            <div class="gallery-placeholder-info">
+                                <div class="gallery-category-placeholder" style="background: {{ $gallery->category_color }}20; color: {{ $gallery->category_color }};">
+                                    <i class="{{ $gallery->category_icon }}"></i> {{ $gallery->category_label }}
+                                </div>
+                                <h3 class="gallery-title-placeholder">{{ $gallery->title }}</h3>
+                            </div>
                         </div>
                     </div>
-                </a>
+                @endif
             </div>
         </div>
         @empty
@@ -171,52 +176,245 @@
     margin-bottom: 0;
 }
 
-/* Gallery Filters */
-.gallery-filters {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 15px;
+/* Filter Section Styling */
+.filter-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(3, 172, 165, 0.1);
+    border: 1px solid rgba(3, 172, 165, 0.1);
     margin-bottom: 2rem;
 }
 
 .filter-buttons {
     display: flex;
-    gap: 1rem;
     flex-wrap: wrap;
+    gap: 1rem;
     justify-content: center;
 }
 
 .filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: #ffffff;
-    border: 2px solid #e9ecef;
     border-radius: 25px;
-    color: #666;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
+    border: 2px solid rgba(3, 172, 165, 0.2);
+    color: #666;
+    background: #ffffff;
 }
 
 .filter-btn:hover {
     background: #03aca5;
-    border-color: #03aca5;
     color: #ffffff;
-    text-decoration: none;
+    border-color: #03aca5;
     transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(3, 172, 165, 0.3);
 }
 
 .filter-btn.active {
-    background: #03aca5;
-    border-color: #03aca5;
+    background: linear-gradient(135deg, #03aca5, #028a85);
     color: #ffffff;
+    border-color: #03aca5;
+    box-shadow: 0 4px 15px rgba(3, 172, 165, 0.3);
 }
 
 /* Gallery Grid - Using Masonry Style */
 .photo-grid-widget {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
     margin-bottom: 3rem;
+}
+
+.photo-item-widget {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.photo-item-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.photo-container-widget {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.photo-image-widget {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.photo-item-widget:hover .photo-image-widget {
+    transform: scale(1.05);
+}
+
+.photo-overlay-widget {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.photo-item-widget:hover .photo-overlay-widget {
+    background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3));
+}
+
+.photo-actions-widget {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.photo-btn-widget {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #03aca5;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.photo-btn-widget:hover {
+    background: #ffffff;
+    color: #028a85;
+    transform: scale(1.1);
+}
+
+.photo-info-widget {
+    color: #ffffff;
+}
+
+.photo-category-widget {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.photo-title-widget {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Gallery Placeholder Styles */
+.gallery-placeholder {
+    position: relative;
+    height: 250px;
+    background: linear-gradient(135deg, #03aca5, #0d9488);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gallery-placeholder:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(3, 172, 165, 0.3);
+}
+
+.gallery-placeholder i {
+    font-size: 4rem;
+    opacity: 0.8;
+}
+
+.gallery-placeholder-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.gallery-placeholder:hover .gallery-placeholder-overlay {
+    background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3));
+}
+
+.gallery-placeholder-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.gallery-btn-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #03aca5;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.gallery-btn-placeholder:hover {
+    background: #ffffff;
+    color: #028a85;
+    transform: scale(1.1);
+}
+
+.gallery-placeholder-info {
+    color: #ffffff;
+}
+
+.gallery-category-placeholder {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.gallery-title-placeholder {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 
@@ -303,6 +501,10 @@
         font-size: 2rem;
     }
     
+    .filter-section {
+        padding: 1.5rem;
+    }
+    
     .filter-buttons {
         flex-direction: column;
         align-items: center;
@@ -314,6 +516,34 @@
         justify-content: center;
     }
     
+    .photo-grid-widget {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    
+    .photo-container-widget {
+        height: 200px;
+    }
+    
+    .gallery-placeholder {
+        height: 200px;
+    }
+    
+}
+
+@media (max-width: 576px) {
+    .photo-grid-widget {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .photo-container-widget {
+        height: 180px;
+    }
+    
+    .gallery-placeholder {
+        height: 180px;
+    }
 }
 
 @media (max-width: 576px) {

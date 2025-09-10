@@ -14,7 +14,7 @@ class AnnouncementCategoryController extends Controller
     public function index()
     {
         $categories = AnnouncementCategory::withCount('announcements')
-            ->ordered()
+            ->latest()
             ->paginate(10);
 
         return view('admin.announcement-categories.index', compact('categories'));

@@ -19,6 +19,8 @@ class Announcement extends Model
         'priority',
         'attachment',
         'attachment_name',
+        'attachment_size',
+        'attachment_mime',
         'is_published',
         'is_featured',
         'published_at',
@@ -38,7 +40,10 @@ class Announcement extends Model
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
-        $this->attributes['slug'] = Str::slug($value);
+        // Only auto-generate slug if it's not already set (e.g., pre-generated unique slug)
+        if (!array_key_exists('slug', $this->attributes) || empty($this->attributes['slug'])) {
+            $this->attributes['slug'] = Str::slug($value);
+        }
     }
 
     /**
@@ -146,5 +151,20 @@ class Announcement extends Model
         ];
 
         return $colors[$this->priority] ?? 'primary';
+    }
+
+    public function getAttachmentSizeHumanAttribute(): ?string
+    {
+        $bytes = $this->attachment_size;
+        if (!$bytes || $bytes <= 0) {
+            return null;
+        }
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $i = 0;
+        while ($bytes >= 1024 && $i < count($units) - 1) {
+            $bytes /= 1024;
+            $i++;
+        }
+        return number_format($bytes, $bytes >= 10 ? 0 : 1) . ' ' . $units[$i];
     }
 }

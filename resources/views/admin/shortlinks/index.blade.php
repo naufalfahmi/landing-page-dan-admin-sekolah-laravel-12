@@ -42,7 +42,7 @@
 					<table id="dataTableExample" class="table">
 						<thead>
 							<tr>
-								<th>ID</th>
+								<th>No</th>
 								<th>Short Code</th>
 								<th>URL Asli</th>
 								<th>URL Pendek</th>
@@ -54,7 +54,7 @@
 						<tbody>
 							@foreach($shortlinks as $shortlink)
 							<tr>
-								<td>{{ $shortlink->id }}</td>
+								<td>{{ $loop->iteration }}</td>
 								<td>
 									<span class="badge bg-primary">{{ $shortlink->short_code }}</span>
 								</td>

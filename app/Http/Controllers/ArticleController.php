@@ -13,14 +13,25 @@ class ArticleController extends Controller
     /**
      * Display a listing of articles
      */
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::with(['author', 'categories'])
+        $query = Article::with(['author', 'categories'])
             ->published()
-            ->latest('published_at')
-            ->paginate(12);
+            ->latest('published_at');
 
-        return view('articles.index', compact('articles'));
+        // Filter by category if specified
+        if ($request->has('category') && $request->category) {
+            $query->whereHas('categories', function($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        $articles = $query->paginate(12);
+        
+        // Get all categories for filter
+        $categories = \App\Models\Category::orderBy('name')->get();
+
+        return view('articles.index', compact('articles', 'categories'));
     }
 
     /**

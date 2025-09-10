@@ -51,83 +51,91 @@ Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'
     ->middleware('throttle:3,15') // 3 requests per 15 minutes
     ->name('contact.store');
 
-// Documents route
+// Documents route (based on announcement_attachments)
 Route::get('/documents', function (Request $request) {
-    $query = \App\Models\Announcement::published()
-        ->whereNotNull('attachment');
-    
+    $query = \App\Models\AnnouncementAttachment::query()
+        ->whereHas('announcement', function($q) {
+            $q->published();
+        });
+
     // Filter by category
     if ($request->filled('category')) {
-        $query->whereHas('category', function($q) use ($request) {
-            $q->where('slug', $request->category);
+        $slug = $request->category;
+        $query->whereHas('announcement.category', function($q) use ($slug) {
+            $q->where('slug', $slug);
         });
     }
-    
+
     // Filter by file type
     if ($request->filled('file_type')) {
         $fileType = $request->file_type;
-        if ($fileType === 'pdf') {
-            $query->where('attachment', 'LIKE', '%.pdf');
-        } elseif ($fileType === 'doc') {
-            $query->where(function($q) {
-                $q->where('attachment', 'LIKE', '%.doc')
-                  ->orWhere('attachment', 'LIKE', '%.docx');
-            });
-        } elseif ($fileType === 'xls') {
-            $query->where(function($q) {
-                $q->where('attachment', 'LIKE', '%.xls')
-                  ->orWhere('attachment', 'LIKE', '%.xlsx');
-            });
-        } elseif ($fileType === 'ppt') {
-            $query->where(function($q) {
-                $q->where('attachment', 'LIKE', '%.ppt')
-                  ->orWhere('attachment', 'LIKE', '%.pptx');
-            });
-        }
+        $query->where(function($q) use ($fileType) {
+            if ($fileType === 'pdf') {
+                $q->where('file_type', 'LIKE', 'pdf')
+                  ->orWhere('file_url', 'LIKE', '%.pdf');
+            } elseif ($fileType === 'doc') {
+                $q->where('file_type', 'LIKE', 'doc%')
+                  ->orWhere('file_url', 'LIKE', '%.doc')
+                  ->orWhere('file_url', 'LIKE', '%.docx');
+            } elseif ($fileType === 'xls') {
+                $q->where('file_type', 'LIKE', 'xls%')
+                  ->orWhere('file_url', 'LIKE', '%.xls')
+                  ->orWhere('file_url', 'LIKE', '%.xlsx');
+            } elseif ($fileType === 'ppt') {
+                $q->where('file_type', 'LIKE', 'ppt%')
+                  ->orWhere('file_url', 'LIKE', '%.ppt')
+                  ->orWhere('file_url', 'LIKE', '%.pptx');
+            }
+        });
     }
-    
+
     // Search by title
     if ($request->filled('search')) {
-        $query->where('title', 'LIKE', '%' . $request->search . '%');
-    }
-    
-    $documents = $query->latest('published_at')
-        ->paginate(8)
-        ->withQueryString()
-        ->through(function ($announcement) {
-            $fileExtension = pathinfo($announcement->attachment, PATHINFO_EXTENSION);
-
-            // Resolve local filesystem path from public URL or relative path
-            $attachment = $announcement->attachment;
-            $pathPart = parse_url($attachment, PHP_URL_PATH) ?: $attachment;
-            $filePath = public_path(ltrim($pathPart, '/'));
-
-            $fileSize = 0;
-            if (is_string($filePath) && file_exists($filePath)) {
-                $fileSize = filesize($filePath) ?: 0;
-            }
-            $units = ['B', 'KB', 'MB', 'GB'];
-            
-            for ($i = 0; $fileSize > 1024 && $i < count($units) - 1; $i++) {
-                $fileSize /= 1024;
-            }
-            
-            return (object) [
-                'id' => $announcement->id,
-                'title' => $announcement->title,
-                'description' => $announcement->summary,
-                'file_url' => $announcement->attachment,
-                'file_type' => strtolower($fileExtension),
-                'file_size' => round($fileSize, 1) . ' ' . $units[$i],
-                'category_label' => $announcement->category_label,
-                'announcement_slug' => $announcement->slug,
-                'published_at' => $announcement->published_at,
-            ];
+        $search = $request->search;
+        $query->whereHas('announcement', function($q) use ($search) {
+            $q->where('title', 'LIKE', '%' . $search . '%');
         });
-    
+    }
+
+    $attachments = $query->latest('id')
+        ->paginate(8)
+        ->withQueryString();
+
+    $documents = $attachments->through(function ($att) {
+        // Detect extension
+        $fileExtension = strtolower(pathinfo(parse_url($att->file_url, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION));
+
+        // Prefer stored size; fallback to local file size if applicable
+        $fileSizeBytes = $att->file_size ?: 0;
+        if (!$fileSizeBytes) {
+            $pathPart = parse_url($att->file_url, PHP_URL_PATH) ?: '';
+            $filePath = public_path(ltrim($pathPart, '/'));
+            if (is_string($filePath) && file_exists($filePath)) {
+                $fileSizeBytes = filesize($filePath) ?: 0;
+            }
+        }
+        // Format size
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $size = $fileSizeBytes; $i = 0;
+        while ($size > 1024 && $i < count($units) - 1) { $size /= 1024; $i++; }
+        $fileSizeHuman = $fileSizeBytes ? (round($size, 1) . ' ' . $units[$i]) : '-';
+
+        return (object) [
+            'id' => $att->id,
+            'title' => $att->announcement->title,
+            'description' => $att->announcement->summary,
+            'file_url' => $att->file_url,
+            'file_type' => $fileExtension ?: ($att->file_type ?: ''),
+            'file_size' => $fileSizeHuman,
+            'category_label' => $att->announcement->category_label,
+            'announcement_slug' => $att->announcement->slug,
+            'published_at' => $att->announcement->published_at,
+        ];
+    });
+
     // Get filter options
-    $categories = \App\Models\AnnouncementCategory::whereHas('announcements', function($query) {
-            $query->published()->whereNotNull('attachment');
+    $categories = \App\Models\AnnouncementCategory::whereHas('announcements', function($q) {
+            $q->published()->whereHas('attachments');
         })
         ->active()
         ->ordered()
@@ -138,14 +146,14 @@ Route::get('/documents', function (Request $request) {
                 'label' => $category->name
             ];
         });
-    
+
     $fileTypes = [
         ['value' => 'pdf', 'label' => 'PDF'],
         ['value' => 'doc', 'label' => 'Word (DOC/DOCX)'],
         ['value' => 'xls', 'label' => 'Excel (XLS/XLSX)'],
         ['value' => 'ppt', 'label' => 'PowerPoint (PPT/PPTX)'],
     ];
-    
+
     return view('documents.index', compact('documents', 'categories', 'fileTypes'));
 })->name('documents.index');
 
@@ -168,10 +176,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('/authorCreate', [AdminAuthorController::class, 'store'])->name('authors.store');
     Route::resource('authors', AdminAuthorController::class)->except(['create', 'store']);
     
-    // Categories management
-    Route::get('/categoryCreate', [\App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('categories.create');
-    Route::post('/categoryCreate', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'store']);
+    // Article Categories management
+    Route::get('/articleCategoryCreate', [\App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('article-categories.create');
+    Route::post('/articleCategoryCreate', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('article-categories.store');
+    Route::resource('article-categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'store']);
     
     // Sliders management
     Route::get('/sliderCreate', [\App\Http\Controllers\Admin\SliderController::class, 'create'])->name('sliders.create');

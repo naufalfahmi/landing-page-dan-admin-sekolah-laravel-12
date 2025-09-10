@@ -49,7 +49,7 @@
 					<table id="dataTableExample" class="table">
 						<thead>
 							<tr>
-								<th>ID</th>
+								<th>No</th>
 								<th>Gambar</th>
 								<th>Judul</th>
 								<th>Kategori</th>
@@ -62,7 +62,7 @@
 						<tbody>
 							@foreach($galleries as $gallery)
 							<tr>
-								<td>{{ $gallery->id }}</td>
+								<td>{{ $loop->iteration }}</td>
 								<td>
 									@if(!empty($gallery->image))
 										<img src="{{ asset('storage/' . $gallery->image) }}" alt="img" class="img-xs rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">

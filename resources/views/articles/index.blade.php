@@ -12,6 +12,33 @@
         </div>
     </header>
 
+    <!-- Category Filters -->
+    <section class="row mb-4" aria-label="Filter Kategori Berita">
+        <div class="col-12">
+            <div class="article-filters">
+                <h2 class="visually-hidden">Filter Kategori Berita</h2>
+                <nav class="filter-buttons" role="tablist" aria-label="Kategori berita">
+                    <a href="{{ route('articles.index') }}" 
+                       class="filter-btn {{ !request('category') ? 'active' : '' }}"
+                       role="tab"
+                       aria-selected="{{ !request('category') ? 'true' : 'false' }}"
+                       aria-label="Lihat semua berita">
+                        <i class="fas fa-newspaper" aria-hidden="true"></i> Semua
+                    </a>
+                    @foreach($categories as $category)
+                    <a href="{{ route('articles.index', ['category' => $category->slug]) }}" 
+                       class="filter-btn {{ request('category') == $category->slug ? 'active' : '' }}"
+                       role="tab"
+                       aria-selected="{{ request('category') == $category->slug ? 'true' : 'false' }}"
+                       aria-label="Lihat berita kategori {{ $category->name }}">
+                        <i class="fas fa-tag" aria-hidden="true"></i> {{ $category->name }}
+                    </a>
+                    @endforeach
+                </nav>
+            </div>
+        </div>
+    </section>
+
     <!-- Articles Grid -->
     <div class="row">
         @forelse($articles as $article)
@@ -296,9 +323,72 @@
     font-size: 1.1rem;
 }
 
+/* Article Filters */
+.article-filters {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(3, 172, 165, 0.1);
+    border: 1px solid rgba(3, 172, 165, 0.1);
+    margin-bottom: 2rem;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(3, 172, 165, 0.2);
+    color: #666;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-btn:hover {
+    background: #03aca5;
+    color: #ffffff;
+    border-color: #03aca5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(3, 172, 165, 0.3);
+    text-decoration: none;
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #03aca5, #028a85);
+    color: #ffffff;
+    border-color: #03aca5;
+    box-shadow: 0 4px 15px rgba(3, 172, 165, 0.3);
+}
+
 @media (max-width: 768px) {
     .page-title {
         font-size: 2rem;
+    }
+    
+    .article-filters {
+        padding: 1.5rem;
+    }
+    
+    .filter-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .filter-btn {
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
     }
     
     .article-image {

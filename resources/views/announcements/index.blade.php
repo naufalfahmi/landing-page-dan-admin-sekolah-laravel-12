@@ -156,7 +156,7 @@
                         <div class="col-md-4 text-end">
                             <div class="announcement-actions">
                                 <a href="{{ route('announcements.show', $announcement->slug) }}" class="btn btn-primary" aria-label="Baca detail pengumuman: {{ $announcement->title }}">
-                                    <i class="fas fa-eye" aria-hidden="true"></i> Lihat Detail
+                                    <i class="fas fa-eye" aria-hidden="true"></i> Detail
                                 </a>
                                 
                                 @if($announcement->attachment)
