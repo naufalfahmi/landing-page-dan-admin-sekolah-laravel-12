@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use App\Models\Shortlink;
 use App\Models\Article;
+use App\Models\Author;
 
 class ArticleController extends Controller
 {
@@ -158,8 +159,21 @@ class ArticleController extends Controller
      */
     public function showByAuthor($slug)
     {
-        // Implementasi untuk menampilkan artikel berdasarkan author
-        return view('author', compact('slug'));
+        $author = Author::active()->where('slug', $slug)->first();
+        if (!$author) {
+            abort(404, 'Author tidak ditemukan');
+        }
+
+        $articles = Article::with(['author', 'categories'])
+            ->where('author_id', $author->id)
+            ->published()
+            ->latest('published_at')
+            ->paginate(9);
+
+        return view('author', [
+            'author' => $author,
+            'articles' => $articles,
+        ]);
     }
 
     /**
