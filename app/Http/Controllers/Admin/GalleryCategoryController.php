@@ -42,7 +42,7 @@ class GalleryCategoryController extends Controller
             'sort_order' => 'integer|min:0',
         ]);
 
-        GalleryCategory::create([
+        $galleryCategory = GalleryCategory::create([
             'name' => $request->name,
             'description' => $request->description,
             'icon' => $request->icon,
@@ -55,7 +55,7 @@ class GalleryCategoryController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Kategori galeri berhasil dibuat.',
-                'category' => $category
+                'category' => $galleryCategory
             ]);
         }
 

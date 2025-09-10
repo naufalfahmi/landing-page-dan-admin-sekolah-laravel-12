@@ -129,6 +129,24 @@ License: For each use you must have a valid license purchased only from above li
 							</ul>
 						</div>
 					</li>
+					<li class="nav-item">
+						@php $penaKarsaOpen = str_contains(request()->route()->getName(), 'admin.pena-karsa'); @endphp
+						<a class="nav-link" data-bs-toggle="collapse" href="#pena-karsa" role="button" aria-expanded="{{ $penaKarsaOpen ? 'true' : 'false' }}" aria-controls="pena-karsa">
+							<i class="link-icon" data-feather="edit-3"></i>
+							<span class="link-title">Pena Karsa</span>
+							<i class="link-arrow" data-feather="chevron-down"></i>
+						</a>
+						<div class="collapse {{ $penaKarsaOpen ? 'show' : '' }}" id="pena-karsa">
+							<ul class="nav sub-menu">
+								<li class="nav-item">
+									<a href="{{ route('admin.pena-karsa.index') }}" class="nav-link {{ request()->routeIs('admin.pena-karsa.index') || request()->routeIs('admin.pena-karsa.show') || request()->routeIs('admin.pena-karsa.edit') ? 'active' : '' }}">Daftar Tulisan</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ route('admin.pena-karsa.create') }}" class="nav-link {{ request()->routeIs('admin.pena-karsa.create') ? 'active' : '' }}">Tambah Tulisan</a>
+								</li>
+							</ul>
+						</div>
+					</li>
 					@php
 						$isAuthor = Auth::user()->email === 'author@example.com'; // Replace with your actual author email
 					@endphp
@@ -209,6 +227,24 @@ License: For each use you must have a valid license purchased only from above li
 						</div>
 					</li>
 					<li class="nav-item">
+						@php $announcementCategoriesOpen = str_contains(request()->route()->getName(), 'admin.announcement-categories'); @endphp
+						<a class="nav-link" data-bs-toggle="collapse" href="#announcement-categories" role="button" aria-expanded="{{ $announcementCategoriesOpen ? 'true' : 'false' }}" aria-controls="announcement-categories">
+							<i class="link-icon" data-feather="tag"></i>
+							<span class="link-title">Kategori Pengumuman</span>
+							<i class="link-arrow" data-feather="chevron-down"></i>
+						</a>
+						<div class="collapse {{ $announcementCategoriesOpen ? 'show' : '' }}" id="announcement-categories">
+							<ul class="nav sub-menu">
+								<li class="nav-item">
+									<a href="{{ route('admin.announcement-categories.index') }}" class="nav-link {{ request()->routeIs('admin.announcement-categories.index') || request()->routeIs('admin.announcement-categories.show') || request()->routeIs('admin.announcement-categories.edit') ? 'active' : '' }}">Daftar Kategori</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ route('admin.announcement-categories.create') }}" class="nav-link {{ request()->routeIs('admin.announcement-categories.create') ? 'active' : '' }}">Tambah Kategori</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li class="nav-item">
 						@php $galleriesOpen = str_contains(request()->route()->getName(), 'admin.galleries'); @endphp
 						<a class="nav-link" data-bs-toggle="collapse" href="#galleries" role="button" aria-expanded="{{ $galleriesOpen ? 'true' : 'false' }}" aria-controls="galleries">
 							<i class="link-icon" data-feather="camera"></i>
@@ -222,6 +258,24 @@ License: For each use you must have a valid license purchased only from above li
 								</li>
 								<li class="nav-item">
 									<a href="{{ route('admin.galleries.create') }}" class="nav-link {{ request()->routeIs('admin.galleries.create') ? 'active' : '' }}">Tambah Galeri</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li class="nav-item">
+						@php $galleryCategoriesOpen = str_contains(request()->route()->getName(), 'admin.gallery-categories'); @endphp
+						<a class="nav-link" data-bs-toggle="collapse" href="#gallery-categories" role="button" aria-expanded="{{ $galleryCategoriesOpen ? 'true' : 'false' }}" aria-controls="gallery-categories">
+							<i class="link-icon" data-feather="folder"></i>
+							<span class="link-title">Kategori Galeri</span>
+							<i class="link-arrow" data-feather="chevron-down"></i>
+						</a>
+						<div class="collapse {{ $galleryCategoriesOpen ? 'show' : '' }}" id="gallery-categories">
+							<ul class="nav sub-menu">
+								<li class="nav-item">
+									<a href="{{ route('admin.gallery-categories.index') }}" class="nav-link {{ request()->routeIs('admin.gallery-categories.index') || request()->routeIs('admin.gallery-categories.show') || request()->routeIs('admin.gallery-categories.edit') ? 'active' : '' }}">Daftar Kategori</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ route('admin.gallery-categories.create') }}" class="nav-link {{ request()->routeIs('admin.gallery-categories.create') ? 'active' : '' }}">Tambah Kategori</a>
 								</li>
 							</ul>
 						</div>

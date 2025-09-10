@@ -94,6 +94,10 @@
                 @yield('content')
             </main>
         </div>
+        
+        <!-- Social Media Sidebar -->
+        @include('components.social-sidebar')
+        
         @include('layouts.footer')
     </body>
 </html>

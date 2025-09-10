@@ -39,35 +39,67 @@ class GalleryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
+            'images' => 'required|array|min:1',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:20480',
             'category_id' => 'required|exists:gallery_categories,id',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
             'sort_order' => 'integer|min:0',
         ]);
 
-        $data = $request->all();
-        
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('galleries', $imageName, 'public');
-            $data['image'] = $imagePath;
+        $baseData = [
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'is_published' => $request->has('is_published'),
+            'is_featured' => $request->has('is_featured'),
+            'sort_order' => $request->sort_order ?? 0,
+        ];
 
-            // Auto-generate thumbnail
-            $this->generateThumbnail($image, $imageName);
-            $data['thumbnail'] = 'galleries/thumbnails/' . $imageName;
+        $uploadedCount = 0;
+        $errors = [];
+
+        // Handle multiple image uploads
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            $baseTitle = $request->title;
+            
+            foreach ($images as $index => $image) {
+                try {
+                    // Generate title with numbering if multiple images
+                    $title = count($images) > 1 ? $baseTitle . ' #' . ($index + 1) : $baseTitle;
+                    
+                    $imageName = time() . '_' . Str::slug($title) . '_' . ($index + 1) . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $image->storeAs('galleries', $imageName, 'public');
+
+                    // Auto-generate thumbnail
+                    $this->generateThumbnail($image, $imageName);
+
+                    // Create gallery record
+                    Gallery::create(array_merge($baseData, [
+                        'title' => $title,
+                        'image' => $imagePath,
+                        'thumbnail' => 'galleries/thumbnails/' . $imageName,
+                    ]));
+
+                    $uploadedCount++;
+                } catch (\Exception $e) {
+                    $errors[] = "Gambar " . ($index + 1) . ": " . $e->getMessage();
+                }
+            }
         }
 
-        $data['is_published'] = $request->has('is_published');
-        $data['is_featured'] = $request->has('is_featured');
-        $data['sort_order'] = $request->sort_order ?? 0;
-
-        Gallery::create($data);
-
-        return redirect()->route('admin.galleries.index')
-            ->with('success', 'Galeri berhasil ditambahkan.');
+        if ($uploadedCount > 0) {
+            $message = $uploadedCount . ' foto berhasil ditambahkan ke galeri.';
+            if (!empty($errors)) {
+                $message .= ' Beberapa gambar gagal diupload: ' . implode(', ', $errors);
+            }
+            return redirect()->route('admin.galleries.index')
+                ->with('success', $message);
+        } else {
+            return redirect()->back()
+                ->withErrors(['images' => 'Tidak ada gambar yang berhasil diupload.'])
+                ->withInput();
+        }
     }
 
     /**
@@ -97,6 +129,8 @@ class GalleryController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
+            'additional_images' => 'nullable|array',
+            'additional_images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:20480',
             'category_id' => 'required|exists:gallery_categories,id',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
@@ -131,8 +165,54 @@ class GalleryController extends Controller
 
         $gallery->update($data);
 
+        // Handle additional images upload
+        $additionalCount = 0;
+        $errors = [];
+
+        if ($request->hasFile('additional_images')) {
+            $additionalImages = $request->file('additional_images');
+            $baseTitle = $request->title;
+            
+            foreach ($additionalImages as $index => $image) {
+                try {
+                    // Generate title with numbering
+                    $title = $baseTitle . ' #' . ($index + 1);
+                    
+                    $imageName = time() . '_' . Str::slug($title) . '_' . ($index + 1) . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $image->storeAs('galleries', $imageName, 'public');
+
+                    // Auto-generate thumbnail
+                    $this->generateThumbnail($image, $imageName);
+
+                    // Create new gallery record
+                    Gallery::create([
+                        'title' => $title,
+                        'description' => $request->description,
+                        'image' => $imagePath,
+                        'thumbnail' => 'galleries/thumbnails/' . $imageName,
+                        'category_id' => $request->category_id,
+                        'is_published' => $request->has('is_published'),
+                        'is_featured' => $request->has('is_featured'),
+                        'sort_order' => $request->sort_order ?? 0,
+                    ]);
+
+                    $additionalCount++;
+                } catch (\Exception $e) {
+                    $errors[] = "Gambar tambahan " . ($index + 1) . ": " . $e->getMessage();
+                }
+            }
+        }
+
+        $message = 'Galeri berhasil diperbarui.';
+        if ($additionalCount > 0) {
+            $message .= ' ' . $additionalCount . ' foto tambahan berhasil ditambahkan.';
+            if (!empty($errors)) {
+                $message .= ' Beberapa gambar gagal diupload: ' . implode(', ', $errors);
+            }
+        }
+
         return redirect()->route('admin.galleries.index')
-            ->with('success', 'Galeri berhasil diperbarui.');
+            ->with('success', $message);
     }
 
     /**

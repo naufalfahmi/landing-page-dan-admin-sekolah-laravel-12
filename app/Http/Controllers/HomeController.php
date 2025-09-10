@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\Announcement;
 use App\Models\Gallery;
 use App\Models\Slider;
+use App\Models\PenaKarsa;
 
 class HomeController extends Controller
 {
@@ -62,7 +63,13 @@ class HomeController extends Controller
         // Get active sliders
         $sliders = Slider::active()->ordered()->get();
 
-        return view('home', compact('articles', 'announcements', 'galleries', 'documents', 'sliders'));
+        // Get Pena Karsa articles
+        $penaKarsa = PenaKarsa::published()
+            ->latest('published_at')
+            ->take(6)
+            ->get();
+
+        return view('home', compact('articles', 'announcements', 'galleries', 'documents', 'sliders', 'penaKarsa'));
     }
 
     /**

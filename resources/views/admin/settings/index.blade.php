@@ -286,6 +286,67 @@
 							</div>
 						</div>
 					</div>
+
+					<!-- Social Media -->
+					<div class="row mb-4">
+						<div class="col-12">
+							<h6 class="card-title mb-3">
+								<i data-feather="share-2" class="icon-sm me-2"></i>
+								Sosial Media & Sidebar
+							</h6>
+						</div>
+						
+						<!-- Toggle Show/Hide Sidebar -->
+						<div class="col-12 mb-3">
+							<div class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" id="social_sidebar_enabled" name="social_sidebar_enabled" value="1" {{ old('social_sidebar_enabled', $social_sidebar_enabled) ? 'checked' : '' }}>
+								<label class="form-check-label" for="social_sidebar_enabled">
+									<strong>Tampilkan Sidebar Sosial Media</strong>
+								</label>
+								<small class="form-text text-muted d-block">Aktifkan untuk menampilkan sidebar sosial media di halaman depan</small>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="instagram_url" class="form-label">
+									<i class="fab fa-instagram text-danger me-1"></i>
+									Instagram URL
+								</label>
+								<input type="url" class="form-control @error('instagram_url') is-invalid @enderror" id="instagram_url" name="instagram_url" value="{{ old('instagram_url', $instagram_url) }}" placeholder="https://instagram.com/username">
+								@error('instagram_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+							</div>
+							
+							<div class="mb-3">
+								<label for="tiktok_url" class="form-label">
+									<i class="fab fa-tiktok text-dark me-1"></i>
+									TikTok URL
+								</label>
+								<input type="url" class="form-control @error('tiktok_url') is-invalid @enderror" id="tiktok_url" name="tiktok_url" value="{{ old('tiktok_url', $tiktok_url) }}" placeholder="https://tiktok.com/@username">
+								@error('tiktok_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+							</div>
+						</div>
+						
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="facebook_url" class="form-label">
+									<i class="fab fa-facebook text-primary me-1"></i>
+									Facebook URL
+								</label>
+								<input type="url" class="form-control @error('facebook_url') is-invalid @enderror" id="facebook_url" name="facebook_url" value="{{ old('facebook_url', $facebook_url) }}" placeholder="https://facebook.com/username">
+								@error('facebook_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+							</div>
+							
+							<div class="mb-3">
+								<label for="youtube_url" class="form-label">
+									<i class="fab fa-youtube text-danger me-1"></i>
+									YouTube URL
+								</label>
+								<input type="url" class="form-control @error('youtube_url') is-invalid @enderror" id="youtube_url" name="youtube_url" value="{{ old('youtube_url', $youtube_url) }}" placeholder="https://youtube.com/@username">
+								@error('youtube_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+							</div>
+						</div>
+					</div>
 					
 					<div class="d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary">

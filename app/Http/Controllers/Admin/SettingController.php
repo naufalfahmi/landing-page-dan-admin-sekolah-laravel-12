@@ -29,6 +29,11 @@ class SettingController extends Controller
             'operational_hours_sunday' => Setting::getValue('operational_hours_sunday', 'Libur'),
             'google_analytics' => Setting::getValue('google_analytics', ''),
             'facebook_pixel' => Setting::getValue('facebook_pixel', ''),
+            'instagram_url' => Setting::getValue('instagram_url', ''),
+            'tiktok_url' => Setting::getValue('tiktok_url', ''),
+            'facebook_url' => Setting::getValue('facebook_url', ''),
+            'youtube_url' => Setting::getValue('youtube_url', ''),
+            'social_sidebar_enabled' => Setting::getValue('social_sidebar_enabled', true),
         ];
 
         return view('admin.settings.index', $data);
@@ -55,6 +60,11 @@ class SettingController extends Controller
             'operational_hours_sunday' => ['nullable','string','max:100'],
             'google_analytics' => ['nullable','string','max:500'],
             'facebook_pixel' => ['nullable','string','max:500'],
+            'instagram_url' => ['nullable','url','max:500'],
+            'tiktok_url' => ['nullable','url','max:500'],
+            'facebook_url' => ['nullable','url','max:500'],
+            'youtube_url' => ['nullable','url','max:500'],
+            'social_sidebar_enabled' => ['nullable','boolean'],
         ]);
 
         // SEO Settings
@@ -79,6 +89,13 @@ class SettingController extends Controller
         // Analytics
         Setting::setValue('google_analytics', $validated['google_analytics'] ?? '', 'analytics');
         Setting::setValue('facebook_pixel', $validated['facebook_pixel'] ?? '', 'analytics');
+
+        // Social Media
+        Setting::setValue('instagram_url', $validated['instagram_url'] ?? '', 'social_media');
+        Setting::setValue('tiktok_url', $validated['tiktok_url'] ?? '', 'social_media');
+        Setting::setValue('facebook_url', $validated['facebook_url'] ?? '', 'social_media');
+        Setting::setValue('youtube_url', $validated['youtube_url'] ?? '', 'social_media');
+        Setting::setValue('social_sidebar_enabled', $validated['social_sidebar_enabled'] ?? false, 'social_media');
 
         // Uploads
         if ($request->hasFile('site_logo')) {

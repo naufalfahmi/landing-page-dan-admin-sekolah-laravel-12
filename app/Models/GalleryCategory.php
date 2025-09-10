@@ -47,7 +47,7 @@ class GalleryCategory extends Model
      */
     public function galleries()
     {
-        return $this->hasMany(Gallery::class);
+        return $this->hasMany(Gallery::class, 'category_id');
     }
 
     /**

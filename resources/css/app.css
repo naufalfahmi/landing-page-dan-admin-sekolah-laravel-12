@@ -1283,6 +1283,256 @@ and (-webkit-device-pixel-ratio: 3) {
 
 /* Additional iPhone fixes - removed CSS containment to prevent image disappearing */
 
+/* Social Media Sidebar Styles */
+.social-sidebar {
+    z-index: 1000;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+.social-btn {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 24px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: floaty 3s ease-in-out infinite;
+    animation-delay: calc(var(--animation-delay, 0) * 0.2s);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform;
+}
+
+/* Floating animation for each button */
+.social-btn:nth-child(1) { --animation-delay: 0; }
+.social-btn:nth-child(2) { --animation-delay: 1; }
+.social-btn:nth-child(3) { --animation-delay: 2; }
+.social-btn:nth-child(4) { --animation-delay: 3; }
+
+/* Floating keyframe animation */
+@keyframes floaty {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Social media brand colors */
+.social-instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.social-tiktok {
+    background: linear-gradient(45deg, #000000 0%, #ff0050 50%, #00f2ea 100%);
+}
+
+.social-facebook {
+    background: linear-gradient(45deg, #1877f2 0%, #42a5f5 100%);
+}
+
+.social-youtube {
+    background: linear-gradient(45deg, #ff0000 0%, #ff4444 100%);
+}
+
+/* Hover effect - expands to show label */
+.social-btn:hover {
+    width: 200px;
+    border-radius: 30px;
+    transform: translateX(-140px) translateY(0);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    animation-play-state: paused; /* Pause floating animation on hover */
+}
+
+.social-btn:hover .social-label {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Hide icon when hovering */
+.social-btn:hover i {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+/* Social label styling */
+.social-label {
+    position: absolute;
+    left: 70px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-30px);
+    font-size: 16px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 1;
+    min-width: 80px;
+    text-align: left;
+}
+
+/* Icon styling */
+.social-btn i {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 2;
+    position: relative;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .social-sidebar {
+        right: 10px;
+        gap: 15px;
+    }
+    
+    .social-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .social-btn:hover {
+        width: 160px;
+        transform: translateX(-110px) translateY(0);
+        animation-play-state: paused;
+    }
+    
+    .social-label {
+        left: 60px;
+        font-size: 14px;
+        transform: translateY(-50%) translateX(-25px);
+    }
+    
+    .social-btn:hover .social-label {
+        transform: translateY(-50%) translateX(0);
+    }
+    
+    .social-btn:hover i {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+@media (max-width: 576px) {
+    .social-sidebar {
+        right: 5px;
+        gap: 12px;
+    }
+    
+    .social-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+    
+    .social-btn:hover {
+        width: 140px;
+        transform: translateX(-95px) translateY(0);
+        animation-play-state: paused;
+    }
+    
+    .social-label {
+        left: 55px;
+        font-size: 13px;
+        transform: translateY(-50%) translateX(-20px);
+    }
+    
+    .social-btn:hover .social-label {
+        transform: translateY(-50%) translateX(0);
+    }
+    
+    .social-btn:hover i {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* Tablet specific adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .social-sidebar {
+        right: 15px;
+    }
+    
+    .social-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 22px;
+    }
+    
+    .social-btn:hover {
+        width: 180px;
+        transform: translateX(-125px) translateY(0);
+        animation-play-state: paused;
+    }
+    
+    .social-label {
+        left: 65px;
+        font-size: 15px;
+        transform: translateY(-50%) translateX(-25px);
+    }
+    
+    .social-btn:hover .social-label {
+        transform: translateY(-50%) translateX(0);
+    }
+    
+    .social-btn:hover i {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* Accessibility improvements */
+.social-btn:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+.social-btn:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* Reduced motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .social-btn {
+        animation: none;
+    }
+    
+    .social-btn:hover {
+        transform: translateX(-140px) translateY(0);
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .social-btn {
+        border: 2px solid #ffffff;
+    }
+}
+
+/* Prevent text selection on social buttons */
+.social-btn {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* Prevent text selection on carousel controls */
 .carousel-control-prev,
 .carousel-control-next {
@@ -2016,6 +2266,7 @@ footer {
     text-shadow: 0 2px 4px rgba(0,0,0,0.7);
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

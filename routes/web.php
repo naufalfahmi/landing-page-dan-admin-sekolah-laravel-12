@@ -204,6 +204,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::patch('/contact/{contact}/mark-replied', [\App\Http\Controllers\Admin\ContactController::class, 'markAsReplied'])->name('contact.mark-replied');
     Route::delete('/contact/{contact}', [\App\Http\Controllers\Admin\ContactController::class, 'destroy'])->name('contact.destroy');
     
+    // Pena Karsa management
+    Route::get('/penaKarsaCreate', [\App\Http\Controllers\Admin\PenaKarsaController::class, 'create'])->name('pena-karsa.create');
+    Route::post('/penaKarsaCreate', [\App\Http\Controllers\Admin\PenaKarsaController::class, 'store'])->name('pena-karsa.store');
+    Route::resource('pena-karsa', \App\Http\Controllers\Admin\PenaKarsaController::class)->except(['create', 'store']);
+
     // Shortlinks management
     Route::get('/shortlinks', [ShortlinkController::class, 'index'])->name('shortlinks.index');
     Route::post('/shortlinks', [ShortlinkController::class, 'store'])->name('shortlinks.store');

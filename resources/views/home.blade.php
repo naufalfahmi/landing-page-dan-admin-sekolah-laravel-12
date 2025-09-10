@@ -77,4 +77,102 @@
         @endforeach
     </div>
 </div>
+
+<!-- Pena Karsa Section -->
+<div class="pena-karsa-widget">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="widget-header pena-karsa-header">
+                    <div class="pena-karsa-banner">
+                        <div class="banner-content">
+                            <h3 class="widget-title pena-karsa-title">
+                                <i class="fas fa-pen-fancy"></i>
+                                Pena Karsa
+                            </h3>
+                            <p class="pena-karsa-tagline">Ruang Ekspresi</p>
+                            <span class="pena-karsa-subtitle">Tulisan & Karya</span>
+                        </div>
+                        <div class="banner-decoration">
+                            <div class="decoration-circle"></div>
+                            <div class="decoration-line"></div>
+                        </div>
+                    </div>
+                    <a href="{{ route('pena-karsa.index') }}" class="view-all-btn pena-karsa-btn">
+                        Semua Karya <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row">
+            @foreach($penaKarsa as $item)
+            <div class="col-md-4 mb-4">
+                <article class="card pena-karsa-card h-100" itemscope itemtype="https://schema.org/Article">
+                    <div class="pena-karsa-image-container">
+                        @if($item->image)
+                            <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top pena-karsa-image" alt="{{ $item->title }}" itemprop="image">
+                        @else
+                            <div class="pena-karsa-placeholder">
+                                <i class="fas fa-pen-fancy"></i>
+                            </div>
+                        @endif
+                        <div class="pena-karsa-type-badge">
+                            <span class="type-badge type-{{ $item->type }}">{{ $item->type_display }}</span>
+                        </div>
+                        @if($item->is_featured)
+                        <div class="pena-karsa-featured">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <div class="pena-karsa-author">
+                                <i class="fas fa-user-circle"></i>
+                                <span class="author-name">{{ $item->author_name }}</span>
+                                @if($item->author_type === 'student' && $item->author_class)
+                                    <span class="author-class">({{ $item->author_class }})</span>
+                                @elseif($item->author_type === 'teacher' && $item->author_position)
+                                    <span class="author-position">({{ $item->author_position }})</span>
+                                @endif
+                            </div>
+                        </div>
+                        <h2 class="card-title pena-karsa-title" itemprop="headline">
+                            <a href="{{ route('pena-karsa.show', $item->slug) }}" class="pena-karsa-title-link" itemprop="mainEntityOfPage url">{{ $item->title }}</a>
+                        </h2>
+                        <p class="card-text pena-karsa-excerpt">{{ Str::limit(strip_tags($item->excerpt), 100) }}</p>
+                        
+                        @if($item->tags && count($item->tags) > 0)
+                        <div class="pena-karsa-tags mb-3">
+                            @foreach(array_slice($item->tags, 0, 3) as $tag)
+                                <span class="pena-karsa-tag">{{ $tag }}</span>
+                            @endforeach
+                            @if(count($item->tags) > 3)
+                                <span class="pena-karsa-tag-more">+{{ count($item->tags) - 3 }}</span>
+                            @endif
+                        </div>
+                        @endif
+                        
+                        <div class="entry-meta pena-karsa-meta mt-auto">
+                            <span class="posted-on">
+                                <i class="fas fa-calendar-alt"></i>
+                                <time class="entry-date published" datetime="{{ $item->published_at->format('Y-m-d') }}" itemprop="datePublished">{{ $item->published_at->format('d M Y') }}</time>
+                            </span>
+                            <span class="pena-karsa-views">
+                                <i class="fas fa-eye"></i>
+                                {{ number_format($item->views) }}
+                            </span>
+                        </div>
+                        <div class="visually-hidden" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+                            <meta itemprop="name" content="{{ config('app.name') }}">
+                            <meta itemprop="url" content="{{ url('/') }}">
+                        </div>
+                    </div>
+                </article>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
 @endsection
