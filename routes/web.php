@@ -7,6 +7,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ShortlinkController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\AuthorController as AdminAuthorController;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Dashboard route (redirect to admin dashboard)
 Route::get('/dashboard', function () {
