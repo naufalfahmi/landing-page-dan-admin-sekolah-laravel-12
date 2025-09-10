@@ -3,30 +3,52 @@
 @section('title', $penaKarsa->title . ' - Pena Karsa')
 @section('description', $penaKarsa->excerpt)
 
-@push('styles')
-    <!-- Open Graph Meta Tags for Pena Karsa Article -->
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="{{ $penaKarsa->title }} - Pena Karsa">
-    <meta property="og:description" content="{{ $penaKarsa->excerpt }}">
-    <meta property="og:url" content="{{ request()->url() }}">
+@section('og_image')
     @if($penaKarsa->image)
-        <meta property="og:image" content="{{ asset('storage/' . $penaKarsa->image) }}">
+        @php
+            $ogImagePath = 'pena-karsa/og-images/' . basename($penaKarsa->image);
+            $ogImageExists = file_exists(public_path('storage/' . $ogImagePath));
+        @endphp
+        @if($ogImageExists)
+            <meta property="og:image" content="{{ asset('storage/' . $ogImagePath) }}">
+        @else
+            <meta property="og:image" content="{{ asset('storage/' . $penaKarsa->image) }}">
+        @endif
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
         <meta property="og:image:type" content="image/jpeg">
     @endif
+@endsection
+
+@section('twitter_image')
+    @if($penaKarsa->image)
+        @php
+            $ogImagePath = 'pena-karsa/og-images/' . basename($penaKarsa->image);
+            $ogImageExists = file_exists(public_path('storage/' . $ogImagePath));
+        @endphp
+        @if($ogImageExists)
+            <meta name="twitter:image" content="{{ asset('storage/' . $ogImagePath) }}">
+        @else
+            <meta name="twitter:image" content="{{ asset('storage/' . $penaKarsa->image) }}">
+        @endif
+    @endif
+@endsection
+
+@push('styles')
+    <!-- Additional Open Graph Meta Tags for Pena Karsa Article -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ $penaKarsa->title }} - Pena Karsa">
+    <meta property="og:description" content="{{ $penaKarsa->excerpt }}">
+    <meta property="og:url" content="{{ request()->url() }}">
     <meta property="og:locale" content="id_ID">
     <meta property="article:author" content="{{ $penaKarsa->author_name }}">
     <meta property="article:published_time" content="{{ $penaKarsa->published_at ? $penaKarsa->published_at->toISOString() : $penaKarsa->created_at->toISOString() }}">
     <meta property="article:section" content="Pena Karsa">
     
-    <!-- Twitter Card Meta Tags for Pena Karsa Article -->
+    <!-- Additional Twitter Card Meta Tags for Pena Karsa Article -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $penaKarsa->title }} - Pena Karsa">
     <meta name="twitter:description" content="{{ $penaKarsa->excerpt }}">
-    @if($penaKarsa->image)
-        <meta name="twitter:image" content="{{ asset('storage/' . $penaKarsa->image) }}">
-    @endif
 @endpush
 
 @section('content')

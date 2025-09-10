@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\PenaKarsa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class PenaKarsaController extends Controller
 {
@@ -54,8 +57,13 @@ class PenaKarsaController extends Controller
 
             // Handle image upload
             if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('pena-karsa', 'public');
+                $image = $request->file('image');
+                $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('pena-karsa', $imageName, 'public');
                 $data['image'] = $imagePath;
+                
+                // Generate optimized og:image
+                $this->generateOgImage($image, $imageName);
             }
 
             // Set published_at if status is published and no date provided
@@ -127,13 +135,27 @@ class PenaKarsaController extends Controller
 
             // Handle image upload
             if ($request->hasFile('image')) {
-                // Delete old image if exists
+                // Delete old image and og:image if exists
                 if ($penaKarsa->image && Storage::disk('public')->exists($penaKarsa->image)) {
                     Storage::disk('public')->delete($penaKarsa->image);
+                    
+                    // Also delete old og:image
+                    $oldOgImagePath = 'pena-karsa/og-images/' . basename($penaKarsa->image);
+                    if (Storage::disk('public')->exists($oldOgImagePath)) {
+                        Storage::disk('public')->delete($oldOgImagePath);
+                    }
+                    if (file_exists(public_path('storage/' . $oldOgImagePath))) {
+                        unlink(public_path('storage/' . $oldOgImagePath));
+                    }
                 }
                 
-                $imagePath = $request->file('image')->store('pena-karsa', 'public');
+                $image = $request->file('image');
+                $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('pena-karsa', $imageName, 'public');
                 $data['image'] = $imagePath;
+                
+                // Generate optimized og:image
+                $this->generateOgImage($image, $imageName);
             }
 
             // Set published_at if status is published and no date provided
@@ -182,6 +204,47 @@ class PenaKarsaController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Generate optimized og:image for social media sharing
+     */
+    private function generateOgImage($image, $imageName)
+    {
+        try {
+            $manager = new ImageManager(new Driver());
+            
+            // Create og-images directory if it doesn't exist
+            $ogImageDir = storage_path('app/public/pena-karsa/og-images');
+            if (!file_exists($ogImageDir)) {
+                mkdir($ogImageDir, 0755, true);
+            }
+            
+            // Also create public og-images directory
+            $publicOgImageDir = public_path('storage/pena-karsa/og-images');
+            if (!file_exists($publicOgImageDir)) {
+                mkdir($publicOgImageDir, 0755, true);
+            }
+            
+            // Process image
+            $img = $manager->read($image->getPathname());
+            
+            // Resize to og:image standard size (1200x630)
+            $img->cover(1200, 630);
+            
+            // Save og:image to storage
+            $ogImagePath = storage_path('app/public/pena-karsa/og-images/' . $imageName);
+            $img->save($ogImagePath, 80); // 80% quality for smaller file size
+            
+            // Also save to public directory for immediate access
+            $publicOgImagePath = public_path('storage/pena-karsa/og-images/' . $imageName);
+            $img->save($publicOgImagePath, 80);
+            
+            \Log::info('OG Image generated successfully: ' . $ogImagePath);
+            
+        } catch (\Exception $e) {
+            \Log::error('OG Image generation failed: ' . $e->getMessage());
         }
     }
 }
