@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Pena Karsa - Ruang Ekspresi - ' . config('app.name'))
+@section('description', 'Ruang ekspresi untuk tulisan dan karya kreatif siswa serta guru: artikel, opini, esai, motivasi, dan kreatif.')
 
 @section('content')
 <main class="container mt-4">
