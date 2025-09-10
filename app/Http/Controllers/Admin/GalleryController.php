@@ -128,87 +128,80 @@ class GalleryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
-            'additional_images' => 'nullable|array',
-            'additional_images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:20480',
+            'images' => 'nullable|array|min:1',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:20480',
             'category_id' => 'required|exists:gallery_categories,id',
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
             'sort_order' => 'integer|min:0',
         ]);
 
-        $data = $request->all();
-        
-        // Handle image upload
-        if ($request->hasFile('image')) {
+        $baseData = [
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'is_published' => $request->has('is_published'),
+            'is_featured' => $request->has('is_featured'),
+            'sort_order' => $request->sort_order ?? 0,
+        ];
+
+        $uploadedCount = 0;
+        $errors = [];
+
+        // Handle multiple image uploads
+        if ($request->hasFile('images')) {
+            \Log::info('Multiple images upload detected in edit gallery');
+            
             // Delete old image and thumbnail
             if ($gallery->image && Storage::disk('public')->exists($gallery->image)) {
                 Storage::disk('public')->delete($gallery->image);
+                \Log::info('Old image deleted: ' . $gallery->image);
             }
             if ($gallery->thumbnail && Storage::disk('public')->exists($gallery->thumbnail)) {
                 Storage::disk('public')->delete($gallery->thumbnail);
+                \Log::info('Old thumbnail deleted: ' . $gallery->thumbnail);
             }
             
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('galleries', $imageName, 'public');
-            $data['image'] = $imagePath;
-
-            // Auto-generate thumbnail
-            $this->generateThumbnail($image, $imageName);
-            $data['thumbnail'] = 'galleries/thumbnails/' . $imageName;
-        }
-
-        $data['is_published'] = $request->has('is_published');
-        $data['is_featured'] = $request->has('is_featured');
-        $data['sort_order'] = $request->sort_order ?? 0;
-
-        $gallery->update($data);
-
-        // Handle additional images upload
-        $additionalCount = 0;
-        $errors = [];
-
-        if ($request->hasFile('additional_images')) {
-            $additionalImages = $request->file('additional_images');
+            $images = $request->file('images');
             $baseTitle = $request->title;
             
-            foreach ($additionalImages as $index => $image) {
+            foreach ($images as $index => $image) {
                 try {
-                    // Generate title with numbering
-                    $title = $baseTitle . ' #' . ($index + 1);
+                    // Generate title with numbering if multiple images
+                    $title = count($images) > 1 ? $baseTitle . ' #' . ($index + 1) : $baseTitle;
                     
                     $imageName = time() . '_' . Str::slug($title) . '_' . ($index + 1) . '.' . $image->getClientOriginalExtension();
                     $imagePath = $image->storeAs('galleries', $imageName, 'public');
 
                     // Auto-generate thumbnail
+                    \Log::info('Starting thumbnail generation for: ' . $imageName);
                     $this->generateThumbnail($image, $imageName);
 
-                    // Create new gallery record
-                    Gallery::create([
+                    // Create gallery record
+                    Gallery::create(array_merge($baseData, [
                         'title' => $title,
-                        'description' => $request->description,
                         'image' => $imagePath,
                         'thumbnail' => 'galleries/thumbnails/' . $imageName,
-                        'category_id' => $request->category_id,
-                        'is_published' => $request->has('is_published'),
-                        'is_featured' => $request->has('is_featured'),
-                        'sort_order' => $request->sort_order ?? 0,
-                    ]);
+                    ]));
 
-                    $additionalCount++;
+                    $uploadedCount++;
                 } catch (\Exception $e) {
-                    $errors[] = "Gambar tambahan " . ($index + 1) . ": " . $e->getMessage();
+                    $errors[] = "Gambar " . ($index + 1) . ": " . $e->getMessage();
                 }
             }
+        } else {
+            // No new images, just update the existing gallery
+            $gallery->update(array_merge($baseData, [
+                'title' => $request->title,
+            ]));
         }
 
-        $message = 'Galeri berhasil diperbarui.';
-        if ($additionalCount > 0) {
-            $message .= ' ' . $additionalCount . ' foto tambahan berhasil ditambahkan.';
+        if ($uploadedCount > 0) {
+            $message = $uploadedCount . ' foto berhasil ditambahkan ke galeri.';
             if (!empty($errors)) {
                 $message .= ' Beberapa gambar gagal diupload: ' . implode(', ', $errors);
             }
+        } else {
+            $message = 'Galeri berhasil diperbarui.';
         }
 
         return redirect()->route('admin.galleries.index')
@@ -248,19 +241,35 @@ class GalleryController extends Controller
                 mkdir($thumbnailDir, 0755, true);
             }
             
+            // Also create public thumbnail directory
+            $publicThumbnailDir = public_path('storage/galleries/thumbnails');
+            if (!file_exists($publicThumbnailDir)) {
+                mkdir($publicThumbnailDir, 0755, true);
+            }
+            
             // Process image
             $img = $manager->read($image->getPathname());
             
             // Resize to thumbnail size (300x300, maintain aspect ratio)
             $img->cover(300, 300);
             
-            // Save thumbnail
+            // Save thumbnail to storage
             $thumbnailPath = storage_path('app/public/galleries/thumbnails/' . $imageName);
             $img->save($thumbnailPath, 85); // 85% quality
+            
+            // Also save to public directory for immediate access
+            $publicThumbnailPath = public_path('storage/galleries/thumbnails/' . $imageName);
+            $img->save($publicThumbnailPath, 85);
+            
+            // Log success for debugging
+            \Log::info('Thumbnail generated successfully: ' . $thumbnailPath);
+            \Log::info('Public thumbnail saved: ' . $publicThumbnailPath);
             
         } catch (\Exception $e) {
             // Log error but don't fail the upload
             \Log::error('Thumbnail generation failed: ' . $e->getMessage());
+            \Log::error('Image path: ' . $image->getPathname());
+            \Log::error('Image name: ' . $imageName);
         }
     }
 }

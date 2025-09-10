@@ -62,7 +62,7 @@
 							</div>
 
 							<div class="mb-3">
-								<label for="image" class="form-label">Ganti Gambar Utama</label>
+								<label for="images" class="form-label">Upload Foto Baru</label>
 								@if($gallery->image)
 									<div class="mb-2">
 										<small class="text-muted">Gambar saat ini:</small>
@@ -77,34 +77,26 @@
 										</div>
 									</div>
 								@endif
-								<input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
-								<small class="form-text text-muted">Format: JPG, PNG, GIF, WebP (Max: 20MB) - Thumbnail akan dibuat otomatis</small>
-								@error('image')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
-							</div>
-
-							<div class="mb-3">
-								<label for="additional_images" class="form-label">Tambah Foto Lainnya (Opsional)</label>
-								<input type="file" class="form-control @error('additional_images') is-invalid @enderror @error('additional_images.*') is-invalid @enderror" 
-									   id="additional_images" name="additional_images[]" accept="image/*" multiple>
+								<input type="file" class="form-control @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror" 
+									   id="images" name="images[]" accept="image/*" multiple>
 								<small class="form-text text-muted">
-									Format: JPG, PNG, GIF, WebP (Max: 20MB per file) - Akan membuat entri galeri terpisah<br>
-									<strong>Tips:</strong> Pilih beberapa foto untuk menambahkan ke galeri dengan judul otomatis (#1, #2, dst.)
+									Format: JPG, PNG, GIF, WebP (Max: 20MB per file) - Thumbnail akan dibuat otomatis<br>
+									<strong>Tips:</strong> Pilih beberapa foto sekaligus untuk upload multiple. Judul akan otomatis ditambahkan nomor urut (#1, #2, dst.)
 								</small>
-								@error('additional_images')
+								@error('images')
 									<div class="invalid-feedback">{{ $message }}</div>
 								@enderror
-								@error('additional_images.*')
+								@error('images.*')
 									<div class="invalid-feedback">{{ $message }}</div>
 								@enderror
 								
-								<!-- Preview area for additional images -->
-								<div id="additionalImagePreview" class="mt-3" style="display: none;">
-									<h6>Preview Foto Tambahan:</h6>
-									<div id="additionalPreviewContainer" class="row"></div>
+								<!-- Preview area -->
+								<div id="imagePreview" class="mt-3" style="display: none;">
+									<h6>Preview Foto yang Dipilih:</h6>
+									<div id="previewContainer" class="row"></div>
 								</div>
 							</div>
+
 						</div>
 
 						<div class="col-md-4">
@@ -183,59 +175,46 @@
 			this.style.height = (this.scrollHeight) + 'px';
 		});
 
-		// Image preview
-		$('#image').on('change', function() {
-			const file = this.files[0];
-			if (file) {
-				const reader = new FileReader();
-				reader.onload = function(e) {
-					$('#image-preview').remove();
-					$('#image').after('<div id="image-preview" class="mt-2"><img src="' + e.target.result + '" class="img-thumbnail" style="max-width: 200px; max-height: 150px;"></div>');
-				};
-				reader.readAsDataURL(file);
+		// Multiple images preview
+		$('#images').on('change', function() {
+			const files = this.files;
+			const previewContainer = $('#previewContainer');
+			const imagePreview = $('#imagePreview');
+			
+			// Clear previous previews
+			previewContainer.empty();
+			
+			if (files.length > 0) {
+				imagePreview.show();
+				
+				Array.from(files).forEach((file, index) => {
+					if (file.type.startsWith('image/')) {
+						const reader = new FileReader();
+						reader.onload = function(e) {
+							const col = $('<div class="col-md-3 mb-3"></div>');
+							
+							col.html(`
+								<div class="card">
+									<img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="Preview ${index + 1}">
+									<div class="card-body p-2">
+										<small class="text-muted">Foto ${index + 1}</small>
+										<br>
+										<small class="text-muted">${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+									</div>
+								</div>
+							`);
+							
+							previewContainer.append(col);
+						};
+						reader.readAsDataURL(file);
+					}
+				});
+			} else {
+				imagePreview.hide();
 			}
 		});
 
 
-	// Additional images preview functionality
-	document.getElementById('additional_images').addEventListener('change', function(e) {
-		const files = e.target.files;
-		const previewContainer = document.getElementById('additionalPreviewContainer');
-		const imagePreview = document.getElementById('additionalImagePreview');
-		
-		// Clear previous previews
-		previewContainer.innerHTML = '';
-		
-		if (files.length > 0) {
-			imagePreview.style.display = 'block';
-			
-			Array.from(files).forEach((file, index) => {
-				if (file.type.startsWith('image/')) {
-					const reader = new FileReader();
-					reader.onload = function(e) {
-						const col = document.createElement('div');
-						col.className = 'col-md-3 mb-3';
-						
-						col.innerHTML = `
-							<div class="card">
-								<img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="Preview ${index + 1}">
-								<div class="card-body p-2">
-									<small class="text-muted">Foto Tambahan ${index + 1}</small>
-									<br>
-									<small class="text-muted">${(file.size / 1024 / 1024).toFixed(2)} MB</small>
-								</div>
-							</div>
-						`;
-						
-						previewContainer.appendChild(col);
-					};
-					reader.readAsDataURL(file);
-				}
-			});
-		} else {
-			imagePreview.style.display = 'none';
-		}
-	});
 
 });
 </script>
