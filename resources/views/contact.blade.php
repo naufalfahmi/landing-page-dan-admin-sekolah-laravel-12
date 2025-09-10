@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Hubungi Kami - SMPIT Al-Itqon')
+@section('description', 'Hubungi kami untuk informasi lebih lanjut tentang sekolah')
 
 @section('meta')
 <meta name="description" content="Hubungi kami untuk informasi lebih lanjut tentang sekolah. Kirim pesan atau kunjungi lokasi sekolah kami di Jl. KH. Sholeh Iskandar Km.2 Kd. Badak Bogor.">

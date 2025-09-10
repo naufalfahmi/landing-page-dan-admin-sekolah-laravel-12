@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dokumen & Download - ' . config('app.name'))
+@section('description', 'Download dokumen resmi sekolah, surat edaran, jadwal ujian, formulir, dan pengumuman penting lainnya')
 
 @section('meta')
 <meta name="description" content="Download dokumen resmi sekolah, surat edaran, jadwal ujian, formulir, dan pengumuman penting lainnya.">
