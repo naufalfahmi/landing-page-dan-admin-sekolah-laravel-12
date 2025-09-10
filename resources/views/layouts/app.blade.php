@@ -8,6 +8,7 @@
             $favicon = \App\Models\Setting::getValue('favicon');
             $metaKeywords = \App\Models\Setting::getValue('meta_keywords');
             $metaDescription = \App\Models\Setting::getValue('meta_description');
+            $googleAnalytics = \App\Models\Setting::getValue('google_analytics');
             $shouldIndex = request()->routeIs('home');
         @endphp
         <meta charset="utf-8">
@@ -60,6 +61,19 @@
         
         <!-- Additional CSS for specific pages -->
         @stack('styles')
+        
+        <!-- Google Analytics -->
+        @if(!empty($googleAnalytics))
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalytics }}"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', '{{ $googleAnalytics }}');
+        </script>
+        @endif
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
