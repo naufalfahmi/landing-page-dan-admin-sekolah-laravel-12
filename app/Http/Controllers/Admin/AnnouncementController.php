@@ -76,19 +76,9 @@ class AnnouncementController extends Controller
         $primaryLinkForAttachmentTable = null;
         if ($request->attachment_type === 'link' && $request->filled('attachment_link')) {
             $primaryLinkForAttachmentTable = $request->attachment_link;
-            // Clean main announcement fields
-            $data['attachment'] = null;
-            $data['attachment_name'] = null;
-            $data['attachment_size'] = null;
-            $data['attachment_mime'] = null;
         } elseif ($request->hasFile('attachment')) {
             // For uploaded file, we will save it into announcement_attachments table after creating the announcement
             $primaryFileForAttachmentTable = $request->file('attachment');
-            // Ensure main announcement attachment fields remain null (we will use attachments table)
-            $data['attachment'] = null;
-            $data['attachment_name'] = null;
-            $data['attachment_size'] = null;
-            $data['attachment_mime'] = null;
         }
 
         $announcement = Announcement::create($data);

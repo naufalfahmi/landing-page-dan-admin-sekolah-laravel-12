@@ -17,10 +17,6 @@ class Announcement extends Model
         'content',
         'category_id',
         'priority',
-        'attachment',
-        'attachment_name',
-        'attachment_size',
-        'attachment_mime',
         'is_published',
         'is_featured',
         'published_at',
@@ -153,18 +149,4 @@ class Announcement extends Model
         return $colors[$this->priority] ?? 'primary';
     }
 
-    public function getAttachmentSizeHumanAttribute(): ?string
-    {
-        $bytes = $this->attachment_size;
-        if (!$bytes || $bytes <= 0) {
-            return null;
-        }
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $i = 0;
-        while ($bytes >= 1024 && $i < count($units) - 1) {
-            $bytes /= 1024;
-            $i++;
-        }
-        return number_format($bytes, $bytes >= 10 ? 0 : 1) . ' ' . $units[$i];
-    }
 }
