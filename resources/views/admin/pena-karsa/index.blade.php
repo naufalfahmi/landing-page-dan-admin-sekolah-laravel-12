@@ -70,13 +70,16 @@
 								<td>
 									<div class="d-flex flex-column">
 										<span class="fw-bold">{{ Str::limit($item->title, 50) }}</span>
-										@if($item->tags && count($item->tags) > 0)
+										@php
+											$cleanTags = $item->getCleanTags();
+										@endphp
+										@if(count($cleanTags) > 0)
 											<div class="mt-1">
-												@foreach(array_slice($item->tags, 0, 2) as $tag)
+												@foreach(array_slice($cleanTags, 0, 2) as $tag)
 													<span class="badge bg-light text-dark me-1">{{ $tag }}</span>
 												@endforeach
-												@if(count($item->tags) > 2)
-													<span class="text-muted">+{{ count($item->tags) - 2 }}</span>
+												@if(count($cleanTags) > 2)
+													<span class="text-muted">+{{ count($cleanTags) - 2 }}</span>
 												@endif
 											</div>
 										@endif

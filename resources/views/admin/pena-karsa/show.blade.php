@@ -72,11 +72,14 @@
 					</div>
 				</div>
 
-				@if($penaKarsa->tags && count($penaKarsa->tags) > 0)
+				@php
+					$cleanTags = $penaKarsa->getCleanTags();
+				@endphp
+				@if(count($cleanTags) > 0)
 				<div class="mb-4">
 					<h5>Tag</h5>
 					<div class="d-flex flex-wrap gap-2">
-						@foreach($penaKarsa->tags as $tag)
+						@foreach($cleanTags as $tag)
 						<span class="badge bg-light text-dark">{{ $tag }}</span>
 						@endforeach
 					</div>

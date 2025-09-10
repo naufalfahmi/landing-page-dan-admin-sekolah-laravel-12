@@ -762,7 +762,7 @@ h1, h2, h3, h4, h5, h6 {
 #heroCarousel {
     position: relative;
     width: 100vw;
-    aspect-ratio: 21/9;
+    aspect-ratio: 16/6;
     overflow: hidden;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
@@ -772,14 +772,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-slide {
     position: relative;
-    aspect-ratio: 21/9;
+    aspect-ratio: 16/6;
     overflow: hidden;
 }
 
 .hero-slide img {
     width: 100% !important;
     height: 100%;
-    object-fit: fill;
+    object-fit: cover;
     object-position: center;
     display: block;
     min-width: 100% !important;
@@ -823,37 +823,50 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Hero Banner Carousel Styles */
 .hero-banner-carousel {
-    aspect-ratio: 21/9;
+    aspect-ratio: 16/6;
     overflow: hidden;
+    position: relative;
 }
 
 .hero-banner-fallback {
-    aspect-ratio: 21/9;
+    aspect-ratio: 16/6;
     overflow: hidden;
+    position: relative;
 }
 
 .hero-banner-img {
-    aspect-ratio: 21/9;
-    object-fit: fill;
-    object-position: center;
     width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+    display: block;
     flex-shrink: 0;
+    border-radius: 0;
+}
+
+/* Ensure carousel items maintain proper aspect ratio */
+.hero-banner-carousel .carousel-item {
+    height: 100%;
+    width: 100%;
+}
+
+.hero-banner-carousel .carousel-inner {
+    height: 100%;
+    width: 100%;
 }
 
 /* Desktop and Large Screens */
 @media (min-width: 1200px) {
     #heroCarousel {
-        aspect-ratio: 21/9;
+        aspect-ratio: 16/6;
     }
     
     .hero-slide {
-        aspect-ratio: 21/9;
+        aspect-ratio: 16/6;
     }
     
     .hero-slide img {
-        object-fit: fill;
+        object-fit: cover;
         object-position: center;
         width: 100% !important;
         min-width: 100% !important;
@@ -862,16 +875,16 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .hero-banner-carousel {
-        aspect-ratio: 21/9;
+        aspect-ratio: 16/6;
     }
     
     .hero-banner-fallback {
-        aspect-ratio: 21/9;
+        aspect-ratio: 16/6;
     }
     
     .hero-banner-img {
-        aspect-ratio: 21/9;
-        object-fit: fill;
+        aspect-ratio: 16/6;
+        object-fit: cover;
         object-position: center;
         width: 100% !important;
         min-width: 100% !important;
@@ -883,15 +896,15 @@ h1, h2, h3, h4, h5, h6 {
 /* Tablet and Medium Screens */
 @media (min-width: 769px) and (max-width: 1199px) {
     #heroCarousel {
-        aspect-ratio: 21/9;
+        aspect-ratio: 16/6;
     }
     
     .hero-slide {
-        aspect-ratio: 21/9;
+        aspect-ratio: 16/6;
     }
     
     .hero-slide img {
-        object-fit: fill;
+        object-fit: cover;
         object-position: center;
         width: 100% !important;
         min-width: 100% !important;
@@ -900,16 +913,16 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .hero-banner-carousel {
-        aspect-ratio: 21/9;
+        aspect-ratio: 16/6;
     }
     
     .hero-banner-fallback {
-        aspect-ratio: 21/9;
+        aspect-ratio: 16/6;
     }
     
     .hero-banner-img {
-        aspect-ratio: 21/9;
-        object-fit: fill;
+        aspect-ratio: 16/6;
+        object-fit: cover;
         object-position: center;
         width: 100% !important;
         min-width: 100% !important;
@@ -921,15 +934,17 @@ h1, h2, h3, h4, h5, h6 {
 /* Hero Banner Mobile Responsive */
 @media (max-width: 768px) {
     .hero-banner-carousel {
-        height: 60vh;
-        min-height: 300px;
-        max-height: 500px;
+        aspect-ratio: 16/7;
+        height: 50vh;
+        min-height: 250px;
+        max-height: 400px;
     }
     
     .hero-banner-fallback {
-        height: 60vh;
-        min-height: 300px;
-        max-height: 500px;
+        aspect-ratio: 16/7;
+        height: 50vh;
+        min-height: 250px;
+        max-height: 400px;
     }
     
     .hero-banner-img {
@@ -972,15 +987,17 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 576px) {
     .hero-banner-carousel {
-        height: 50vh;
-        min-height: 250px;
-        max-height: 400px;
+        aspect-ratio: 16/8;
+        height: 40vh;
+        min-height: 200px;
+        max-height: 350px;
     }
     
     .hero-banner-fallback {
-        height: 50vh;
-        min-height: 250px;
-        max-height: 400px;
+        aspect-ratio: 16/8;
+        height: 40vh;
+        min-height: 200px;
+        max-height: 350px;
     }
     
     .hero-banner-img {
@@ -1023,15 +1040,17 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 480px) {
     .hero-banner-carousel {
-        height: 29vh;
-        min-height: 200px;
-        max-height: 350px;
+        aspect-ratio: 16/9;
+        height: 35vh;
+        min-height: 180px;
+        max-height: 300px;
     }
     
     .hero-banner-fallback {
-        height: 45vh;
-        min-height: 200px;
-        max-height: 350px;
+        aspect-ratio: 16/9;
+        height: 35vh;
+        min-height: 180px;
+        max-height: 300px;
     }
     
     .hero-banner-img {
@@ -1726,16 +1745,17 @@ and (-webkit-device-pixel-ratio: 3) {
 }
 
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+/* Tablet responsive (768px - 991px) */
+@media (max-width: 991px) and (min-width: 769px) {
     .top-bar {
         padding: 0.5rem 0;
         font-size: 0.85rem;
     }
     
     .top-bar-content {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         gap: 1rem;
     }
     
@@ -1751,6 +1771,44 @@ and (-webkit-device-pixel-ratio: 3) {
     .top-bar-item i {
         width: 16px;
         font-size: 0.9rem;
+    }
+    
+    .top-bar-item a {
+        font-size: 0.85rem;
+    }
+}
+
+/* Mobile responsive (max-width: 768px) */
+@media (max-width: 768px) {
+    .top-bar {
+        padding: 0.4rem 0;
+        font-size: 0.8rem;
+    }
+    
+    .top-bar-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+    
+    .top-bar-info,
+    .top-bar-contact {
+        flex-direction: column;
+        gap: 0.8rem;
+        align-items: flex-start;
+    }
+    
+    .top-bar-item {
+        gap: 0.4rem;
+    }
+    
+    .top-bar-item i {
+        width: 14px;
+        font-size: 0.85rem;
+    }
+    
+    .top-bar-item a {
+        font-size: 0.8rem;
     }
     
     
@@ -1789,34 +1847,34 @@ and (-webkit-device-pixel-ratio: 3) {
     }
 }
 
+/* Small mobile responsive (max-width: 576px) */
 @media (max-width: 576px) {
     .top-bar {
-        padding: 0.4rem 0;
-        font-size: 0.8rem;
+        padding: 0.3rem 0;
+        font-size: 0.75rem;
     }
     
     .top-bar-content {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.8rem;
+        gap: 0.6rem;
     }
     
     .top-bar-info,
     .top-bar-contact {
-        flex-direction: column;
-        gap: 0.8rem;
-        align-items: flex-start;
+        gap: 0.6rem;
     }
     
     .top-bar-item {
-        gap: 0.4rem;
+        gap: 0.3rem;
     }
     
     .top-bar-item i {
-        width: 14px;
-        font-size: 0.85rem;
+        width: 12px;
+        font-size: 0.8rem;
     }
     
+    .top-bar-item a {
+        font-size: 0.75rem;
+    }
 }
 
 /* Announcements Widget Styles */

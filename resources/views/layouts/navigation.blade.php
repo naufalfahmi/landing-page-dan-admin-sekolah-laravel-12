@@ -31,6 +31,10 @@
                 </li>
                 
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('pena-karsa.*') ? 'active' : '' }}" href="{{ route('pena-karsa.index') }}">Pena Karsa</a>
+                </li>
+                
+                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('galleries.*') ? 'active' : '' }}" href="{{ route('galleries.index') }}">Galeri</a>
                 </li>
                 

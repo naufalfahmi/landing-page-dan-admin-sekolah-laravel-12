@@ -25,27 +25,6 @@
 
 @section('content')
 <div class="container mt-4">
-    <!-- Breadcrumb Section -->
-    <nav aria-label="breadcrumb" class="breadcrumb-section">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{{ route('home') }}">
-                        <i class="fas fa-home"></i> Beranda
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ route('announcements.index') }}">
-                        <i class="fas fa-bullhorn"></i> Pengumuman
-                    </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    <i class="fas fa-file-alt"></i> {{ Str::limit($announcement->title, 50) }}
-                </li>
-            </ol>
-        </div>
-    </nav>
-
     <div class="row">
         <!-- Main Content -->
         <div class="col-lg-8">

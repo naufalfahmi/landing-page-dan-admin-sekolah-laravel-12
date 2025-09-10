@@ -123,9 +123,8 @@
                         <div class="pena-karsa-share">
                             <h6 class="mb-2">Bagikan Artikel</h6>
                             <div class="share-buttons">
-                                <a href="https://wa.me/?text={{ urlencode($penaKarsa->title . ' - ' . request()->fullUrl()) }}" 
-                                   target="_blank" class="btn pena-karsa-btn btn-sm">
-                                    <i class="fab fa-whatsapp me-2"></i>Bagikan ke WhatsApp
+                                <a href="#" class="btn btn-success btn-sm me-2" onclick="shareWhatsApp('personal')">
+                                    <i class="bi bi-whatsapp"></i> Share WhatsApp
                                 </a>
                             </div>
                         </div>
@@ -463,4 +462,17 @@
     }
 }
 </style>
+
+<script>
+function shareWhatsApp(type) {
+    const url = window.location.href;
+    const title = "{{ $penaKarsa->title }}";
+    const text = `${title} - ${url}`;
+    
+    if (type === 'personal') {
+        // Share to personal WhatsApp
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+}
+</script>
 @endsection
