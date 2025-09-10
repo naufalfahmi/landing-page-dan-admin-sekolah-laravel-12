@@ -1,6 +1,36 @@
 @extends('layouts.app')
 
 @section('title', $gallery->title . ' - Galeri Foto')
+@section('description', $gallery->description)
+
+@push('styles')
+    <!-- Open Graph Meta Tags for Gallery -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ $gallery->title }} - Galeri Foto">
+    <meta property="og:description" content="{{ $gallery->description }}">
+    <meta property="og:url" content="{{ request()->url() }}">
+    @if($gallery->image)
+        <meta property="og:image" content="{{ asset('storage/' . $gallery->image) }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:type" content="image/jpeg">
+    @endif
+    <meta property="og:locale" content="id_ID">
+    <meta property="article:author" content="SMPIT Al-Itqon">
+    <meta property="article:published_time" content="{{ $gallery->created_at->toISOString() }}">
+    <meta property="article:section" content="Galeri Foto">
+    @if($gallery->category)
+        <meta property="article:tag" content="{{ $gallery->category->name }}">
+    @endif
+    
+    <!-- Twitter Card Meta Tags for Gallery -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $gallery->title }} - Galeri Foto">
+    <meta name="twitter:description" content="{{ $gallery->description }}">
+    @if($gallery->image)
+        <meta name="twitter:image" content="{{ asset('storage/' . $gallery->image) }}">
+    @endif
+@endpush
 
 @section('content')
 <div class="container mt-4">

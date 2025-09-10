@@ -65,7 +65,7 @@
 
 							<div class="mb-3">
 								<label for="tags" class="form-label">Tag</label>
-								<input type="text" class="form-control @error('tags') is-invalid @enderror" id="tags" name="tags" value="{{ old('tags') ? implode(', ', old('tags')) : ($penaKarsa->tags ? implode(', ', $penaKarsa->tags) : '') }}" placeholder="Masukkan tag, pisahkan dengan koma (contoh: motivasi, islami, siswa)">
+								<input type="text" class="form-control @error('tags') is-invalid @enderror" id="tags" name="tags" value="{{ old('tags', $penaKarsa->getTagsAsString()) }}" placeholder="Masukkan tag, pisahkan dengan koma (contoh: motivasi, islami, siswa)">
 								<small class="form-text text-muted">Pisahkan setiap tag dengan koma</small>
 								@error('tags')
 									<div class="invalid-feedback">{{ $message }}</div>

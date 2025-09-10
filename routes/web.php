@@ -27,6 +27,10 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('articles.ind
 // Article detail page dengan slug
 Route::get('/article/{slug}', [ArticleController::class, 'showBySlug'])->name('article.detail');
 
+// Pena Karsa routes
+Route::get('/pena-karsa', [\App\Http\Controllers\PenaKarsaController::class, 'index'])->name('pena-karsa.index');
+Route::get('/pena-karsa/{slug}', [\App\Http\Controllers\PenaKarsaController::class, 'show'])->name('pena-karsa.show');
+
 // Category page
 Route::get('/category/{slug}', [ArticleController::class, 'showByCategory'])->name('category.show');
 

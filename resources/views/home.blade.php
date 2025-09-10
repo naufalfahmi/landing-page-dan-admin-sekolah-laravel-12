@@ -3,8 +3,34 @@
 @php
     $siteTitle = \App\Models\Setting::getValue('site_title', 'SMPIT Al-Itqon');
     $siteSubtitle = \App\Models\Setting::getValue('site_subtitle', 'Berita dan Artikel Islami');
+    $metaDescription = \App\Models\Setting::getValue('meta_description', 'Portal berita dan artikel Islami dari SMPIT Al-Itqon. Dapatkan informasi terbaru seputar pendidikan, kegiatan sekolah, dan konten inspiratif untuk siswa dan orang tua.');
+    $siteLogo = \App\Models\Setting::getValue('site_logo');
 @endphp
 @section('title', $siteTitle . ' - ' . $siteSubtitle)
+@section('description', $metaDescription)
+
+@push('styles')
+<!-- Additional Open Graph Meta Tags for Homepage -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ $siteTitle }} - {{ $siteSubtitle }}">
+<meta property="og:description" content="{{ $metaDescription }}">
+<meta property="og:url" content="{{ url('/') }}">
+@if(!empty($siteLogo))
+    <meta property="og:image" content="{{ $siteLogo }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
+@endif
+<meta property="og:locale" content="id_ID">
+
+<!-- Twitter Card Meta Tags for Homepage -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $siteTitle }} - {{ $siteSubtitle }}">
+<meta name="twitter:description" content="{{ $metaDescription }}">
+@if(!empty($siteLogo))
+    <meta name="twitter:image" content="{{ $siteLogo }}">
+@endif
+@endpush
 
 @section('content')
 <!-- Hero Banner Section -->
@@ -83,22 +109,12 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div class="widget-header pena-karsa-header">
-                    <div class="pena-karsa-banner">
-                        <div class="banner-content">
-                            <h3 class="widget-title pena-karsa-title">
-                                <i class="fas fa-pen-fancy"></i>
-                                Pena Karsa
-                            </h3>
-                            <p class="pena-karsa-tagline">Ruang Ekspresi</p>
-                            <span class="pena-karsa-subtitle">Tulisan & Karya</span>
-                        </div>
-                        <div class="banner-decoration">
-                            <div class="decoration-circle"></div>
-                            <div class="decoration-line"></div>
-                        </div>
-                    </div>
-                    <a href="{{ route('pena-karsa.index') }}" class="view-all-btn pena-karsa-btn">
+                <div class="widget-header">
+                    <h3 class="widget-title">
+                        <i class="fas fa-pen-fancy"></i>
+                        Pena Karsa
+                    </h3>
+                    <a href="{{ route('pena-karsa.index') }}" class="view-all-btn">
                         Semua Karya <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -143,13 +159,16 @@
                         </h2>
                         <p class="card-text pena-karsa-excerpt">{{ Str::limit(strip_tags($item->excerpt), 100) }}</p>
                         
-                        @if($item->tags && count($item->tags) > 0)
+                        @php
+                            $cleanTags = $item->getCleanTags();
+                        @endphp
+                        @if(count($cleanTags) > 0)
                         <div class="pena-karsa-tags mb-3">
-                            @foreach(array_slice($item->tags, 0, 3) as $tag)
+                            @foreach(array_slice($cleanTags, 0, 3) as $tag)
                                 <span class="pena-karsa-tag">{{ $tag }}</span>
                             @endforeach
-                            @if(count($item->tags) > 3)
-                                <span class="pena-karsa-tag-more">+{{ count($item->tags) - 3 }}</span>
+                            @if(count($cleanTags) > 3)
+                                <span class="pena-karsa-tag-more">+{{ count($cleanTags) - 3 }}</span>
                             @endif
                         </div>
                         @endif

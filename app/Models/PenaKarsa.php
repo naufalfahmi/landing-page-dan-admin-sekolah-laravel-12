@@ -51,8 +51,7 @@ class PenaKarsa extends Model
      */
     public function scopePublished($query)
     {
-        return $query->where('status', 'published')
-                    ->where('published_at', '<=', now());
+        return $query->where('status', 'published');
     }
 
     /**
@@ -117,5 +116,92 @@ class PenaKarsa extends Model
     public function incrementViews()
     {
         $this->increment('views');
+    }
+
+    /**
+     * Get tags as comma-separated string
+     */
+    public function getTagsAsString()
+    {
+        if (!$this->tags) {
+            return '';
+        }
+
+        if (is_array($this->tags)) {
+            // Handle corrupted data - try to reconstruct the original array
+            $allTags = [];
+            foreach ($this->tags as $tag) {
+                if (is_string($tag)) {
+                    // Clean up the string and try to extract individual tags
+                    $cleanTag = trim($tag, '[]"');
+                    if (strpos($cleanTag, ',') !== false) {
+                        // Split by comma and clean each part
+                        $parts = explode(',', $cleanTag);
+                        foreach ($parts as $part) {
+                            $cleanPart = trim($part, ' "');
+                            if (!empty($cleanPart)) {
+                                $allTags[] = $cleanPart;
+                            }
+                        }
+                    } else {
+                        $cleanPart = trim($cleanTag, ' "');
+                        if (!empty($cleanPart)) {
+                            $allTags[] = $cleanPart;
+                        }
+                    }
+                } else {
+                    $allTags[] = $tag;
+                }
+            }
+            
+            // Remove duplicates and return as comma-separated string
+            $uniqueTags = array_unique($allTags);
+            return implode(', ', $uniqueTags);
+        }
+
+        return $this->tags;
+    }
+
+    /**
+     * Get tags as clean array for display
+     */
+    public function getCleanTags()
+    {
+        if (!$this->tags) {
+            return [];
+        }
+
+        if (is_array($this->tags)) {
+            // Handle corrupted data - try to reconstruct the original array
+            $allTags = [];
+            foreach ($this->tags as $tag) {
+                if (is_string($tag)) {
+                    // Clean up the string and try to extract individual tags
+                    $cleanTag = trim($tag, '[]"');
+                    if (strpos($cleanTag, ',') !== false) {
+                        // Split by comma and clean each part
+                        $parts = explode(',', $cleanTag);
+                        foreach ($parts as $part) {
+                            $cleanPart = trim($part, ' "');
+                            if (!empty($cleanPart)) {
+                                $allTags[] = $cleanPart;
+                            }
+                        }
+                    } else {
+                        $cleanPart = trim($cleanTag, ' "');
+                        if (!empty($cleanPart)) {
+                            $allTags[] = $cleanPart;
+                        }
+                    }
+                } else {
+                    $allTags[] = $tag;
+                }
+            }
+            
+            // Remove duplicates and return as clean array
+            return array_values(array_unique($allTags));
+        }
+
+        return [];
     }
 }

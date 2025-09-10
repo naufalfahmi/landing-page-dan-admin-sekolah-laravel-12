@@ -2,14 +2,21 @@
 
 @section('title', 'Galeri Foto Sekolah - ' . config('app.name'))
 
-@section('meta')
-<meta name="description" content="Galeri foto kegiatan sekolah, ekstrakurikuler, acara sekolah, dan fasilitas. Lihat dokumentasi visual kegiatan dan fasilitas sekolah kami.">
-<meta name="keywords" content="galeri foto sekolah, kegiatan sekolah, ekstrakurikuler, fasilitas sekolah, dokumentasi sekolah">
-<meta property="og:title" content="Galeri Foto Sekolah - {{ config('app.name') }}">
-<meta property="og:description" content="Galeri foto kegiatan sekolah, ekstrakurikuler, acara sekolah, dan fasilitas">
-<meta property="og:type" content="website">
-<meta property="og:url" content="{{ url()->current() }}">
-@endsection
+@section('description', 'Galeri foto kegiatan sekolah, ekstrakurikuler, acara sekolah, dan fasilitas. Lihat dokumentasi visual kegiatan dan fasilitas sekolah kami.')
+
+@push('styles')
+    <!-- Open Graph Meta Tags for Galleries Index -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Galeri Foto Sekolah - {{ config('app.name') }}">
+    <meta property="og:description" content="Galeri foto kegiatan sekolah, ekstrakurikuler, acara sekolah, dan fasilitas. Lihat dokumentasi visual kegiatan dan fasilitas sekolah kami.">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:locale" content="id_ID">
+    
+    <!-- Twitter Card Meta Tags for Galleries Index -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Galeri Foto Sekolah - {{ config('app.name') }}">
+    <meta name="twitter:description" content="Galeri foto kegiatan sekolah, ekstrakurikuler, acara sekolah, dan fasilitas. Lihat dokumentasi visual kegiatan dan fasilitas sekolah kami.">
+@endpush
 
 @section('content')
 <main class="container mt-4">

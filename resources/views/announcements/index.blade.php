@@ -2,14 +2,21 @@
 
 @section('title', 'Pengumuman Sekolah - ' . config('app.name'))
 
-@section('meta')
-<meta name="description" content="Daftar pengumuman terbaru dan informasi penting dari sekolah. Temukan pengumuman akademik, kegiatan, ujian, dan libur sekolah.">
-<meta name="keywords" content="pengumuman sekolah, informasi sekolah, berita sekolah, akademik, kegiatan sekolah">
-<meta property="og:title" content="Pengumuman Sekolah - {{ config('app.name') }}">
-<meta property="og:description" content="Daftar pengumuman terbaru dan informasi penting dari sekolah">
-<meta property="og:type" content="website">
-<meta property="og:url" content="{{ url()->current() }}">
-@endsection
+@section('description', 'Daftar pengumuman terbaru dan informasi penting dari sekolah. Temukan pengumuman akademik, kegiatan, ujian, dan libur sekolah.')
+
+@push('styles')
+    <!-- Open Graph Meta Tags for Announcements Index -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Pengumuman Sekolah - {{ config('app.name') }}">
+    <meta property="og:description" content="Daftar pengumuman terbaru dan informasi penting dari sekolah. Temukan pengumuman akademik, kegiatan, ujian, dan libur sekolah.">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:locale" content="id_ID">
+    
+    <!-- Twitter Card Meta Tags for Announcements Index -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Pengumuman Sekolah - {{ config('app.name') }}">
+    <meta name="twitter:description" content="Daftar pengumuman terbaru dan informasi penting dari sekolah. Temukan pengumuman akademik, kegiatan, ujian, dan libur sekolah.">
+@endpush
 
 @section('content')
 <main class="container mt-4">

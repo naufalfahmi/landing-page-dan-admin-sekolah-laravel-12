@@ -1,6 +1,27 @@
 @extends('layouts.app')
 
 @section('title', $announcement->title . ' - Pengumuman')
+@section('description', $announcement->summary)
+
+@push('styles')
+    <!-- Open Graph Meta Tags for Announcement -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ $announcement->title }} - Pengumuman">
+    <meta property="og:description" content="{{ $announcement->summary }}">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <meta property="og:locale" content="id_ID">
+    <meta property="article:author" content="SMPIT Al-Itqon">
+    <meta property="article:published_time" content="{{ $announcement->published_at->toISOString() }}">
+    <meta property="article:section" content="Pengumuman">
+    @if($announcement->category)
+        <meta property="article:tag" content="{{ $announcement->category->name }}">
+    @endif
+    
+    <!-- Twitter Card Meta Tags for Announcement -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ $announcement->title }} - Pengumuman">
+    <meta name="twitter:description" content="{{ $announcement->summary }}">
+@endpush
 
 @section('content')
 <div class="container mt-4">

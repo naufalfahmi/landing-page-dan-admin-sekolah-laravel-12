@@ -45,8 +45,7 @@ class PenaKarsaController extends Controller
                 'type' => 'required|in:article,opinion,essay,motivation,creative',
                 'status' => 'required|in:published,draft,archived',
                 'is_featured' => 'boolean',
-                'tags' => 'nullable|array',
-                'tags.*' => 'string|max:50',
+                'tags' => 'nullable|string|max:1000',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'published_at' => 'nullable|date'
             ]);
@@ -64,9 +63,14 @@ class PenaKarsaController extends Controller
                 $data['published_at'] = now();
             }
 
-            // Convert tags array to JSON
-            if (isset($data['tags']) && is_array($data['tags'])) {
-                $data['tags'] = array_filter($data['tags']); // Remove empty tags
+            // Convert tags string to array and then to JSON
+            if (isset($data['tags'])) {
+                if (is_string($data['tags'])) {
+                    // Split by comma and trim each tag
+                    $data['tags'] = array_filter(array_map('trim', explode(',', $data['tags'])));
+                } elseif (is_array($data['tags'])) {
+                    $data['tags'] = array_filter($data['tags']); // Remove empty tags
+                }
             }
 
             PenaKarsa::create($data);
@@ -114,8 +118,7 @@ class PenaKarsaController extends Controller
                 'type' => 'required|in:article,opinion,essay,motivation,creative',
                 'status' => 'required|in:published,draft,archived',
                 'is_featured' => 'boolean',
-                'tags' => 'nullable|array',
-                'tags.*' => 'string|max:50',
+                'tags' => 'nullable|string|max:1000',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'published_at' => 'nullable|date'
             ]);
@@ -138,9 +141,14 @@ class PenaKarsaController extends Controller
                 $data['published_at'] = now();
             }
 
-            // Convert tags array to JSON
-            if (isset($data['tags']) && is_array($data['tags'])) {
-                $data['tags'] = array_filter($data['tags']); // Remove empty tags
+            // Convert tags string to array and then to JSON
+            if (isset($data['tags'])) {
+                if (is_string($data['tags'])) {
+                    // Split by comma and trim each tag
+                    $data['tags'] = array_filter(array_map('trim', explode(',', $data['tags'])));
+                } elseif (is_array($data['tags'])) {
+                    $data['tags'] = array_filter($data['tags']); // Remove empty tags
+                }
             }
 
             $penaKarsa->update($data);

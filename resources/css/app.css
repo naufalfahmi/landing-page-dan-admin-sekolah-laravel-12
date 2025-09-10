@@ -2338,3 +2338,690 @@ footer {
         padding: 0.25rem 0.6rem;
     }
 }
+
+/* Pena Karsa Section Styles */
+.pena-karsa-widget {
+    background: linear-gradient(135deg, #f0fdfa 0%, #e6fffa 100%);
+    padding: 4rem 0;
+    margin-top: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.pena-karsa-widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #03aca5 0%, #0d9488 50%, #14b8a6 100%);
+}
+
+/* Pena Karsa header now uses standard widget-header styling */
+
+/* Pena Karsa banner elements removed - now uses standard widget styling */
+
+/* Pena Karsa banner decorations and custom button removed - now uses standard styling */
+
+/* Pena Karsa Cards */
+.pena-karsa-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(3, 172, 165, 0.1);
+    transition: all 0.3s ease;
+    background: white;
+    position: relative;
+}
+
+.pena-karsa-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(3, 172, 165, 0.2);
+}
+
+.pena-karsa-image-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.pena-karsa-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.pena-karsa-card:hover .pena-karsa-image {
+    transform: scale(1.05);
+}
+
+.pena-karsa-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #03aca5, #0d9488);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+}
+
+.pena-karsa-type-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 2;
+}
+
+.type-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.type-article { background: #3B82F6; color: white; }
+.type-opinion { background: #10B981; color: white; }
+.type-essay { background: #F59E0B; color: white; }
+.type-motivation { background: #EF4444; color: white; }
+.type-creative { background: #8B5CF6; color: white; }
+
+.pena-karsa-featured {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #F59E0B;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    z-index: 2;
+}
+
+.pena-karsa-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #6B7280;
+}
+
+.pena-karsa-author i {
+    color: #03aca5;
+}
+
+.author-name {
+    font-weight: 600;
+    color: #374151;
+}
+
+.author-class,
+.author-position {
+    font-size: 0.8rem;
+    color: #9CA3AF;
+}
+
+.pena-karsa-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+}
+
+.pena-karsa-title-link {
+    color: #1F2937;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.pena-karsa-title-link:hover {
+    color: #03aca5;
+}
+
+.pena-karsa-excerpt {
+    color: #6B7280;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.pena-karsa-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.pena-karsa-tag {
+    background: linear-gradient(135deg, #03aca5, #0d9488);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.pena-karsa-tag-more {
+    background: #E5E7EB;
+    color: #6B7280;
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.pena-karsa-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #9CA3AF;
+    padding-top: 1rem;
+    border-top: 1px solid #F3F4F6;
+}
+
+.pena-karsa-meta i {
+    margin-right: 0.3rem;
+    color: #03aca5;
+}
+
+.pena-karsa-views {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Responsive Design */
+/* Mobile First Approach */
+@media (max-width: 576px) {
+    /* Extra small devices (phones, less than 576px) */
+    .pena-karsa-widget {
+        padding: 1.5rem 0;
+        margin-top: 2rem;
+    }
+    
+    /* Pena Karsa header responsive removed - now uses standard widget styling */
+    
+    .pena-karsa-title {
+        font-size: 1.8rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .pena-karsa-title i {
+        font-size: 1.5rem;
+    }
+    
+    .pena-karsa-tagline {
+        font-size: 1rem;
+    }
+    
+    .pena-karsa-subtitle {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.8rem;
+    }
+    
+    .banner-decoration {
+        width: 60px;
+        height: 60px;
+        margin-top: 1rem;
+    }
+    
+    .decoration-circle {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .decoration-line {
+        width: 30px;
+        height: 1px;
+    }
+    
+    .pena-karsa-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .pena-karsa-image-container {
+        height: 160px;
+    }
+    
+    .pena-karsa-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .pena-karsa-author {
+        font-size: 0.8rem;
+    }
+    
+    .pena-karsa-title {
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .pena-karsa-excerpt {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .pena-karsa-tags {
+        margin-bottom: 0.8rem;
+    }
+    
+    .pena-karsa-tag {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.5rem;
+    }
+    
+    .pena-karsa-meta {
+        font-size: 0.75rem;
+        padding-top: 0.8rem;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    /* Small devices (landscape phones, 577px and up) */
+    .pena-karsa-widget {
+        padding: 2rem 0;
+    }
+    
+    /* Pena Karsa header responsive removed - now uses standard widget styling */
+    
+    .pena-karsa-title {
+        font-size: 1.8rem;
+    }
+    
+    .banner-decoration {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .decoration-circle {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .decoration-line {
+        width: 40px;
+    }
+    
+    .pena-karsa-image-container {
+        height: 180px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    /* Medium devices (tablets, 769px and up) */
+    .pena-karsa-widget {
+        padding: 3rem 0;
+    }
+    
+    /* Pena Karsa header responsive removed - now uses standard widget styling */
+    
+    .pena-karsa-title {
+        font-size: 1.9rem;
+    }
+    
+    .pena-karsa-image-container {
+        height: 190px;
+    }
+}
+
+@media (min-width: 993px) and (max-width: 1200px) {
+    /* Large devices (desktops, 993px and up) */
+    .pena-karsa-widget {
+        padding: 3.5rem 0;
+    }
+    
+    .pena-karsa-title {
+        font-size: 2.1rem;
+    }
+    
+    .pena-karsa-image-container {
+        height: 200px;
+    }
+}
+
+@media (min-width: 1201px) {
+    /* Extra large devices (large desktops, 1201px and up) */
+    .pena-karsa-widget {
+        padding: 4rem 0;
+    }
+    
+    .pena-karsa-title {
+        font-size: 1.2rem;
+    }
+    
+    .pena-karsa-image-container {
+        height: 200px;
+    }
+}
+
+/* Pena Karsa Page Styles */
+.pena-karsa-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #f0fdfa 0%, #e6fffa 100%);
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.pena-karsa-page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #03aca5 0%, #0d9488 50%, #14b8a6 100%);
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.pena-karsa-page-title {
+    color: #03aca5;
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pena-karsa-page-title i {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #03aca5, #0d9488);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.pena-karsa-page-subtitle {
+    font-size: 1.5rem;
+    color: #6B7280;
+    margin: 0.5rem 0 0 0;
+    font-weight: 500;
+}
+
+.pena-karsa-page-tagline {
+    display: inline-block;
+    background: linear-gradient(135deg, #03aca5, #0d9488);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.header-decoration {
+    position: relative;
+    width: 150px;
+    height: 150px;
+}
+
+.decoration-circle-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(3, 172, 165, 0.1), rgba(13, 148, 136, 0.1));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: float 3s ease-in-out infinite;
+}
+
+.decoration-line-large {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #03aca5, #0d9488);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border-radius: 2px;
+}
+
+.pena-karsa-filters {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(3, 172, 165, 0.1);
+    margin-bottom: 2rem;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid #E5E7EB;
+    color: #6B7280;
+    background: white;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: linear-gradient(135deg, #03aca5, #0d9488);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(3, 172, 165, 0.3);
+}
+
+.pena-karsa-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f0fdfa 0%, #e6fffa 100%);
+    border-radius: 20px;
+    margin: 2rem 0;
+}
+
+.empty-content {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #03aca5;
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+}
+
+.empty-content h3 {
+    color: #374151;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.empty-content p {
+    color: #6B7280;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Responsive for Pena Karsa Page */
+@media (max-width: 576px) {
+    /* Extra small devices (phones) */
+    .pena-karsa-page-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem 1rem;
+    }
+    
+    .pena-karsa-page-title {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .pena-karsa-page-title i {
+        font-size: 1.8rem;
+    }
+    
+    .pena-karsa-page-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .pena-karsa-page-tagline {
+        font-size: 0.9rem;
+        padding: 0.4rem 1.2rem;
+    }
+    
+    .header-decoration {
+        width: 80px;
+        height: 80px;
+        margin-top: 1rem;
+    }
+    
+    .decoration-circle-large {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .decoration-line-large {
+        width: 50px;
+        height: 2px;
+    }
+    
+    .pena-karsa-filters {
+        padding: 1rem;
+    }
+    
+    .filter-buttons {
+        justify-content: center;
+        gap: 0.3rem;
+    }
+    
+    .filter-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .pena-karsa-empty {
+        padding: 2rem 1rem;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+    }
+    
+    .empty-content h3 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    /* Small devices (landscape phones) */
+    .pena-karsa-page-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+    
+    .pena-karsa-page-title {
+        font-size: 2.5rem;
+    }
+    
+    .header-decoration {
+        width: 100px;
+        height: 100px;
+        margin-top: 1rem;
+    }
+    
+    .decoration-circle-large {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .decoration-line-large {
+        width: 60px;
+    }
+    
+    .filter-buttons {
+        justify-content: center;
+    }
+    
+    .filter-btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    /* Medium devices (tablets) */
+    .pena-karsa-page-header {
+        flex-direction: row;
+        text-align: left;
+        padding: 2.5rem 1.5rem;
+    }
+    
+    .pena-karsa-page-title {
+        font-size: 2.8rem;
+    }
+    
+    .header-decoration {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .decoration-circle-large {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .decoration-line-large {
+        width: 70px;
+    }
+}
+
+@media (min-width: 993px) {
+    /* Large devices (desktops) */
+    .pena-karsa-page-header {
+        flex-direction: row;
+        text-align: left;
+        padding: 3rem 2rem;
+    }
+    
+    .pena-karsa-page-title {
+        font-size: 3rem;
+    }
+    
+    .header-decoration {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .decoration-circle-large {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .decoration-line-large {
+        width: 80px;
+    }
+}

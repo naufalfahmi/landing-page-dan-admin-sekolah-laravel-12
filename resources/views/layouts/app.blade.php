@@ -26,6 +26,28 @@
             <meta name="keywords" content="{{ $metaKeywords }}">
         @endif
 
+        <!-- Open Graph Meta Tags -->
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="{{ $siteTitle }}">
+        <meta property="og:title" content="@yield('title', $siteTitle)">
+        <meta property="og:description" content="@yield('description', $metaDescription ?: 'Berita dan Artikel Islami dari SMPIT Al-Itqon')">
+        <meta property="og:url" content="{{ url()->current() }}">
+        @if(!empty($siteLogo))
+            <meta property="og:image" content="{{ $siteLogo }}">
+            <meta property="og:image:width" content="1200">
+            <meta property="og:image:height" content="630">
+            <meta property="og:image:type" content="image/png">
+        @endif
+        <meta property="og:locale" content="id_ID">
+        
+        <!-- Twitter Card Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('title', $siteTitle)">
+        <meta name="twitter:description" content="@yield('description', $metaDescription ?: 'Berita dan Artikel Islami dari SMPIT Al-Itqon')">
+        @if(!empty($siteLogo))
+            <meta name="twitter:image" content="{{ $siteLogo }}">
+        @endif
+
         @if(!empty($favicon))
             <link rel="icon" type="image/x-icon" href="{{ $favicon }}">
             <link rel="shortcut icon" type="image/x-icon" href="{{ $favicon }}">
