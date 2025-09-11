@@ -345,6 +345,16 @@
 								<input type="url" class="form-control @error('youtube_url') is-invalid @enderror" id="youtube_url" name="youtube_url" value="{{ old('youtube_url', $youtube_url) }}" placeholder="https://youtube.com/@username">
 								@error('youtube_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
 							</div>
+							
+							<div class="mb-3">
+								<label for="whatsapp_url" class="form-label">
+									<i class="fab fa-whatsapp text-success me-1"></i>
+									WhatsApp URL
+								</label>
+								<input type="url" class="form-control @error('whatsapp_url') is-invalid @enderror" id="whatsapp_url" name="whatsapp_url" value="{{ old('whatsapp_url', $whatsapp_url) }}" placeholder="https://wa.me/6281234567890">
+								<small class="form-text text-muted">Format: https://wa.me/6281234567890 atau https://wa.me/6281234567890?text=Halo</small>
+								@error('whatsapp_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+							</div>
 						</div>
 					</div>
 					

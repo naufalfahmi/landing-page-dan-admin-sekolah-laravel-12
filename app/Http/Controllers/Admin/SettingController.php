@@ -33,6 +33,7 @@ class SettingController extends Controller
             'tiktok_url' => Setting::getValue('tiktok_url', ''),
             'facebook_url' => Setting::getValue('facebook_url', ''),
             'youtube_url' => Setting::getValue('youtube_url', ''),
+            'whatsapp_url' => Setting::getValue('whatsapp_url', ''),
             'social_sidebar_enabled' => Setting::getValue('social_sidebar_enabled', true),
         ];
 
@@ -64,6 +65,7 @@ class SettingController extends Controller
             'tiktok_url' => ['nullable','url','max:500'],
             'facebook_url' => ['nullable','url','max:500'],
             'youtube_url' => ['nullable','url','max:500'],
+            'whatsapp_url' => ['nullable','url','max:500'],
             'social_sidebar_enabled' => ['nullable','boolean'],
         ]);
 
@@ -95,6 +97,7 @@ class SettingController extends Controller
         Setting::setValue('tiktok_url', $validated['tiktok_url'] ?? '', 'social_media');
         Setting::setValue('facebook_url', $validated['facebook_url'] ?? '', 'social_media');
         Setting::setValue('youtube_url', $validated['youtube_url'] ?? '', 'social_media');
+        Setting::setValue('whatsapp_url', $validated['whatsapp_url'] ?? '', 'social_media');
         Setting::setValue('social_sidebar_enabled', $validated['social_sidebar_enabled'] ?? false, 'social_media');
 
         // Uploads

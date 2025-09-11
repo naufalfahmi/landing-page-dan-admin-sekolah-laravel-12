@@ -36,6 +36,7 @@
     $tiktokUrl = \App\Models\Setting::getValue('tiktok_url', '');
     $facebookUrl = \App\Models\Setting::getValue('facebook_url', '');
     $youtubeUrl = \App\Models\Setting::getValue('youtube_url', '');
+    $whatsappUrl = \App\Models\Setting::getValue('whatsapp_url', '');
 @endphp
 
 @if($socialSidebarEnabled)
@@ -69,6 +70,14 @@
     <a href="{{ $youtubeUrl }}" target="_blank" rel="noopener noreferrer" class="social-btn social-youtube" title="Subscribe to our YouTube">
         <i class="fab fa-youtube"></i>
         <span class="social-label">YouTube</span>
+    </a>
+    @endif
+    
+    {{-- WhatsApp --}}
+    @if($whatsappUrl)
+    <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="social-btn social-whatsapp" title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="social-label">WhatsApp</span>
     </a>
     @endif
 </div>
